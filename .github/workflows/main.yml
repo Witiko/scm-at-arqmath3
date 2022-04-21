@@ -1,0 +1,48 @@
+name: Test
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+env:
+  DEBIAN_FRONTEND: noninteractive
+jobs:
+  style-check:
+    name: Style check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python: ['3.7', '3.8', '3.9']
+    container:
+      image: python:${{ matrix.python }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install requirements
+        run: |
+          set -ex
+          python -V
+          pip install -U pip setuptools wheel
+          pip install .[test]
+      - name: Style check
+        run: flake8 scripts
+  type-check:
+    name: Type check
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python: ['3.7', '3.8', '3.9']
+    container:
+      image: python:${{ matrix.python }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install requirements
+        run: |
+          set -ex
+          python -V
+          pip install -U pip setuptools wheel
+          pip install .[test,all]
+      - name: Type check
+        run: pytype scripts

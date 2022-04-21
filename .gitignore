@@ -1,0 +1,7 @@
+.ipynb_checkpoints/
+build/
+scm_at_arqmath3.egg-info/
+venv/
+*.swp
+*.swo
+*.txt

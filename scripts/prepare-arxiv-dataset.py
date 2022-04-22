@@ -75,7 +75,9 @@ def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250
         replacement = Element('span')
         replacement.text = f' [MATH] {math.attrib["alttext"]} [/MATH] ' if 'alttext' in math.attrib else ''
         math.getparent().replace(math, replacement)
-    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().strip())
+    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
+    if not paragraph_text.startswith(' [MATH]'):
+        paragraph_text = paragraph_text.lstrip()
     paragraph_text = re.sub(r' \[/MATH\] \[MATH\] ', ' ', paragraph_text)
     paragraph_text = re.sub(r' \[/MATH\]$', '', paragraph_text)
     if len(paragraph_text) >= min_paragraph_length:

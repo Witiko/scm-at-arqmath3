@@ -6,6 +6,14 @@ on:
 env:
   DEBIAN_FRONTEND: noninteractive
 jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@1.1.0
   style-check:
     name: Style check
     runs-on: ubuntu-latest

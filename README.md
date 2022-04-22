@@ -23,12 +23,12 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] The text + Tangent-L format
     - [ ] The Tangent-L format
     - [ ] The text format
-2. [ ] Train tokenizers
+2. [ ] [Train tokenizers][6]
     - [ ] Train tokenizer
-        - [ ] The LaTeX format
+        - [x] The LaTeX format
         - [ ] The Tangent-L format
-    - [ ] Tune roberta-base tokenizer
-        - [ ] The text + LaTeX format
+    - [x] Tune roberta-base tokenizer
+        - [x] The text + LaTeX format
 3. [ ] Train language models
     - [ ] Tune roberta-base model
         - [ ] The text + LaTeX format
@@ -73,3 +73,4 @@ This repository contains our math information retrieval (MIR) system for
  [3]: 01-prepare-dataset.ipynb
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3
  [5]: https://fasttext.cc/docs/en/crawl-vectors.html
+ [6]: 02-train-tokenizers.ipynb

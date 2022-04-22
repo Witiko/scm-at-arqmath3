@@ -41,7 +41,9 @@ def iterate_math_elements(paragraph: Element) -> Iterable[Element]:
 def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250) -> Iterable[Line]:
     for math in iterate_math_elements(paragraph):
         math.text = f' [MATH] {math.text} [/MATH] '
-    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().strip())
+    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
+    if not paragraph_text.startswith(' [MATH]'):
+        paragraph_text = paragraph_text.lstrip()
     paragraph_text = re.sub(r' \[/MATH\] \[MATH\] ', ' ', paragraph_text)
     paragraph_text = re.sub(r' \[/MATH\]$', '', paragraph_text)
     if len(paragraph_text) >= min_paragraph_length:

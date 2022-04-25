@@ -74,4 +74,4 @@ This repository contains our math information retrieval (MIR) system for
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3
  [5]: https://fasttext.cc/docs/en/crawl-vectors.html
  [6]: 02-train-tokenizers.ipynb
- [7]: 03-finetune-roberta.py
+ [7]: 03-finetune-roberta.ipynb

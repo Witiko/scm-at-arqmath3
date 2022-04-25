@@ -10,6 +10,7 @@ cleanup() {
 mkdir conda-venv
 ln -s "$PWD"/conda-venv ~/miniconda3/envs/arqmath3
 
+# shellcheck disable=SC1090
 source ~/miniconda3/etc/profile.d/conda.sh
 
 yes | conda create --name arqmath3 python=3.9

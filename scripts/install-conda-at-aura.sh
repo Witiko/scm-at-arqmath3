@@ -24,5 +24,5 @@ yes | conda install -c conda-forge jupyterlab ipywidgets nodejs=16.6.1
 cleanup
 
 pip install -U pip wheel setuptools
-pip install .[all]
+pip install '.[all]'
 cleanup

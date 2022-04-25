@@ -27,11 +27,11 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] Train tokenizer
         - [x] The LaTeX format
         - [ ] The Tangent-L format
-    - [x] Tune roberta-base tokenizer
+    - [x] Tune `roberta-base` tokenizer
         - [x] The text + LaTeX format
 3. [ ] Train language models
-    - [ ] Tune roberta-base model
-        - [ ] The text + LaTeX format
+    - [x] [Tune `roberta-base` model][7]
+        - [x] The text + LaTeX format
     - [ ] Train non-positional word2vec model
         - [ ] The text + LaTeX format
         - [ ] The LaTeX format
@@ -50,7 +50,7 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + LaTeX format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
-    - [ ] Produce decontextualized tuned roberta-base embeddings
+    - [ ] Produce decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
 5. [ ] Evaluate systems
     - [ ] Evaluate joint SCM over Lucene BM25 systems
@@ -58,7 +58,7 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] [The text + LaTeX format with no embeddings][4] (baseline)
         - [ ] The text + LaTeX format with non-positional word2vec embeddings
         - [ ] The text + LaTeX format with positional word2vec embeddings
-        - [ ] The text + LaTeX format with decontextualized tuned roberta-base embeddings
+        - [ ] The text + LaTeX format with decontextualized tuned `roberta-base` embeddings
     - [ ] Evaluate interpolated SCM over Lucene BM25 systems
         - [ ] The text and LaTeX formats with no embeddings (baseline)
         - [ ] The text and Tangent-L formats with no embeddings (baseline)
@@ -66,7 +66,7 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text and LaTeX formats with positional word2vec embeddings for math
         - [ ] The text and Tangent-L formats with non-positional word2vec embeddings for math
         - [ ] The text and Tangent-L formats with positional word2vec embeddings for math (primary)
-    - [ ] Evaluate ColBERT using text + LaTeX format with tuned roberta-base embeddings
+    - [ ] Evaluate ColBERT using text + LaTeX format with tuned `roberta-base` embeddings
         - [ ] Using one nearest word embedding
         - [ ] Using optimal number of k nearest word embeddings
 
@@ -74,3 +74,4 @@ This repository contains our math information retrieval (MIR) system for
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3
  [5]: https://fasttext.cc/docs/en/crawl-vectors.html
  [6]: 02-train-tokenizers.ipynb
+ [7]: 03-finetune-roberta.py

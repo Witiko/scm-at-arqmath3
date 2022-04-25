@@ -5,7 +5,6 @@ ARG GID=1000
 RUN apt-get -qy update \
  && apt-get -qy install --no-install-recommends git \
  && conda install -c conda-forge jupyterlab ipywidgets nodejs=16.6.1
-RUN jupyter lab build
 COPY setup.py setup.cfg /arqmath3/
 WORKDIR /arqmath3
 RUN groupadd -g $GID -o $UNAME

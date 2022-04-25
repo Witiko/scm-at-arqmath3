@@ -18,8 +18,5 @@ msm-latex.txt:
 dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
 	sort -R --parallel=$(NUM_CPUS) $^ > $@
 
-dataset-text+latex-filtered.txt: dataset-text+latex.txt
-	python scripts/filter-dataset.py $< $@
-
 dataset-latex.txt: arxiv-latex.txt msm-latex.txt
 	sort -R --parallel=$(NUM_CPUS) $^ > $@

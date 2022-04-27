@@ -1,14 +1,22 @@
+from contextlib import contextmanager
 from io import TextIOWrapper
 from itertools import repeat
 import logging
-from multiprocessing import Pool
+from multiprocessing import Pool, TimeoutError
 from pathlib import Path
 import re
-from sys import argv
+import signal
+from sys import argv, setrecursionlimit
 from typing import Iterable, Tuple, List
+from xml.etree.ElementTree import ParseError
 from zipfile import ZipFile
 
+from lxml import etree
 from lxml.html import HTMLParser, parse, Element
+from mathtuples.exceptions import UnknownTagException
+from mathtuples.math_extractor import MathExtractor
+from mathtuples.mathsymbol import MathSymbol
+from mathtuples.convert import check_node, expand_nodes_with_location, format_node, START_TAG, END_TAG
 from tqdm import tqdm
 
 
@@ -70,8 +78,13 @@ def get_documents(arxiv_input_directory: Path,
     LOGGER.info(message)
 
 
-def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250) -> Iterable[Line]:
+def iterate_math_elements(paragraph: Element) -> Iterable[Element]:
     for math in paragraph.xpath('.//math'):
+        yield math
+
+
+def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250) -> Iterable[Line]:
+    for math in iterate_math_elements(paragraph):
         replacement = Element('span')
         replacement.text = f' [MATH] {math.attrib["alttext"]} [/MATH] ' if 'alttext' in math.attrib else ''
         math.getparent().replace(math, replacement)
@@ -85,13 +98,54 @@ def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250
 
 
 def read_document_latex(paragraph: Element, min_math_length: int = 20) -> Iterable[Line]:
-    for math in paragraph.xpath('.//math'):
+    for math in iterate_math_elements(paragraph):
         if 'alttext' not in math.attrib:
             continue
         math_text = math.attrib['alttext']
         math_text = re.sub(r'\s+', ' ', math_text.strip())
         if len(math_text) >= min_math_length:
             yield math_text
+
+
+@contextmanager
+def timeout(duration: int):
+    def timeout_handler(signum, frame):
+        raise TimeoutError
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(duration)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
+def read_document_tangentl(paragraph: Element, maximum_duration: int = 10) -> Iterable[Line]:
+    for math in iterate_math_elements(paragraph):
+        try:
+            with timeout(maximum_duration):
+                math_tokens = etree.tostring(math, encoding='utf-8').decode('utf-8')
+                try:
+                    presentation_math = MathExtractor.isolate_pmml(math_tokens)
+                except ParseError:
+                    continue
+                try:
+                    tree_root = MathSymbol.parse_from_mathml(presentation_math)
+                except AttributeError:
+                    continue
+                if tree_root is None:
+                    continue
+                pairs = tree_root.get_pairs('', 1, eol=False, symbol_pairs=True,
+                                            compound_symbols=True, terminal_symbols=True,
+                                            edge_pairs=False, unbounded=False,
+                                            repetitions=True, repDict=dict(), shortened=True)
+                node_list = [node for node in pairs if check_node(node)]
+                nodes_payloads = expand_nodes_with_location(node_list)
+                node_list = [format_node(node) for node in nodes_payloads]
+                node_list = [START_TAG] + node_list + [END_TAG]
+                line = ' '.join(node_list)
+                yield line
+        except (UnknownTagException, TimeoutError):
+            pass
 
 
 def _read_document_helper(args: Tuple[Document, TextFormat]) -> Tuple[Document, List[Line]]:
@@ -111,6 +165,8 @@ def read_document(document: Document, text_format: TextFormat) -> Tuple[Document
             paragraph_text = read_document_text_latex(paragraph)
         elif text_format == 'latex':
             paragraph_text = read_document_latex(paragraph)
+        elif text_format == 'tangentl':
+            paragraph_text = read_document_tangentl(paragraph)
         else:
             raise ValueError(f'Unknown text format {text_format}')
         paragraphs.extend(paragraph_text)
@@ -129,6 +185,7 @@ def main(text_format: TextFormat, arxiv_input_directory: Path, output_file: Path
 
 
 if __name__ == '__main__':
+    setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
     text_format = argv[1]
     arxiv_input_directory = Path(argv[2])

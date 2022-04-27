@@ -1,13 +1,18 @@
+from contextlib import contextmanager
 from itertools import chain, repeat
 import logging
-from multiprocessing import Pool
+from multiprocessing import Pool, TimeoutError
 from pathlib import Path
 import re
-from sys import argv
+import signal
+from sys import argv, setrecursionlimit
 from typing import Iterable, Union, Tuple, List
 
 from lxml.html import fromstring, Element
 from tqdm import tqdm
+from mathtuples.exceptions import UnknownTagException
+from mathtuples.mathsymbol import MathSymbol
+from mathtuples.convert import check_node, expand_nodes_with_location, format_node, START_TAG, END_TAG
 from pv211_utils.arqmath.entities import ArqmathQuestionBase, ArqmathAnswerBase
 from pv211_utils.arqmath.loader import load_questions, load_answers
 
@@ -21,11 +26,11 @@ TextFormat = str
 
 
 def get_documents(msm_input_directory: Path,
-                  text_format: str = 'xhtml+latex',
-                  question_filename: str = 'arqmath2020_questions_xhtml+latex.json.gz',
-                  answer_filename: str = 'arqmath2020_answers_xhtml+latex.json.gz') -> Iterable[Document]:
-    question_filename: Path = msm_input_directory / question_filename
-    answer_filename: Path = msm_input_directory / answer_filename
+                  text_format: str,
+                  question_filename: str = 'arqmath2020_questions_{text_format}.json.gz',
+                  answer_filename: str = 'arqmath2020_answers_{text_format}.json.gz') -> Iterable[Document]:
+    question_filename: Path = msm_input_directory / question_filename.format(text_format=text_format)
+    answer_filename: Path = msm_input_directory / answer_filename.format(text_format=text_format)
     answers = load_answers(text_format, cache_download=answer_filename)
     questions = load_questions(text_format, answers, cache_download=question_filename)
     documents = chain(questions.values(), answers.values())
@@ -34,7 +39,7 @@ def get_documents(msm_input_directory: Path,
 
 def iterate_math_elements(paragraph: Element) -> Iterable[Element]:
     math_xpath = '@class="math-container" or contains(@class, " math-container") or contains(@class, "math-container ")'
-    for math in paragraph.xpath(f'.//span[{math_xpath}]'):
+    for math in paragraph.xpath(f'.//math | .//span[{math_xpath}]'):
         yield math
 
 
@@ -59,6 +64,42 @@ def read_document_latex(paragraph: Element, min_math_length: int = 20) -> Iterab
             yield math_text
 
 
+@contextmanager
+def timeout(duration: int):
+    def timeout_handler(signum, frame):
+        raise TimeoutError
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(duration)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
+def read_document_tangentl(paragraph: Element, maximum_duration: int = 10) -> Iterable[Line]:
+    for math in iterate_math_elements(paragraph):
+        try:
+            with timeout(maximum_duration):
+                try:
+                    tree_root = MathSymbol.parse_from_mathml(math)
+                except AttributeError:
+                    continue
+                if tree_root is None:
+                    continue
+                pairs = tree_root.get_pairs('', 1, eol=False, symbol_pairs=True,
+                                            compound_symbols=True, terminal_symbols=True,
+                                            edge_pairs=False, unbounded=False,
+                                            repetitions=True, repDict=dict(), shortened=True)
+                node_list = [node for node in pairs if check_node(node)]
+                nodes_payloads = expand_nodes_with_location(node_list)
+                node_list = [format_node(node) for node in nodes_payloads]
+                node_list = [START_TAG] + node_list + [END_TAG]
+                line = ' '.join(node_list)
+                yield line
+        except (UnknownTagException, TimeoutError):
+            pass
+
+
 def _read_document_helper(args: Tuple[Document, TextFormat]) -> Tuple[Document, List[Line]]:
     return read_document(*args)
 
@@ -71,24 +112,28 @@ def read_document(document: Document, text_format: TextFormat) -> Tuple[Document
             paragraph_text = read_document_text_latex(paragraph)
         elif text_format == 'latex':
             paragraph_text = read_document_latex(paragraph)
+        elif text_format == 'tangentl':
+            paragraph_text = read_document_tangentl(paragraph)
         else:
             raise ValueError(f'Unknown text format {text_format}')
         paragraphs.extend(paragraph_text)
     return document, paragraphs
 
 
-def main(text_format: TextFormat, msm_input_directory: Path, output_file: Path) -> None:
-    documents = list(get_documents(msm_input_directory))
+def main(output_text_format: TextFormat, msm_input_directory: Path, output_file: Path) -> None:
+    input_text_format = 'xhtml+pmml' if output_text_format == 'tangentl' else 'xhtml+latex'
+    documents = list(get_documents(msm_input_directory, input_text_format))
     with output_file.open('wt') as f:
         with Pool(None) as pool:
             for document, paragraphs in tqdm(pool.imap_unordered(_read_document_helper,
-                                             zip(documents, repeat(text_format))),
+                                                                 zip(documents, repeat(output_text_format))),
                                              total=len(documents)):
                 for paragraph in paragraphs:
                     print(paragraph, file=f)
 
 
 if __name__ == '__main__':
+    setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
     text_format = argv[1]
     msm_input_directory = Path(argv[2])

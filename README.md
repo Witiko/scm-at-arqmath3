@@ -21,7 +21,7 @@ This repository contains our math information retrieval (MIR) system for
     - [x] The LaTeX format
     - [x] The text + LaTeX format
     - [ ] The text + Tangent-L format
-    - [ ] The Tangent-L format
+    - [x] The Tangent-L format
     - [ ] The text format
 2. [ ] [Train tokenizers][6]
     - [ ] Train tokenizer

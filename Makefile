@@ -9,14 +9,23 @@ arxiv-text+latex.txt:
 arxiv-latex.txt:
 	python scripts/prepare-arxiv-dataset.py latex $(ARXIV_INPUT_DIRECTORY) $@
 
+arxiv-tangentl.txt:
+	python scripts/prepare-arxiv-dataset.py tangentl $(ARXIV_INPUT_DIRECTORY) $@
+
 msm-text+latex.txt:
 	python scripts/prepare-msm-dataset.py text+latex $(MSM_INPUT_DIRECTORY) $@
 
 msm-latex.txt:
 	python scripts/prepare-msm-dataset.py latex $(MSM_INPUT_DIRECTORY) $@
 
+msm-tangentl.txt:
+	python scripts/prepare-msm-dataset.py tangentl $(MSM_INPUT_DIRECTORY) $@
+
 dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
-	sort -R --parallel=$(NUM_CPUS) $^ > $@
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 dataset-latex.txt: arxiv-latex.txt msm-latex.txt
-	sort -R --parallel=$(NUM_CPUS) $^ > $@
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
+
+dataset-tangentl.txt: arxiv-tangentl.txt msm-tangentl.txt
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@

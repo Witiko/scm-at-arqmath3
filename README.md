@@ -30,42 +30,46 @@ This repository contains our math information retrieval (MIR) system for
 3. [x] Train language models
     - [x] [Tune `roberta-base` model][7]
         - [x] The text + LaTeX format
-    - [x] [Train non-positional `word2vec` model][8]
+    - [x] [Train non-positional `word2vec` models][8]
         - [ ] The text format
         - [x] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [x] The Tangent-L format
-    - [x] [Train positional `word2vec` model][8]
+        - [ ] The Tangent-L format
+    - [x] [Train positional `word2vec` models][8]
         - [ ] The text format
         - [x] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The Tangent-L format
 4. [ ] [Produce word embeddings][5]
     - [ ] Produce non-positional `word2vec` embeddings
         - [ ] The text format
         - [x] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The Tangent-L format
     - [ ] Produce positional `word2vec` embeddings
         - [ ] The text format
         - [x] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The Tangent-L format
     - [ ] Produce decontextualized `roberta-base` embeddings
+      <!-- See https://github.com/MIR-MU/regemt/blob/main/embedder.py -->
         - [ ] The text + LaTeX format
     - [ ] Produce decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
 5. [ ] Produce dictionaries and Lucene BM25 models
+   <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
+   <!-- See https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3 -->
     - [ ] The text format
     - [ ] The text + LaTeX format
     - [ ] The text + Tangent-L format
     - [ ] The LaTeX format
     - [ ] The Tangent-L format
 6. [ ] Produce term similarity matrices
+   <!-- See mir:scm-demo-for-radim-rehurek/ -->
     - [ ] Produce Levenshtein term similarity matrices
         - [ ] The text format
         - [ ] The text + LaTeX format
@@ -89,6 +93,7 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] Produce term similarity matrices using decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
 7. [ ] Evaluate systems on ARQMath-2 relevance judgements
+   <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
     - [ ] Evaluate joint SCM over Lucene BM25 systems
         - [ ] The text format with no embeddings (baseline)
         - [ ] [The text + LaTeX format with no embeddings][4] (baseline)

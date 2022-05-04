@@ -62,7 +62,7 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + LaTeX format
 5. [ ] Produce dictionaries and Lucene BM25 models
    <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
-   <!-- See https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3 -->
+   <!-- See https://drive.google.com/file/d/1T06JUueKi0fZpyRNjspjfqGRda0T6iAp/view -->
     - [ ] The text format
     - [ ] The text + LaTeX format
     - [ ] The text + Tangent-L format
@@ -96,7 +96,7 @@ This repository contains our math information retrieval (MIR) system for
    <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
     - [ ] Evaluate joint SCM over Lucene BM25 systems
         - [ ] The text format with no embeddings (baseline)
-        - [ ] [The text + LaTeX format with no embeddings][4] (baseline)
+        - [ ] The text + LaTeX format with no embeddings (baseline)
         - [ ] The text + LaTeX format with non-positional `word2vec` embeddings
         - [ ] The text + LaTeX format with positional `word2vec` embeddings
         - [ ] The text + LaTeX format with decontextualized `roberta-base` embeddings
@@ -113,9 +113,15 @@ This repository contains our math information retrieval (MIR) system for
 8. [ ] Select one primary and four alternative systems
 9. [ ] Produce runs of five systems on ARQMath-1, ARQMath-2, and ARQMath-3 topics
 
+## Current issues
+
+- [ ] Lack of evaluation in [`03-finetune-roberta.ipynb`][7] notebook.
+- [ ] Lack of Tangent-L models and embeddings.
+- [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
+- [ ] The text + LaTeX format discards tail of replaced math element.
+- [ ] Lack of text and text + Tangent-L formats.
 
  [3]: 01-prepare-dataset.ipynb
- [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3
  [5]: 05-produce-word-embeddings.ipynb
  [6]: 02-train-tokenizers.ipynb
  [7]: 03-finetune-roberta.ipynb

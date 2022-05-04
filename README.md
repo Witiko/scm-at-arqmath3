@@ -17,13 +17,13 @@ This repository contains our math information retrieval (MIR) system for
 ## Tasks
 
 1. [x] [Prepare dataset][3]
+    - [ ] The text format
     - [x] The LaTeX format
     - [x] The text + LaTeX format
     - [ ] The text + Tangent-L format
     - [x] The Tangent-L format
-    - [ ] The text format
 2. [x] [Train tokenizers][6]
-    - [ ] Train tokenizer
+    - [x] Train tokenizer
         - [x] The LaTeX format
     - [x] Tune `roberta-base` tokenizer
         - [x] The text + LaTeX format
@@ -35,18 +35,22 @@ This repository contains our math information retrieval (MIR) system for
         - [x] The LaTeX format
         - [x] The Tangent-L format
     - [x] [Train positional `word2vec` model][8]
+        - [x] The text format
         - [x] The text + LaTeX format
+        - [ ] The text + Tangent-L format
         - [x] The LaTeX format
         - [x] The Tangent-L format
 4. [ ] Produce word embeddings
     - [ ] Produce non-positional `word2vec` embeddings
-        - [x] [The text format][5]
-        - [ ] The text + LaTeX format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
+        - [ ] The text format
+        - [x] The text + LaTeX format
+        - [ ] The text + Tangent-L format
+        - [x] The LaTeX format
+        - [x] The Tangent-L format
     - [ ] Produce positional `word2vec` embeddings
-        - [ ] The text + LaTeX format
-        - [ ] The LaTeX format
+        - [x] The text + LaTeX format
+        - [ ] The text + Tangent-L format
+        - [x] The LaTeX format
         - [ ] The Tangent-L format
     - [ ] Produce decontextualized `roberta-base` embeddings
         - [ ] The text + LaTeX format
@@ -60,6 +64,8 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + LaTeX format with positional `word2vec` embeddings
         - [ ] The text + LaTeX format with decontextualized `roberta-base` embeddings
         - [ ] The text + LaTeX format with decontextualized tuned `roberta-base` embeddings
+        - [ ] The text + Tangent-L format with non-positional `word2vec` embeddings
+        - [ ] The text + Tangent-L format with positional `word2vec` embeddings
     - [ ] Evaluate interpolated SCM over Lucene BM25 systems
         - [ ] The text and LaTeX formats with no embeddings (baseline)
         - [ ] The text and Tangent-L formats with no embeddings (baseline)
@@ -70,7 +76,6 @@ This repository contains our math information retrieval (MIR) system for
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3
- [5]: https://fasttext.cc/docs/en/crawl-vectors.html
  [6]: 02-train-tokenizers.ipynb
  [7]: 03-finetune-roberta.ipynb
  [8]: 04-train-word2vec.ipynb

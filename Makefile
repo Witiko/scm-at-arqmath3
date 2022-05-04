@@ -4,13 +4,19 @@ MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 NUM_CPUS = $(shell nproc)
 
 arxiv-text+latex.txt:
-	python scripts/prepare-arxiv-dataset.py text+latex $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare-arxiv-dataset.py text+latex no-problem $(ARXIV_INPUT_DIRECTORY) $@
+
+arxiv-text+latex-warning.txt:
+	python scripts/prepare-arxiv-dataset.py text+latex warning $(ARXIV_INPUT_DIRECTORY) $@
+
+arxiv-text+latex-error.txt:
+	python scripts/prepare-arxiv-dataset.py text+latex error $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-latex.txt:
-	python scripts/prepare-arxiv-dataset.py latex $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare-arxiv-dataset.py latex no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-tangentl.txt:
-	python scripts/prepare-arxiv-dataset.py tangentl $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare-arxiv-dataset.py tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
 msm-text+latex.txt:
 	python scripts/prepare-msm-dataset.py text+latex $(MSM_INPUT_DIRECTORY) $@
@@ -22,6 +28,9 @@ msm-tangentl.txt:
 	python scripts/prepare-msm-dataset.py tangentl $(MSM_INPUT_DIRECTORY) $@
 
 dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
+
+dataset-text+latex-validation.txt: arxiv-text+latex-error.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 dataset-latex.txt: arxiv-latex.txt msm-latex.txt

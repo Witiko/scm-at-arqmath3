@@ -19,7 +19,7 @@ then
     rm -rf ~/miniconda3/pkgs/ ~/.cache/
 fi
 
-pip install .[all,notebook]
+pip install '.[all,notebook]'
 
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
 export NVIDIA_VISIBLE_DEVICES="$GPUS"

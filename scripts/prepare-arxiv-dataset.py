@@ -91,6 +91,7 @@ def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250
         except ValueError as e:
             LOGGER.warning(f'Encountered {e} when setting element text')
             return
+        replacement.tail = math.tail
         math.getparent().replace(math, replacement)
     paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
     if not paragraph_text.startswith(' [MATH]'):

@@ -104,7 +104,6 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Current issues
 
-- [ ] The text + LaTeX format discards tail of replaced math element.
 - [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
 - [ ] Lack of text format.
 

@@ -40,7 +40,7 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
         - [x] The Tangent-L format
-4. [ ] Produce word embeddings
+4. [ ] [Produce word embeddings][5]
     - [ ] Produce non-positional `word2vec` embeddings
         - [ ] The text format
         - [x] The text + LaTeX format
@@ -76,6 +76,7 @@ This repository contains our math information retrieval (MIR) system for
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3
+ [5]: 05-produce-word-embeddings.ipynb
  [6]: 02-train-tokenizers.ipynb
  [7]: 03-finetune-roberta.ipynb
  [8]: 04-train-word2vec.ipynb

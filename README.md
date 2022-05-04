@@ -31,11 +31,13 @@ This repository contains our math information retrieval (MIR) system for
     - [x] [Tune `roberta-base` model][7]
         - [x] The text + LaTeX format
     - [x] [Train non-positional `word2vec` model][8]
+        - [ ] The text format
         - [x] The text + LaTeX format
+        - [ ] The text + Tangent-L format
         - [x] The LaTeX format
         - [x] The Tangent-L format
     - [x] [Train positional `word2vec` model][8]
-        - [x] The text format
+        - [ ] The text format
         - [x] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
@@ -48,16 +50,45 @@ This repository contains our math information retrieval (MIR) system for
         - [x] The LaTeX format
         - [x] The Tangent-L format
     - [ ] Produce positional `word2vec` embeddings
+        - [ ] The text format
         - [x] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [ ] The Tangent-L format
+        - [x] The Tangent-L format
     - [ ] Produce decontextualized `roberta-base` embeddings
         - [ ] The text + LaTeX format
     - [ ] Produce decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
-5. [ ] Produce dictionaries and similarity matrices
-6. [ ] Evaluate systems on ARQMath-2 relevance judgements
+5. [ ] Produce dictionaries and Lucene BM25 models
+    - [ ] The text format
+    - [ ] The text + LaTeX format
+    - [ ] The text + Tangent-L format
+    - [ ] The LaTeX format
+    - [ ] The Tangent-L format
+6. [ ] Produce term similarity matrices
+    - [ ] Produce Levenshtein term similarity matrices
+        - [ ] The text format
+        - [ ] The text + LaTeX format
+        - [ ] The text + Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
+    - [ ] Produce term similarity matrices using non-positional `word2vec` embeddings
+        - [ ] The text format
+        - [ ] The text + LaTeX format
+        - [ ] The text + Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
+    - [ ] Produce term similarity matrices using positional `word2vec` embeddings
+        - [ ] The text format
+        - [ ] The text + LaTeX format
+        - [ ] The text + Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
+    - [ ] Produce term similarity matrices using decontextualized `roberta-base` embeddings
+        - [ ] The text + LaTeX format
+    - [ ] Produce term similarity matrices using decontextualized tuned `roberta-base` embeddings
+        - [ ] The text + LaTeX format
+7. [ ] Evaluate systems on ARQMath-2 relevance judgements
     - [ ] Evaluate joint SCM over Lucene BM25 systems
         - [ ] The text format with no embeddings (baseline)
         - [ ] [The text + LaTeX format with no embeddings][4] (baseline)
@@ -74,8 +105,8 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text and LaTeX formats with positional `word2vec` embeddings for math
         - [ ] The text and Tangent-L formats with non-positional `word2vec` embeddings for math
         - [ ] The text and Tangent-L formats with positional `word2vec` embeddings for math (primary)
-7. [ ] Select one primary and four alternative systems
-8. [ ] Produce runs of five systems on ARQMath-1, ARQMath-2, and ARQMath-3 topics
+8. [ ] Select one primary and four alternative systems
+9. [ ] Produce runs of five systems on ARQMath-1, ARQMath-2, and ARQMath-3 topics
 
 
  [3]: 01-prepare-dataset.ipynb

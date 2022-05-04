@@ -56,7 +56,8 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + LaTeX format
     - [ ] Produce decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
-5. [ ] Evaluate systems
+5. [ ] Produce dictionaries and similarity matrices
+6. [ ] Evaluate systems on ARQMath-2 relevance judgements
     - [ ] Evaluate joint SCM over Lucene BM25 systems
         - [ ] The text format with no embeddings (baseline)
         - [ ] [The text + LaTeX format with no embeddings][4] (baseline)
@@ -73,6 +74,9 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text and LaTeX formats with positional `word2vec` embeddings for math
         - [ ] The text and Tangent-L formats with non-positional `word2vec` embeddings for math
         - [ ] The text and Tangent-L formats with positional `word2vec` embeddings for math (primary)
+7. [ ] Select one primary and four alternative systems
+8. [ ] Produce runs of five systems on ARQMath-1, ARQMath-2, and ARQMath-3 topics
+
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3

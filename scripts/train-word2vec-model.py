@@ -63,7 +63,7 @@ def get_language_model(text_format: str, positions: bool, input_file: Path, outp
         num_epochs = 50
         corpus = LaTeXCorpus(input_file)
     elif text_format == 'tangentl':
-        num_epochs = 50
+        num_epochs = 2
         corpus = TangentLCorpus(input_file)
     else:
         raise ValueError(f'Unknown text format {text_format}')

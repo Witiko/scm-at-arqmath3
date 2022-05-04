@@ -48,6 +48,15 @@ word2vec-latex: dataset-latex.txt
 word2vec-tangentl: dataset-tangentl.txt
 	python scripts/train-word2vec-model.py tangentl nonpositional $< $@
 
+word2vec-text+latex.vec: word2vec-text+latex
+	cp $</model/custom-en-word2vec_cbow-epochs=10/model.vec $@
+
+word2vec-latex.vec: word2vec-latex
+	cp $</model/custom-en-word2vec_cbow-epochs=50/model.vec $@
+
+word2vec-tangentl.vec: word2vec-tangentl
+	cp $</model/custom-en-word2vec_cbow-epochs=2/model.vec $@
+
 word2vec-text+latex-positional: dataset-text+latex.txt
 	python scripts/train-word2vec-model.py text+latex positional $< $@
 
@@ -56,3 +65,12 @@ word2vec-latex-positional: dataset-latex.txt
 
 word2vec-tangentl-positional: dataset-tangentl.txt
 	python scripts/train-word2vec-model.py tangentl positional $< $@
+
+word2vec-text+latex-positional.vec: word2vec-text+latex-positional
+	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=10/model.vec $@
+
+word2vec-latex-positional.vec: word2vec-latex-positional
+	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=50/model.vec $@
+
+word2vec-tangentl-positional.vec: word2vec-tangentl-positional
+	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=2/model.vec $@

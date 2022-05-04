@@ -16,45 +16,45 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Tasks
 
-1. [x] [Prepare dataset][3]
+1. [ ] [Prepare dataset][3]
     - [ ] The text format
-    - [x] The LaTeX format
-    - [x] The text + LaTeX format
+    - [ ] The text + LaTeX format
     - [ ] The text + Tangent-L format
+    - [x] The LaTeX format
     - [x] The Tangent-L format
 2. [x] [Train tokenizers][6]
     - [x] Train tokenizer
         - [x] The LaTeX format
-    - [x] Tune `roberta-base` tokenizer
-        - [x] The text + LaTeX format
+    - [ ] Tune `roberta-base` tokenizer
+        - [ ] The text + LaTeX format
 3. [x] Train language models
-    - [x] [Tune `roberta-base` model][7]
-        - [x] The text + LaTeX format
-    - [x] [Train non-positional `word2vec` models][8]
+    - [ ] [Tune `roberta-base` model][7]
+        - [ ] The text + LaTeX format
+    - [ ] [Train non-positional `word2vec` models][8]
         - [ ] The text format
-        - [x] The text + LaTeX format
+        - [ ] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [ ] The Tangent-L format
-    - [x] [Train positional `word2vec` models][8]
+        - [x] The Tangent-L format
+    - [ ] [Train positional `word2vec` models][8]
         - [ ] The text format
-        - [x] The text + LaTeX format
+        - [ ] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [ ] The Tangent-L format
+        - [x] The Tangent-L format
 4. [ ] [Produce word embeddings][5]
     - [ ] Produce non-positional `word2vec` embeddings
         - [ ] The text format
-        - [x] The text + LaTeX format
+        - [ ] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [ ] The Tangent-L format
+        - [x] The Tangent-L format
     - [ ] Produce positional `word2vec` embeddings
         - [ ] The text format
-        - [x] The text + LaTeX format
+        - [ ] The text + LaTeX format
         - [ ] The text + Tangent-L format
         - [x] The LaTeX format
-        - [ ] The Tangent-L format
+        - [x] The Tangent-L format
     - [ ] Produce decontextualized `roberta-base` embeddings
       <!-- See https://github.com/MIR-MU/regemt/blob/main/embedder.py -->
         - [ ] The text + LaTeX format
@@ -115,9 +115,8 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Current issues
 
-- [ ] Lack of Tangent-L models and embeddings.
-- [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
 - [ ] The text + LaTeX format discards tail of replaced math element.
+- [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
 - [ ] Lack of text and text + Tangent-L formats.
 
  [3]: 01-prepare-dataset.ipynb

@@ -43,6 +43,14 @@ def iterate_math_elements(paragraph: Element) -> Iterable[Element]:
         yield math
 
 
+def read_document_text(paragraph: Element, min_paragraph_length: int = 100) -> Iterable[Line]:
+    for math in iterate_math_elements(paragraph):
+        math.text = ' '
+    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
+    if len(paragraph_text) >= min_paragraph_length:
+        yield paragraph_text
+
+
 def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250) -> Iterable[Line]:
     for math in iterate_math_elements(paragraph):
         math.text = f' [MATH] {math.text} [/MATH] '
@@ -108,7 +116,9 @@ def read_document(document: Document, text_format: TextFormat) -> Tuple[Document
     tree = fromstring(document.body)
     paragraphs = list()
     for paragraph in tree.xpath('//p'):
-        if text_format == 'text+latex':
+        if text_format == 'text':
+            paragraph_text = read_document_text(paragraph)
+        elif text_format == 'text+latex':
             paragraph_text = read_document_text_latex(paragraph)
         elif text_format == 'latex':
             paragraph_text = read_document_latex(paragraph)

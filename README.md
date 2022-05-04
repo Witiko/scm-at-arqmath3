@@ -104,8 +104,8 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Current issues
 
+- [ ] Produce larger datasets using warning subset of arXiv.
 - [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
-- [ ] Lack of text format.
 
  [3]: 01-prepare-dataset.ipynb
  [5]: 05-produce-word-embeddings.ipynb

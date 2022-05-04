@@ -3,8 +3,8 @@ MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 
 NUM_CPUS = $(shell nproc)
 
-arxiv-text+latex.txt:
-	python scripts/prepare-arxiv-dataset.py text+latex no-problem $(ARXIV_INPUT_DIRECTORY) $@
+arxiv-text.txt:
+	python scripts/prepare-arxiv-dataset.py text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-text+latex-warning.txt:
 	python scripts/prepare-arxiv-dataset.py text+latex warning $(ARXIV_INPUT_DIRECTORY) $@
@@ -18,6 +18,9 @@ arxiv-latex.txt:
 arxiv-tangentl.txt:
 	python scripts/prepare-arxiv-dataset.py tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
+msm-text.txt:
+	python scripts/prepare-msm-dataset.py text $(MSM_INPUT_DIRECTORY) $@
+
 msm-text+latex.txt:
 	python scripts/prepare-msm-dataset.py text+latex $(MSM_INPUT_DIRECTORY) $@
 
@@ -26,6 +29,9 @@ msm-latex.txt:
 
 msm-tangentl.txt:
 	python scripts/prepare-msm-dataset.py tangentl $(MSM_INPUT_DIRECTORY) $@
+
+dataset-text.txt: arxiv-text.txt msm-text.txt
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@

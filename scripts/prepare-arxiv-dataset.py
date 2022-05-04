@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 import signal
 from sys import argv, setrecursionlimit
-from typing import Iterable, Tuple, List
+from typing import Iterable, Tuple, List, Set
 from xml.etree.ElementTree import ParseError
 from zipfile import ZipFile
 
@@ -44,7 +44,7 @@ def get_severities(arxiv_input_directory: Path) -> Iterable[Tuple[DocumentIdenti
 
 
 def get_documents(arxiv_input_directory: Path,
-                  allowed_severities={'no-problem'}) -> Iterable[Document]:
+                  allowed_severities: Set[Severity]) -> Iterable[Document]:
     num_documents_total = 0
     num_documents_with_unknown_severity = 0
     num_documents_with_allowed_severity = 0
@@ -86,7 +86,11 @@ def iterate_math_elements(paragraph: Element) -> Iterable[Element]:
 def read_document_text_latex(paragraph: Element, min_paragraph_length: int = 250) -> Iterable[Line]:
     for math in iterate_math_elements(paragraph):
         replacement = Element('span')
-        replacement.text = f' [MATH] {math.attrib["alttext"]} [/MATH] ' if 'alttext' in math.attrib else ''
+        try:
+            replacement.text = f' [MATH] {math.attrib["alttext"]} [/MATH] ' if 'alttext' in math.attrib else ''
+        except ValueError as e:
+            LOGGER.warning(f'Encountered {e} when setting element text')
+            return
         math.getparent().replace(math, replacement)
     paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
     if not paragraph_text.startswith(' [MATH]'):
@@ -173,8 +177,9 @@ def read_document(document: Document, text_format: TextFormat) -> Tuple[Document
     return document, paragraphs
 
 
-def main(text_format: TextFormat, arxiv_input_directory: Path, output_file: Path) -> None:
-    documents = list(get_documents(arxiv_input_directory))
+def main(text_format: TextFormat, allowed_severities: Set[Severity], arxiv_input_directory: Path,
+         output_file: Path) -> None:
+    documents = list(get_documents(arxiv_input_directory, allowed_severities))
     with output_file.open('wt') as f:
         with Pool(None) as pool:
             for document, paragraphs in tqdm(pool.imap_unordered(_read_document_helper,
@@ -188,6 +193,7 @@ if __name__ == '__main__':
     setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
     text_format = argv[1]
-    arxiv_input_directory = Path(argv[2])
-    output_file = Path(argv[3])
-    main(text_format, arxiv_input_directory, output_file)
+    allowed_severities = set(argv[2].split(','))
+    arxiv_input_directory = Path(argv[3])
+    output_file = Path(argv[4])
+    main(text_format, allowed_severities, arxiv_input_directory, output_file)

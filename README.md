@@ -115,7 +115,6 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Current issues
 
-- [ ] Lack of evaluation in [`03-finetune-roberta.ipynb`][7] notebook.
 - [ ] Lack of Tangent-L models and embeddings.
 - [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
 - [ ] The text + LaTeX format discards tail of replaced math element.

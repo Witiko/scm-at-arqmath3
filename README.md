@@ -13,8 +13,6 @@ This repository contains our math information retrieval (MIR) system for
 - Compare performance of word2vec embeddings and decontextualized `roberta-base` embeddings
 - Compare performance of decontextualized `roberta-base` embeddings and decontextualized tuned `roberta-base` embeddings
 - Compare performance of interpolated and joint SCM models for text and math
-- Compare performance of SCM and ColBERT
-- Investigate impact of number of nearest neighbors on performance of ColBERT
 
 ## Tasks
 
@@ -69,12 +67,6 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text and LaTeX formats with positional `word2vec` embeddings for math
         - [ ] The text and Tangent-L formats with non-positional `word2vec` embeddings for math
         - [ ] The text and Tangent-L formats with positional `word2vec` embeddings for math (primary)
-    - [ ] Evaluate ColBERT using text + LaTeX format with `roberta-base` embeddings
-        - [ ] Using one nearest word embedding
-        - [ ] Using optimal number of k nearest word embeddings
-    - [ ] Evaluate ColBERT using text + LaTeX format with tuned `roberta-base` embeddings
-        - [ ] Using one nearest word embedding
-        - [ ] Using optimal number of k nearest word embeddings
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://colab.research.google.com/drive/1sc-JuE5SuU-vDZhqwWwPmFlxmEjReEN3

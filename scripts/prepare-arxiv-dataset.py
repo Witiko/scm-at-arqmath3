@@ -142,7 +142,7 @@ def read_document_tangentl(paragraph: Element, maximum_duration: int = 10) -> It
                 math_tokens = etree.tostring(math, encoding='utf-8').decode('utf-8')
                 try:
                     presentation_math = MathExtractor.isolate_pmml(math_tokens)
-                except ParseError:
+                except (ParseError, IndexError):
                     continue
                 try:
                     tree_root = MathSymbol.parse_from_mathml(presentation_math)

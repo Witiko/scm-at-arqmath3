@@ -5,31 +5,31 @@ MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 NUM_CPUS = $(shell nproc)
 
 arxiv-text.txt:
-	python -m scripts.prepare_arxiv_dataset.py text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_arxiv_dataset text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-text+latex.txt:
-	python -m scripts.prepare_arxiv_dataset.py text+latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_arxiv_dataset text+latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-text+latex-error.txt:
-	python -m scripts.prepare_arxiv_dataset.py text+latex error $(ARXIV_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_arxiv_dataset text+latex error $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-latex.txt:
-	python -m scripts.prepare_arxiv_dataset.py latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_arxiv_dataset latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-tangentl.txt:
-	python -m scripts.prepare_arxiv_dataset.py tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_arxiv_dataset tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
 msm-text.txt:
-	python -m scripts.prepare_msm_dataset.py text $(MSM_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_msm_dataset text $(MSM_INPUT_DIRECTORY) $@
 
 msm-text+latex.txt:
-	python -m scripts.prepare_msm_dataset.py text+latex $(MSM_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_msm_dataset text+latex $(MSM_INPUT_DIRECTORY) $@
 
 msm-latex.txt:
-	python -m scripts.prepare_msm_dataset.py latex $(MSM_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_msm_dataset latex $(MSM_INPUT_DIRECTORY) $@
 
 msm-tangentl.txt:
-	python -m scripts.prepare_msm_dataset.py tangentl $(MSM_INPUT_DIRECTORY) $@
+	python -m scripts.prepare_msm_dataset tangentl $(MSM_INPUT_DIRECTORY) $@
 
 dataset-text.txt: arxiv-text.txt msm-text.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
@@ -95,10 +95,10 @@ word2vec-tangentl-positional.vec: word2vec-tangentl-positional
 	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=2/model.vec $@
 
 tokenizer-latex.json: dataset-latex.txt
-	python -m scripts.train_math_tokenizer.py $< $@
+	python -m scripts.train_math_tokenizer $< $@
 
 roberta-base-text+latex: tokenizer-latex.json
-	python -m scripts.train_extended_tokenizer.py roberta-base $< ./$@/
+	python -m scripts.train_extended_tokenizer roberta-base $< ./$@/
 
 tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validation.txt roberta-base-text+latex tokenizer-latex.json
 	python -m scripts.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/

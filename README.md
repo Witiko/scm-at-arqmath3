@@ -11,7 +11,7 @@ This repository contains our math information retrieval (MIR) system for
 - Compare performance of text, text + LaTeX, and text + Tangent-L as math representations
 - Compare performance of non-positional word2vec and positional `word2vec` embeddings
 - Compare performance of word2vec embeddings and decontextualized `roberta-base` embeddings
-- Compare performance of decontextualized `roberta-base` embeddings and decontextualized tuned `roberta-base` embeddings
+- Compare performance of decontextualized embeddings of `roberta-base` and tuned `roberta-base`
 - Compare performance of interpolated and joint SCM models for text and math
 
 ## Tasks

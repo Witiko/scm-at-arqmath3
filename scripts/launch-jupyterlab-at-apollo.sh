@@ -4,7 +4,7 @@
 set -e -o xtrace
 
 HOSTNAME=docker.apollo.fi.muni.cz
-GPUS=11
+GPUS=10
 PORT=8890
 IMAGE_NAME=witiko/arqmath3:latest
 

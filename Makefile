@@ -84,5 +84,11 @@ word2vec-tangentl-positional.vec: word2vec-tangentl-positional
 tokenizer-latex.json: dataset-latex.txt
 	python scripts/train-math-tokenizer.py $< $@
 
-roberta-base-text+latex/: tokenizer-latex.json
-	python scripts/train-extended-tokenizer.py roberta-base $< ./$@
+roberta-base-text+latex: tokenizer-latex.json
+	python scripts/train_extended_tokenizer.py roberta-base $< ./$@/
+
+tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validation.txt roberta-base-text+latex tokenizer-latex.json
+	python -m scripts.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
+
+tuned-roberta-base-text+latex-evaluations.txt: dataset-text+latex-validation.txt tokenizer-latex.json tuned-roberta-base-text+latex
+	python -m scripts.validate_transformer roberta-base $(word 1,$^) $(word 2,$^) ./$(word 3,$^).MLM-objective/ $@

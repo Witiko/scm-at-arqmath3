@@ -33,7 +33,7 @@ jobs:
           pip install -U pip setuptools wheel
           pip install .[test]
       - name: Style check
-        run: flake8 scripts
+        run: flake8 scm_at_arqmath3
   type-check:
     name: Type check
     runs-on: ubuntu-latest
@@ -53,4 +53,4 @@ jobs:
           pip install -U pip setuptools wheel
           pip install .[test,all]
       - name: Type check
-        run: pytype scripts
+        run: pytype scm_at_arqmath3

@@ -7,10 +7,27 @@ from tqdm import tqdm
 from tokenizers import Tokenizer
 from transformers import AutoTokenizer
 
+from .train_extended_tokenizer import get_math_tokenizer, get_extended_tokenizer
+
+
+class TextCorpus():
+    def __init__(self, input_file: Path) -> None:
+        self.tokenizer = AutoTokenizer.from_pretrained('roberta-base')
+        self.input_file = input_file
+        self.number_of_lines = count_lines(input_file)
+
+    def __iter__(self) -> Iterable[List[str]]:
+        with input_file.open('rt') as f:
+            sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
+            for sentence in sentences:
+                tokens = self.tokenizer.tokenize(sentence)
+                yield tokens
+
 
 class TextLaTeXCorpus():
     def __init__(self, input_file: Path) -> None:
-        self.tokenizer = AutoTokenizer.from_pretrained('./roberta-base-text+latex/')
+        math_tokenizer = get_math_tokenizer(Path('tokenizer-latex.json'))
+        self.tokenizer = get_extended_tokenizer('roberta-base', math_tokenizer)
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 
@@ -56,7 +73,10 @@ def count_lines(input_file: Path):
 
 
 def get_language_model(text_format: str, positions: bool, input_file: Path, output_file: Path) -> LanguageModel:
-    if text_format == 'text+latex':
+    if text_format == 'text':
+        num_epochs = 15
+        corpus = TextCorpus(input_file)
+    elif text_format == 'text+latex':
         num_epochs = 10
         corpus = TextLaTeXCorpus(input_file)
     elif text_format == 'latex':

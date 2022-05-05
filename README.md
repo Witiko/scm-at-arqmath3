@@ -16,40 +16,40 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Tasks
 
-1. [ ] [Prepare dataset][3]
-    - [ ] The text format
-    - [ ] The text + LaTeX format
+1. [x] [Prepare dataset][3]
+    - [x] The text format
+    - [x] The text + LaTeX format
     - [x] The LaTeX format
     - [x] The Tangent-L format
 2. [x] [Train tokenizers][6]
     - [x] Train tokenizer
         - [x] The LaTeX format
-    - [ ] Tune `roberta-base` tokenizer
-        - [ ] The text + LaTeX format
+    - [x] Tune `roberta-base` tokenizer
+        - [x] The text + LaTeX format
 3. [x] Train language models
     - [ ] [Tune `roberta-base` model][7]
         - [ ] The text + LaTeX format
     - [ ] [Train non-positional `word2vec` models][8]
         - [ ] The text format
         - [ ] The text + LaTeX format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
     - [ ] [Train positional `word2vec` models][8]
         - [ ] The text format
         - [ ] The text + LaTeX format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
 4. [ ] [Produce word embeddings][5]
     - [ ] Produce non-positional `word2vec` embeddings
         - [ ] The text format
         - [ ] The text + LaTeX format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
     - [ ] Produce positional `word2vec` embeddings
         - [ ] The text format
         - [ ] The text + LaTeX format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
+        - [ ] The LaTeX format
+        - [ ] The Tangent-L format
     - [ ] Produce decontextualized `roberta-base` embeddings
       <!-- See https://github.com/MIR-MU/regemt/blob/main/embedder.py -->
         - [ ] The text + LaTeX format
@@ -101,11 +101,6 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text and Tangent-L formats with positional `word2vec` embeddings for math (primary)
 8. [ ] Select one primary and four alternative systems
 9. [ ] Produce runs of five systems on ARQMath-1, ARQMath-2, and ARQMath-3 topics
-
-## Current issues
-
-- [ ] Produce larger datasets using warning subset of arXiv.
-- [ ] Lack of validation dataset in [`03-finetune-roberta.ipynb`][7] notebook training.
 
  [3]: 01-prepare-dataset.ipynb
  [5]: 05-produce-word-embeddings.ipynb

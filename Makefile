@@ -47,16 +47,16 @@ dataset-tangentl.txt: arxiv-tangentl.txt msm-tangentl.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 word2vec-text: dataset-text.txt
-	python scripts/train-word2vec-model.py text nonpositional $< $@
+	python -m scripts.train_word2vec_model text nonpositional $< $@
 
 word2vec-text+latex: dataset-text+latex.txt tokenizer-latex.json
-	python scripts/train-word2vec-model.py text+latex nonpositional $< $@
+	python -m scripts.train_word2vec_model text+latex nonpositional $< $@
 
 word2vec-latex: dataset-latex.txt tokenizer-latex.json
-	python scripts/train-word2vec-model.py latex nonpositional $< $@
+	python -m scripts.train_word2vec_model latex nonpositional $< $@
 
 word2vec-tangentl: dataset-tangentl.txt
-	python scripts/train-word2vec-model.py tangentl nonpositional $< $@
+	python -m scripts.train_word2vec_model tangentl nonpositional $< $@
 
 word2vec-text.vec: word2vec-text
 	cp $</model/custom-en-word2vec_cbow-epochs=15/model.vec $@
@@ -71,16 +71,16 @@ word2vec-tangentl.vec: word2vec-tangentl
 	cp $</model/custom-en-word2vec_cbow-epochs=2/model.vec $@
 
 word2vec-text-positional: dataset-text.txt
-	python scripts/train-word2vec-model.py text positional $< $@
+	python -m scripts.train_word2vec_model text positional $< $@
 
 word2vec-text+latex-positional: dataset-text+latex.txt
-	python scripts/train-word2vec-model.py text+latex positional $< $@
+	python -m scripts.train_word2vec_model text+latex positional $< $@
 
 word2vec-latex-positional: dataset-latex.txt
-	python scripts/train-word2vec-model.py latex positional $< $@
+	python -m scripts.train_word2vec_model latex positional $< $@
 
 word2vec-tangentl-positional: dataset-tangentl.txt
-	python scripts/train-word2vec-model.py tangentl positional $< $@
+	python -m scripts.train_word2vec_model tangentl positional $< $@
 
 word2vec-text-positional.vec: word2vec-text-positional
 	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=15/model.vec $@

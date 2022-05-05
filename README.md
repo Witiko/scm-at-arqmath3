@@ -17,8 +17,8 @@ This repository contains our math information retrieval (MIR) system for
 ## Tasks
 
 1. [x] [Prepare dataset][3]
-    - [x] The text format
     - [x] The text + LaTeX format
+    - [x] The text format
     - [x] The LaTeX format
     - [x] The Tangent-L format
 2. [x] [Train tokenizers][6]

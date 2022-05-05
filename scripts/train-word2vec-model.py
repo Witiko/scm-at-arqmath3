@@ -74,13 +74,13 @@ def count_lines(input_file: Path):
 
 def get_language_model(text_format: str, positions: bool, input_file: Path, output_file: Path) -> LanguageModel:
     if text_format == 'text':
-        num_epochs = 15
+        num_epochs = 2
         corpus = TextCorpus(input_file)
     elif text_format == 'text+latex':
-        num_epochs = 10
+        num_epochs = 1
         corpus = TextLaTeXCorpus(input_file)
     elif text_format == 'latex':
-        num_epochs = 50
+        num_epochs = 5
         corpus = LaTeXCorpus(input_file)
     elif text_format == 'tangentl':
         num_epochs = 2

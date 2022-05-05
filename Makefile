@@ -17,7 +17,7 @@ arxiv-latex.txt:
 	python scripts/prepare-arxiv-dataset.py latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-tangentl.txt:
-	python scripts/prepare-arxiv-dataset.py tangentl no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare-arxiv-dataset.py tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
 msm-text.txt:
 	python scripts/prepare-msm-dataset.py text $(MSM_INPUT_DIRECTORY) $@

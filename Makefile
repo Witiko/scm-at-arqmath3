@@ -5,31 +5,31 @@ MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 NUM_CPUS = $(shell nproc)
 
 arxiv-text.txt:
-	python scripts/prepare-arxiv-dataset.py text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare_arxiv_dataset.py text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-text+latex.txt:
-	python scripts/prepare-arxiv-dataset.py text+latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare_arxiv_dataset.py text+latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-text+latex-error.txt:
-	python scripts/prepare-arxiv-dataset.py text+latex error $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare_arxiv_dataset.py text+latex error $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-latex.txt:
-	python scripts/prepare-arxiv-dataset.py latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare_arxiv_dataset.py latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
 arxiv-tangentl.txt:
-	python scripts/prepare-arxiv-dataset.py tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
+	python scripts/prepare_arxiv_dataset.py tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
 msm-text.txt:
-	python scripts/prepare-msm-dataset.py text $(MSM_INPUT_DIRECTORY) $@
+	python scripts/prepare_msm_dataset.py text $(MSM_INPUT_DIRECTORY) $@
 
 msm-text+latex.txt:
-	python scripts/prepare-msm-dataset.py text+latex $(MSM_INPUT_DIRECTORY) $@
+	python scripts/prepare_msm_dataset.py text+latex $(MSM_INPUT_DIRECTORY) $@
 
 msm-latex.txt:
-	python scripts/prepare-msm-dataset.py latex $(MSM_INPUT_DIRECTORY) $@
+	python scripts/prepare_msm_dataset.py latex $(MSM_INPUT_DIRECTORY) $@
 
 msm-tangentl.txt:
-	python scripts/prepare-msm-dataset.py tangentl $(MSM_INPUT_DIRECTORY) $@
+	python scripts/prepare_msm_dataset.py tangentl $(MSM_INPUT_DIRECTORY) $@
 
 dataset-text.txt: arxiv-text.txt msm-text.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@

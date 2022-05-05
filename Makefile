@@ -105,3 +105,15 @@ tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validat
 
 tuned-roberta-base-text+latex-evaluations.txt: dataset-text+latex-validation.txt tokenizer-latex.json tuned-roberta-base-text+latex
 	python -m scm_at_arqmath3.validate_transformer roberta-base $(word 1,$^) $(word 2,$^) ./$(word 3,$^).MLM-objective/ $@
+
+dictionary-text: dataset-text.txt
+	python -m scm_at_arqmath3.prepare_dictionary text $< $@
+
+dictionary-text+latex: dataset-text+latex.txt tokenizer-latex.json
+	python -m scm_at_arqmath3.prepare_dictionary text+latex $< $@
+
+dictionary-latex: dataset-latex.txt tokenizer-latex.json
+	python -m scm_at_arqmath3.prepare_dictionary latex $< $@
+
+dictionary-tangentl: dataset-tangentl.txt
+	python -m scm_at_arqmath3.prepare_dictionary tangentl $< $@

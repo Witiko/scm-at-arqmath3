@@ -22,5 +22,6 @@ fi
 pip install '.[all,notebook]'
 
 export CUDA_DEVICE_ORDER=PCI_BUS_ID
-export NVIDIA_VISIBLE_DEVICES="$GPUS"
+export NVIDIA_VISIBLE_DEVICES="$GPUS"  # for hiding GPUs from Docker
+export CUDA_VISIBLE_DEVICES="$GPUS"  # for hiding GPUs outside of Docker
 nice -n "$NICENESS" jupyter-lab --port "$PORT"

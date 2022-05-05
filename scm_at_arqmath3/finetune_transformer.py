@@ -41,7 +41,7 @@ def get_adaptation_arguments(objective_directory: Path) -> AdaptationArguments:
         gradient_accumulation_steps=gradient_accumulation_steps,
         logging_steps=LOGGING_STEPS,
         eval_steps=EVALUATION_STEPS,
-        num_train_epochs=NUMBER_OF_TRANING_EPOCHS,
+        num_train_epochs=NUMBER_OF_TRANING_EPOCHS + 1,
     )
     return adaptation_arguments
 

@@ -38,7 +38,7 @@ dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 dataset-text+latex-validation.txt: arxiv-text+latex-error.txt
-	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
+	sort -R -u --parallel=$(NUM_CPUS) $^ | head -n 514211 > $@
 
 dataset-latex.txt: arxiv-latex.txt msm-latex.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@

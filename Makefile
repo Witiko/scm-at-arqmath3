@@ -80,3 +80,9 @@ word2vec-latex-positional.vec: word2vec-latex-positional
 
 word2vec-tangentl-positional.vec: word2vec-tangentl-positional
 	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=2/model.vec $@
+
+tokenizer-latex.json: dataset-latex.txt
+	python scripts/train-math-tokenizer.py $< $@
+
+roberta-base-text+latex/: tokenizer-latex.json
+	python scripts/train-extended-tokenizer.py roberta-base $< ./$@

@@ -1,7 +1,7 @@
 from pathlib import Path
 from sys import argv
 
-from gensim.corpora import Dictionary
+from gensim.corpora import Dictionary  # type: ignore
 
 from .train_word2vec_model import get_corpus, Corpus
 

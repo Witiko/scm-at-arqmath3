@@ -167,3 +167,11 @@ word-embedding-similarity-matrix-latex-positional: dictionary-latex word2vec-lat
 
 word-embedding-similarity-matrix-tangentl-positional: dictionary-tangentl word2vec-tangentl-positional.vec
 	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix tangentl $< $@
+
+
+similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%
+	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@
+
+
+similarity-matrix-%-positional: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%-positional
+	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@

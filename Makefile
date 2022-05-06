@@ -62,19 +62,6 @@ word2vec-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.train_word2vec_model tangentl nonpositional $< $@
 
 
-word2vec-text.vec: word2vec-text
-	cp $</model/custom-en-word2vec_cbow-epochs=15/model.vec $@
-
-word2vec-text+latex.vec: word2vec-text+latex
-	cp $</model/custom-en-word2vec_cbow-epochs=10/model.vec $@
-
-word2vec-latex.vec: word2vec-latex
-	cp $</model/custom-en-word2vec_cbow-epochs=50/model.vec $@
-
-word2vec-tangentl.vec: word2vec-tangentl
-	cp $</model/custom-en-word2vec_cbow-epochs=2/model.vec $@
-
-
 word2vec-text-positional: dataset-text.txt
 	python -m scm_at_arqmath3.train_word2vec_model text positional $< $@
 
@@ -86,19 +73,6 @@ word2vec-latex-positional: dataset-latex.txt
 
 word2vec-tangentl-positional: dataset-tangentl.txt
 	python -m scm_at_arqmath3.train_word2vec_model tangentl positional $< $@
-
-
-word2vec-text-positional.vec: word2vec-text-positional
-	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=15/model.vec $@
-
-word2vec-text+latex-positional.vec: word2vec-text+latex-positional
-	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=10/model.vec $@
-
-word2vec-latex-positional.vec: word2vec-latex-positional
-	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=50/model.vec $@
-
-word2vec-tangentl-positional.vec: word2vec-tangentl-positional
-	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=2/model.vec $@
 
 
 tokenizer-latex.json: dataset-latex.txt
@@ -134,11 +108,11 @@ levenshtein-similarity-matrix-%: dictionary-%
 	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix $< $@
 
 
-word-embedding-similarity-matrix-%: dictionary-% word2vec-%.vec
+word-embedding-similarity-matrix-%: dictionary-% word2vec-%
 	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 
-word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positional.vec
+word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positional
 	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 

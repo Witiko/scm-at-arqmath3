@@ -1,15 +1,18 @@
 from pathlib import Path
 from sys import argv
 
-from gensim.models import KeyedVectors  # type: ignore
+from gensim.models import FastText, KeyedVectors  # type: ignore
 from gensim.similarities import WordEmbeddingSimilarityIndex, SparseTermSimilarityMatrix  # type: ignore
 from gensim.similarities.annoy import AnnoyIndexer  # type: ignore
 
 from .prepare_levenshtein_similarity_matrix import get_dictionary, get_tfidf_model
 
 
-def get_word_embeddings(input_word_embedding_file: Path) -> KeyedVectors:
-    word_embeddings = KeyedVectors.load_word2vec_format(str(input_word_embedding_file))
+def get_word_embeddings(input_language_model_directory: Path) -> KeyedVectors:
+    input_language_model_directory, = (input_language_model_directory / 'model').glob('*/')
+    input_language_model_file = input_language_model_directory / 'model'
+    language_model = FastText.load(str(input_language_model_file))
+    word_embeddings = language_model.wv
     return word_embeddings
 
 
@@ -21,8 +24,8 @@ def get_term_similarity_index(word_embeddings: KeyedVectors) -> WordEmbeddingSim
 
 
 def get_term_similarity_matrix(input_dictionary_file: Path,
-                               input_word_embedding_file: Path) -> SparseTermSimilarityMatrix:
-    word_embeddings = get_word_embeddings(input_word_embedding_file)
+                               input_language_model_directory: Path) -> SparseTermSimilarityMatrix:
+    word_embeddings = get_word_embeddings(input_language_model_directory)
     term_similarity_index = get_term_similarity_index(word_embeddings)
     dictionary = get_dictionary(input_dictionary_file)
     tfidf_model = get_tfidf_model(dictionary)
@@ -31,13 +34,13 @@ def get_term_similarity_matrix(input_dictionary_file: Path,
     return term_similarity_matrix
 
 
-def main(input_dictionary_file: Path, input_word_embedding_file: Path, output_file: Path) -> None:
-    term_similarity_matrix = get_term_similarity_matrix(input_dictionary_file, input_word_embedding_file)
+def main(input_dictionary_file: Path, input_language_model_directory: Path, output_file: Path) -> None:
+    term_similarity_matrix = get_term_similarity_matrix(input_dictionary_file, input_language_model_directory)
     term_similarity_matrix.save(str(output_file))
 
 
 if __name__ == '__main__':
     input_dictionary_file = Path(argv[1])
-    input_word_embedding_file = Path(argv[2])
+    input_language_model_directory = Path(argv[2])
     output_file = Path(argv[3])
-    main(input_dictionary_file, input_word_embedding_file, output_file)
+    main(input_dictionary_file, input_language_model_directory, output_file)

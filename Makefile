@@ -87,10 +87,6 @@ tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validat
 	python -m scm_at_arqmath3.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
 
 
-tuned-roberta-base-text+latex-evaluations.txt: dataset-text+latex-validation.txt tokenizer-latex.json tuned-roberta-base-text+latex
-	python -m scm_at_arqmath3.validate_transformer roberta-base $(word 1,$^) $(word 2,$^) ./$(word 3,$^).MLM-objective/ $@
-
-
 dictionary-text: dataset-text.txt
 	python -m scm_at_arqmath3.prepare_dictionary text $< $@
 

@@ -130,43 +130,16 @@ dictionary-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.prepare_dictionary tangentl $< $@
 
 
-levenshtein-similarity-matrix-text: dictionary-text
-	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix text $< $@
-
-levenshtein-similarity-matrix-text+latex: dictionary-text+latex
-	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix text+latex $< $@
-
-levenshtein-similarity-matrix-latex: dictionary-latex
-	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix latex $< $@
-
-levenshtein-similarity-matrix-tangentl: dictionary-tangentl
-	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix tangentl $< $@
+levenshtein-similarity-matrix-%: dictionary-%
+	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix $< $@
 
 
-word-embedding-similarity-matrix-text: dictionary-text word2vec-text.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text $< $@
-
-word-embedding-similarity-matrix-text+latex: dictionary-text+latex word2vec-text+latex.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text+latex $< $@
-
-word-embedding-similarity-matrix-latex: dictionary-latex word2vec-latex.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix latex $< $@
-
-word-embedding-similarity-matrix-tangentl: dictionary-tangentl word2vec-tangentl.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix tangentl $< $@
+word-embedding-similarity-matrix-%: dictionary-% word2vec-%.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $< $@
 
 
-word-embedding-similarity-matrix-text-positional: dictionary-text word2vec-text-positional.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text $< $@
-
-word-embedding-similarity-matrix-text+latex-positional: dictionary-text+latex word2vec-text+latex-positional.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text+latex $< $@
-
-word-embedding-similarity-matrix-latex-positional: dictionary-latex word2vec-latex-positional.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix latex $< $@
-
-word-embedding-similarity-matrix-tangentl-positional: dictionary-tangentl word2vec-tangentl-positional.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix tangentl $< $@
+word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positional.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $< $@
 
 
 similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%

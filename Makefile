@@ -135,11 +135,11 @@ levenshtein-similarity-matrix-%: dictionary-%
 
 
 word-embedding-similarity-matrix-%: dictionary-% word2vec-%.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $< $@
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 
 word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positional.vec
-	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $< $@
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 
 similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%

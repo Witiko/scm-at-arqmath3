@@ -1,5 +1,4 @@
 ARXIV_INPUT_DIRECTORY = /mnt/storage/arxiv-dataset-arXMLiv-2020
-ARXIV_INPUT_DIRECTORY = /var/tmp/xnovot32/arxmliv/
 MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 
 NUM_CPUS = $(shell nproc)

@@ -26,7 +26,7 @@ def get_term_similarity_matrix(input_file: Path) -> SparseTermSimilarityMatrix:
     tfidf_model = get_tfidf_model(dictionary)
     term_similarity_index = get_term_similarity_index(dictionary)
     term_similarity_matrix = SparseTermSimilarityMatrix(term_similarity_index, dictionary, tfidf_model,
-                                                        symmetric=True, dominant=True, nonzero_limit=100)
+                                                        symmetric=True, dominant=False, nonzero_limit=100)
     return term_similarity_matrix
 
 

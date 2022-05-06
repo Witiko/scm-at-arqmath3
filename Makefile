@@ -4,6 +4,7 @@ MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 
 NUM_CPUS = $(shell nproc)
 
+
 arxiv-text.txt:
 	python -m scm_at_arqmath3.prepare_arxiv_dataset text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
@@ -19,6 +20,7 @@ arxiv-latex.txt:
 arxiv-tangentl.txt:
 	python -m scm_at_arqmath3.prepare_arxiv_dataset tangentl no-problem $(ARXIV_INPUT_DIRECTORY) $@
 
+
 msm-text.txt:
 	python -m scm_at_arqmath3.prepare_msm_dataset text $(MSM_INPUT_DIRECTORY) $@
 
@@ -30,6 +32,7 @@ msm-latex.txt:
 
 msm-tangentl.txt:
 	python -m scm_at_arqmath3.prepare_msm_dataset tangentl $(MSM_INPUT_DIRECTORY) $@
+
 
 dataset-text.txt: arxiv-text.txt msm-text.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
@@ -46,6 +49,7 @@ dataset-latex.txt: arxiv-latex.txt msm-latex.txt
 dataset-tangentl.txt: arxiv-tangentl.txt msm-tangentl.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
+
 word2vec-text: dataset-text.txt
 	python -m scm_at_arqmath3.train_word2vec_model text nonpositional $< $@
 
@@ -57,6 +61,7 @@ word2vec-latex: dataset-latex.txt tokenizer-latex.json
 
 word2vec-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.train_word2vec_model tangentl nonpositional $< $@
+
 
 word2vec-text.vec: word2vec-text
 	cp $</model/custom-en-word2vec_cbow-epochs=15/model.vec $@
@@ -70,6 +75,7 @@ word2vec-latex.vec: word2vec-latex
 word2vec-tangentl.vec: word2vec-tangentl
 	cp $</model/custom-en-word2vec_cbow-epochs=2/model.vec $@
 
+
 word2vec-text-positional: dataset-text.txt
 	python -m scm_at_arqmath3.train_word2vec_model text positional $< $@
 
@@ -81,6 +87,7 @@ word2vec-latex-positional: dataset-latex.txt
 
 word2vec-tangentl-positional: dataset-tangentl.txt
 	python -m scm_at_arqmath3.train_word2vec_model tangentl positional $< $@
+
 
 word2vec-text-positional.vec: word2vec-text-positional
 	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=15/model.vec $@
@@ -94,17 +101,22 @@ word2vec-latex-positional.vec: word2vec-latex-positional
 word2vec-tangentl-positional.vec: word2vec-tangentl-positional
 	cp $</model/custom-en-constrained_positional_word2vec_cbow-epochs=2/model.vec $@
 
+
 tokenizer-latex.json: dataset-latex.txt
 	python -m scm_at_arqmath3.train_math_tokenizer $< $@
+
 
 roberta-base-text+latex: tokenizer-latex.json
 	python -m scm_at_arqmath3.train_extended_tokenizer roberta-base $< ./$@/
 
+
 tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validation.txt roberta-base-text+latex tokenizer-latex.json
 	python -m scm_at_arqmath3.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
 
+
 tuned-roberta-base-text+latex-evaluations.txt: dataset-text+latex-validation.txt tokenizer-latex.json tuned-roberta-base-text+latex
 	python -m scm_at_arqmath3.validate_transformer roberta-base $(word 1,$^) $(word 2,$^) ./$(word 3,$^).MLM-objective/ $@
+
 
 dictionary-text: dataset-text.txt
 	python -m scm_at_arqmath3.prepare_dictionary text $< $@
@@ -118,6 +130,7 @@ dictionary-latex: dataset-latex.txt tokenizer-latex.json
 dictionary-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.prepare_dictionary tangentl $< $@
 
+
 levenshtein-similarity-matrix-text: dictionary-text
 	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix text $< $@
 
@@ -129,3 +142,29 @@ levenshtein-similarity-matrix-latex: dictionary-latex
 
 levenshtein-similarity-matrix-tangentl: dictionary-tangentl
 	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix tangentl $< $@
+
+
+word-embedding-similarity-matrix-text: dictionary-text word2vec-text.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text $< $@
+
+word-embedding-similarity-matrix-text+latex: dictionary-text+latex word2vec-text+latex.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text+latex $< $@
+
+word-embedding-similarity-matrix-latex: dictionary-latex word2vec-latex.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix latex $< $@
+
+word-embedding-similarity-matrix-tangentl: dictionary-tangentl word2vec-tangentl.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix tangentl $< $@
+
+
+word-embedding-similarity-matrix-text-positional: dictionary-text word2vec-text-positional.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text $< $@
+
+word-embedding-similarity-matrix-text+latex-positional: dictionary-text+latex word2vec-text+latex-positional.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix text+latex $< $@
+
+word-embedding-similarity-matrix-latex-positional: dictionary-latex word2vec-latex-positional.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix latex $< $@
+
+word-embedding-similarity-matrix-tangentl-positional: dictionary-tangentl word2vec-tangentl-positional.vec
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix tangentl $< $@

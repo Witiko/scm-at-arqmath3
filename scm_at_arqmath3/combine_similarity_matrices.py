@@ -5,7 +5,7 @@ from gensim.similarities import SparseTermSimilarityMatrix  # type: ignore
 
 
 def get_term_similarity_matrix(input_file: Path) -> SparseTermSimilarityMatrix:
-    term_similarity_matrix = SparseTermSimilarityMatrix.load(input_file)
+    term_similarity_matrix = SparseTermSimilarityMatrix.load(str(input_file))
     return term_similarity_matrix
 
 

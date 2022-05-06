@@ -7,7 +7,7 @@ from gensim.similarities import LevenshteinSimilarityIndex, SparseTermSimilarity
 
 
 def get_dictionary(input_file: Path) -> Dictionary:
-    dictionary = Dictionary.load(input_file)
+    dictionary = Dictionary.load(str(input_file))
     return dictionary
 
 

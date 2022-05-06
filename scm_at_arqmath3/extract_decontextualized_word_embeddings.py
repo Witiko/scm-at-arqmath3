@@ -3,10 +3,11 @@ from pathlib import Path
 from sys import argv
 from typing import Iterable, Tuple, List
 
-from gensim.models import KeyedVectors, _add_word_to_kv  # type: ignore
+from gensim.models.keyedvectors import KeyedVectors, _add_word_to_kv  # type: ignore
 from more_itertools import chunked, zip_equal
 import numpy as np
 from torch import no_grad
+from torch.nn import ModuleList
 from transformers import AutoModel, AutoTokenizer
 from tqdm import tqdm
 
@@ -35,11 +36,18 @@ def get_device() -> Device:
     return device
 
 
+def get_top_layer_number() -> int:
+    top_layer_number = 10
+    return top_layer_number
+
+
 def get_model(input_model: PathOrIdentifier) -> AutoModel:
     model = AutoModel.from_pretrained(str(input_model))
-    model.model.n_layers = 10
-    device = get_device()
-    model.to(device)
+
+    top_layer_number = get_top_layer_number()
+    assert 0 <= top_layer_number <= len(model.encoder.layer)
+    model.encoder.layer = ModuleList([layer for layer in model.encoder.layer[:top_layer_number]])
+
     return model
 
 
@@ -86,6 +94,9 @@ def get_embedding_size(model: AutoModel) -> int:
 
 def get_decontextualized_word_embeddings(tokenizer: AutoTokenizer, model: AutoModel,
                                          dataset: Dataset) -> KeyedVectors:
+    device = get_device()
+    model.to(device)
+
     contextual_word_embeddings = defaultdict(lambda: list())
     for tokens_and_embeddings in tokenize_and_embed_dataset(tokenizer, model, dataset):
         for token, embedding in tokens_and_embeddings:

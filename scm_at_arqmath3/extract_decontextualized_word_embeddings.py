@@ -105,7 +105,8 @@ def get_decontextualized_word_embeddings(tokenizer: AutoTokenizer, model: AutoMo
     number_of_tokens = len(contextual_word_embeddings)
     embedding_size = get_embedding_size(model)
     decontextualized_word_embeddings = KeyedVectors(embedding_size, number_of_tokens, dtype=float)
-    for token, embeddings in contextual_word_embeddings.items():
+    for token, embeddings in tqdm(contextual_word_embeddings.items(),
+                                  desc='Decontextualizing word embeddings'):
         decontextualized_word_embedding = np.mean(embeddings, axis=0)
         _add_word_to_kv(decontextualized_word_embeddings, None, token,
                         decontextualized_word_embedding, number_of_tokens)

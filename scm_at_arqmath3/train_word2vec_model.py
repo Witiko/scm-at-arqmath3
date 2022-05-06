@@ -10,8 +10,9 @@ from transformers import AutoTokenizer
 from .train_extended_tokenizer import get_math_tokenizer, get_extended_tokenizer
 
 
-Line = List[str]
-Corpus = Iterable[Line]
+Token = str
+Text = List[Token]
+Corpus = Iterable[Text]
 
 
 class TextCorpus():
@@ -20,11 +21,11 @@ class TextCorpus():
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 
-    def __iter__(self) -> Iterator[Line]:
+    def __iter__(self) -> Iterator[Text]:
         with self.input_file.open('rt') as f:
-            sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
-            for sentence in sentences:
-                tokens = self.tokenizer.tokenize(sentence)
+            lines = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
+            for line in lines:
+                tokens = self.tokenizer.tokenize(line)
                 yield tokens
 
 
@@ -35,7 +36,7 @@ class TextLaTeXCorpus():
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 
-    def __iter__(self) -> Iterator[Line]:
+    def __iter__(self) -> Iterator[Text]:
         with self.input_file.open('rt') as f:
             sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
             for sentence in sentences:
@@ -49,7 +50,7 @@ class LaTeXCorpus():
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 
-    def __iter__(self) -> Iterator[Line]:
+    def __iter__(self) -> Iterator[Text]:
         with self.input_file.open('rt') as f:
             sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
             for sentence in sentences:
@@ -62,7 +63,7 @@ class TangentLCorpus():
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 
-    def __iter__(self) -> Iterator[Line]:
+    def __iter__(self) -> Iterator[Text]:
         with self.input_file.open('rt') as f:
             sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
             for sentence in sentences:

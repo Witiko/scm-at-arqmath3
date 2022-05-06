@@ -87,6 +87,13 @@ tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validat
 	python -m scm_at_arqmath3.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
 
 
+decontextualized-word-embeddings-roberta-base: dataset-text+latex.txt
+	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings roberta-base $^ $@
+
+decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-base-text+latex dataset-text+latex.txt
+	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings $^ $@
+
+
 dictionary-text: dataset-text.txt
 	python -m scm_at_arqmath3.prepare_dictionary text $< $@
 

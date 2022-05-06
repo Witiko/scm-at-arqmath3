@@ -71,10 +71,27 @@ class TangentLCorpus():
                 yield tokens
 
 
-def count_lines(input_file: Path):
-    with input_file.open('rt') as f:
-        num_lines = sum(1 for _ in tqdm(f, desc=f'Counting lines in {input_file}'))
-    return num_lines
+def count_lines(input_file: Path) -> int:
+
+    def read_blocks(block_size: int = 65536) -> Iterable[bytes]:
+        total_size = input_file.stat().st_size
+        with input_file.open('rb') as f, tqdm(desc=f'Counting lines in {input_file}',
+                                              total=total_size) as pbar:
+            while True:
+                block = f.read(block_size)
+                if not block:
+                    break
+                pbar.update(len(block))
+                yield block
+
+    def count_newlines(block: bytes) -> int:
+        number_of_newlines = block.count(b'\n')
+        return number_of_newlines
+
+    blocks = read_blocks()
+    numbers_of_newlines = map(count_newlines, blocks)
+    number_of_lines = sum(numbers_of_newlines)
+    return number_of_lines
 
 
 def get_number_of_epochs(text_format: str) -> int:

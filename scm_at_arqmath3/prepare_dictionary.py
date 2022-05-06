@@ -8,7 +8,7 @@ from .train_word2vec_model import get_corpus, Corpus
 
 def get_dictionary(corpus: Corpus) -> Dictionary:
     dictionary = Dictionary(corpus)
-    dictionary.filter_extremes(keep_n=None, no_below=2)
+    dictionary.filter_extremes(keep_n=100_000, no_below=2)
     return dictionary
 
 

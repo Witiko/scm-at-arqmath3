@@ -35,7 +35,6 @@ def get_gradient_accumulation_steps() -> float:
 
 def get_adaptation_arguments(objective_directory: Path) -> AdaptationArguments:
     gradient_accumulation_steps = get_gradient_accumulation_steps()
-    number_of_training_epochs = 1
     adaptation_arguments = AdaptationArguments(
         output_dir=str(objective_directory),
         stopping_strategy=StoppingStrategy.FIRST_OBJECTIVE_CONVERGED, stopping_patience=2,
@@ -44,7 +43,7 @@ def get_adaptation_arguments(objective_directory: Path) -> AdaptationArguments:
         logging_strategy='steps', logging_steps=1000,
         do_train=True, do_eval=True,
         gradient_accumulation_steps=gradient_accumulation_steps,
-        num_train_epochs=number_of_training_epochs + 1,
+        num_train_epochs=1,
     )
     return adaptation_arguments
 

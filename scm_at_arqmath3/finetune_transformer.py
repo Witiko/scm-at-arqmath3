@@ -16,32 +16,35 @@ from .train_extended_tokenizer import get_math_tokenizer, get_extended_tokenizer
 PathOrIdentifier = Union[Path, str]
 
 
-BATCH_SIZE: int = 48
-EFFECTIVE_BATCH_SIZE: int = 256
-LOGGING_STEPS: int = 1000
-EVALUATION_STEPS: int = 1000
-NUMBER_OF_TRANING_EPOCHS: int = 1
-STOPPING_PATIENCE: int = 2
+def get_batch_size() -> int:
+    batch_size = 48
+    return batch_size
+
+
+def get_effective_batch_size() -> int:
+    effective_batch_size = 256
+    return effective_batch_size
 
 
 def get_gradient_accumulation_steps() -> float:
-    gradient_accumulation_steps = int(ceil(1.0 * EFFECTIVE_BATCH_SIZE / BATCH_SIZE))
+    effective_batch_size = 256
+    batch_size = get_batch_size()
+    gradient_accumulation_steps = int(ceil(1.0 * effective_batch_size / batch_size))
     return gradient_accumulation_steps
 
 
 def get_adaptation_arguments(objective_directory: Path) -> AdaptationArguments:
     gradient_accumulation_steps = get_gradient_accumulation_steps()
+    number_of_training_epochs = 1
     adaptation_arguments = AdaptationArguments(
         output_dir=str(objective_directory),
-        stopping_strategy=StoppingStrategy.FIRST_OBJECTIVE_CONVERGED,
-        stopping_patience=STOPPING_PATIENCE,
-        evaluation_strategy='steps',
-        do_train=True,
-        do_eval=True,
+        stopping_strategy=StoppingStrategy.FIRST_OBJECTIVE_CONVERGED, stopping_patience=2,
+        evaluation_strategy='steps', eval_steps=1000,
+        save_strategy='steps', save_steps=1000,
+        logging_strategy='steps', logging_steps=1000,
+        do_train=True, do_eval=True,
         gradient_accumulation_steps=gradient_accumulation_steps,
-        logging_steps=LOGGING_STEPS,
-        eval_steps=EVALUATION_STEPS,
-        num_train_epochs=NUMBER_OF_TRANING_EPOCHS + 1,
+        num_train_epochs=number_of_training_epochs + 1,
     )
     return adaptation_arguments
 
@@ -53,7 +56,8 @@ def get_adapter(input_training_dataset_file: Path,
                 adaptation_arguments: AdaptationArguments) -> Adapter:
     kwargs = {'tokenizer': extended_tokenizer} if isinstance(input_model_directory, Path) else dict()
     language_module = LangModule(str(input_model_directory), **kwargs)
-    objectives = MaskedLanguageModeling(language_module, batch_size=BATCH_SIZE,
+    batch_size = get_batch_size()
+    objectives = MaskedLanguageModeling(language_module, batch_size=batch_size,
                                         texts_or_path=str(input_training_dataset_file),
                                         val_texts_or_path=str(input_validation_dataset_file))
     schedule = SequentialSchedule([objectives], adaptation_arguments)

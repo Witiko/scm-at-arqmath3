@@ -1,3 +1,6 @@
+.SECONDARY:
+
+
 ARXIV_INPUT_DIRECTORY = /mnt/storage/arxiv-dataset-arXMLiv-2020
 MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 

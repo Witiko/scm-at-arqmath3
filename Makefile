@@ -117,3 +117,15 @@ dictionary-latex: dataset-latex.txt tokenizer-latex.json
 
 dictionary-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.prepare_dictionary tangentl $< $@
+
+levenshtein-similarity-matrix-text: dictionary-text
+	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix text $< $@
+
+levenshtein-similarity-matrix-text+latex: dictionary-text+latex
+	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix text+latex $< $@
+
+levenshtein-similarity-matrix-latex: dictionary-latex
+	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix latex $< $@
+
+levenshtein-similarity-matrix-tangentl: dictionary-tangentl
+	python -m scm_at_arqmath3.prepare_levenshtein_similarity_matrix tangentl $< $@

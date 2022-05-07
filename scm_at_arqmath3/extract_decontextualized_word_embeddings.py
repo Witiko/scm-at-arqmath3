@@ -94,32 +94,23 @@ def get_embedding_size(model: AutoModel) -> int:
     return embedding_size
 
 
-def get_max_contextual_word_embeddings_per_token() -> int:
-    max_contextual_word_embeddings_per_token = 100
-    return max_contextual_word_embeddings_per_token
-
-
 def get_decontextualized_word_embeddings(tokenizer: AutoTokenizer, model: AutoModel,
                                          dataset: Dataset) -> KeyedVectors:
-    max_contextual_word_embeddings_per_token = get_max_contextual_word_embeddings_per_token()
-    contextual_word_embeddings = defaultdict(lambda: list())
+    embedding_size = get_embedding_size(model)
+    averages = defaultdict(lambda: (0, 0.0))
     for tokens_and_embeddings in tokenize_and_embed_dataset(tokenizer, model, dataset):
         for token, embedding in tokens_and_embeddings:
-            contextual_word_embeddings[token].append(embedding)
-            # Incrementally decontextualize embeddings to reduce RAM footprint
-            embeddings = contextual_word_embeddings[token]
-            if len(embeddings) > max_contextual_word_embeddings_per_token:
-                embeddings = [np.mean(embeddings, axis=0)]
-                contextual_word_embeddings[token] = embeddings
+            N, average = averages[token]
+            N = N + 1
+            a = 1.0 / N
+            b = 1.0 - a
+            average = a * embedding + b * average
+            averages[token] = (N, average)
 
-    number_of_tokens = len(contextual_word_embeddings)
-    embedding_size = get_embedding_size(model)
+    number_of_tokens = len(averages)
     decontextualized_word_embeddings = KeyedVectors(embedding_size, number_of_tokens, dtype=float)
-    for token, embeddings in tqdm(contextual_word_embeddings.items(),
-                                  desc='Decontextualizing word embeddings'):
-        decontextualized_word_embedding = np.mean(embeddings, axis=0)
-        _add_word_to_kv(decontextualized_word_embeddings, None, token,
-                        decontextualized_word_embedding, number_of_tokens)
+    for token, (_, average) in tqdm(averages.items(), desc='Decontextualizing word embeddings'):
+        _add_word_to_kv(decontextualized_word_embeddings, None, token, average, number_of_tokens)
 
     return decontextualized_word_embeddings
 

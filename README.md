@@ -24,65 +24,45 @@ This repository contains our math information retrieval (MIR) system for
 2. [x] [Train tokenizer][6]
     - [x] The LaTeX format
     - [x] The text + LaTeX format
-3. [ ] Train language models
-    - [ ] [Tune `roberta-base` model][7]
-        - [ ] The text + LaTeX format
-    - [ ] [Train non-positional `word2vec` models][8]
-        - [ ] The text format
-        - [ ] The text + LaTeX format
-        - [ ] The LaTeX format
+3. [x] Train language models
+    - [x] [Tune `roberta-base` model][7]
+        - [x] The text + LaTeX format
+    - [x] [Train non-positional `word2vec` models][8]
+        - [x] The text format
+        - [x] The text + LaTeX format
+        - [x] The LaTeX format
         - [ ] The Tangent-L format
-    - [ ] [Train positional `word2vec` models][8]
-        - [ ] The text format
+    - [x] [Train positional `word2vec` models][8]
+        - [x] The text format
+        - [x] The text + LaTeX format
+        - [x] The LaTeX format
+        - [x] The Tangent-L format
+4. [ ] Produce decontextualized word embeddings
+    - [ ] From `roberta-base` model
         - [ ] The text + LaTeX format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
-4. [ ] Produce word embeddings
-    - [ ] Produce non-positional `word2vec` embeddings
+    - [ ] From tuned `roberta-base` model
         - [ ] The text + LaTeX format
-        - [ ] The text format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
-    - [ ] Produce positional `word2vec` embeddings
-        - [ ] The text + LaTeX format
-        - [ ] The text format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
-    - [ ] Produce decontextualized `roberta-base` embeddings
-      <!-- See https://github.com/MIR-MU/regemt/blob/main/embedder.py -->
-        - [ ] The text + LaTeX format
-    - [ ] Produce decontextualized tuned `roberta-base` embeddings
-        - [ ] The text + LaTeX format
-5. [ ] Produce dictionaries
-    - [ ] The text + LaTeX format
-    - [ ] The text format
-    - [ ] The LaTeX format
-    - [ ] The Tangent-L format
+5. [x] Produce dictionaries
+    - [x] The text + LaTeX format
+    - [x] The text format
+    - [x] The LaTeX format
+    - [x] The Tangent-L format
 6. [ ] Produce term similarity matrices
-   <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
-   <!-- See https://drive.google.com/file/d/1T06JUueKi0fZpyRNjspjfqGRda0T6iAp/view -->
-   <!-- See mir:scm-demo-for-radim-rehurek/ -->
-    - [ ] Produce Levenshtein term similarity matrices
-        - [ ] The text + LaTeX format
-        - [ ] The text format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
-    - [ ] Produce term similarity matrices using non-positional `word2vec` embeddings
-        - [ ] The text + LaTeX format
-        - [ ] The text format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
-    - [ ] Produce term similarity matrices using positional `word2vec` embeddings
-        - [ ] The text + LaTeX format
-        - [ ] The text format
-        - [ ] The LaTeX format
-        - [ ] The Tangent-L format
+    - [x] Produce term similarity matrices using non-positional `word2vec` embeddings
+        - [x] The text + LaTeX format
+        - [x] The text format
+        - [x] The LaTeX format
+        - [x] The Tangent-L format
+    - [x] Produce term similarity matrices using positional `word2vec` embeddings
+        - [x] The text + LaTeX format
+        - [x] The text format
+        - [x] The LaTeX format
+        - [x] The Tangent-L format
     - [ ] Produce term similarity matrices using decontextualized `roberta-base` embeddings
         - [ ] The text + LaTeX format
     - [ ] Produce term similarity matrices using decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
 7. [ ] Evaluate systems on ARQMath-2 relevance judgements
-   <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
     - [ ] Evaluate joint SCM over Lucene BM25 systems
         - [ ] The text format with no embeddings (baseline)
         - [ ] The text + LaTeX format with no embeddings (baseline)
@@ -108,6 +88,7 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Future work
 
+- [ ] Add missing jupyter notebooks for above tasks.
 - [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][1] and
   [`fp16_full_eval=True`][2] to decrease the VRAM used by training and
   evaluation. Increase batch size accordingly.

@@ -1,7 +1,7 @@
 from collections import defaultdict
 from pathlib import Path
 from sys import argv
-from typing import Iterable, Tuple, List
+from typing import Iterable, Tuple, List, Union
 
 from gensim.models.keyedvectors import KeyedVectors, _add_word_to_kv  # type: ignore
 from more_itertools import chunked, zip_equal
@@ -11,8 +11,6 @@ from torch.nn import ModuleList
 from transformers import AutoModel, AutoTokenizer
 from tqdm import tqdm
 
-from .finetune_transformer import PathOrIdentifier
-from .train_extended_tokenizer import get_math_tokenizer, get_extended_tokenizer
 from .train_word2vec_model import Token, count_lines
 
 
@@ -20,15 +18,15 @@ Device = str
 Embedding = np.ndarray
 Line = str
 Dataset = Iterable[Line]
+PathOrIdentifier = Union[Path, str]
 
 
 def get_tokenizer(input_model: PathOrIdentifier) -> AutoTokenizer:
     if isinstance(input_model, Path):
-        math_tokenizer = get_math_tokenizer(Path('tokenizer-latex.json'))
-        extended_tokenizer = get_extended_tokenizer('roberta-base', math_tokenizer)
+        tokenizer = AutoTokenizer.from_pretrained(str(input_model), add_prefix_space=True)
     else:
-        extended_tokenizer = AutoTokenizer.from_pretrained(input_model)
-    return extended_tokenizer
+        tokenizer = AutoTokenizer.from_pretrained(input_model)
+    return tokenizer
 
 
 def get_device() -> Device:

@@ -1,19 +1,14 @@
 from math import ceil
 from pathlib import Path
 from sys import argv
-from typing import Union
 
 from adaptor.lang_module import LangModule
 from adaptor.objectives.MLM import MaskedLanguageModeling
 from adaptor.schedules import SequentialSchedule
 from adaptor.adapter import Adapter
 from adaptor.utils import AdaptationArguments, StoppingStrategy
-from transformers import AutoTokenizer
 
-from .train_extended_tokenizer import get_math_tokenizer, get_extended_tokenizer
-
-
-PathOrIdentifier = Union[Path, str]
+from .extract_decontextualized_word_embeddings import PathOrIdentifier, get_tokenizer
 
 
 def get_batch_size() -> int:
@@ -48,13 +43,17 @@ def get_adaptation_arguments(objective_directory: Path) -> AdaptationArguments:
     return adaptation_arguments
 
 
+class LangModuleWithSpacePrefixingTokenizer(LangModule):
+    def __init__(self, input_model_directory: PathOrIdentifier) -> None:
+        super().__init__(str(input_model_directory))
+        self.tokenizer = get_tokenizer(input_model_directory)
+
+
 def get_adapter(input_training_dataset_file: Path,
                 input_validation_dataset_file: Path,
                 input_model_directory: PathOrIdentifier,
-                extended_tokenizer: AutoTokenizer,
                 adaptation_arguments: AdaptationArguments) -> Adapter:
-    kwargs = {'tokenizer': extended_tokenizer} if isinstance(input_model_directory, Path) else dict()
-    language_module = LangModule(str(input_model_directory), **kwargs)
+    language_module = LangModuleWithSpacePrefixingTokenizer(input_model_directory)
     batch_size = get_batch_size()
     objectives = MaskedLanguageModeling(language_module, batch_size=batch_size,
                                         texts_or_path=str(input_training_dataset_file),
@@ -71,11 +70,9 @@ def main(pretrained_identifier: str,
          input_math_tokenizer_file: Path,
          objective_directory: Path,
          output_model_directory: Path) -> None:
-    math_tokenizer = get_math_tokenizer(input_math_tokenizer_file)
-    extended_tokenizer = get_extended_tokenizer(pretrained_identifier, math_tokenizer)
     adaptation_arguments = get_adaptation_arguments(objective_directory)
     adapter = get_adapter(input_training_dataset_file, input_validation_dataset_file,
-                          input_model_directory, extended_tokenizer, adaptation_arguments)
+                          input_model_directory, adaptation_arguments)
     adapter.train()
     adapter.save_model(str(output_model_directory))
 

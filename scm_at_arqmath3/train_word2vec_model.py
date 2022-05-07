@@ -7,8 +7,6 @@ from tqdm import tqdm
 from tokenizers import Tokenizer
 from transformers import AutoTokenizer
 
-from .train_extended_tokenizer import get_math_tokenizer, get_extended_tokenizer
-
 
 Token = str
 Text = List[Token]
@@ -31,8 +29,8 @@ class TextCorpus():
 
 class TextLaTeXCorpus():
     def __init__(self, input_file: Path) -> None:
-        math_tokenizer = get_math_tokenizer(Path('tokenizer-latex.json'))
-        self.tokenizer = get_extended_tokenizer('roberta-base', math_tokenizer)
+        self.tokenizer = AutoTokenizer.from_pretrained('./roberta-base-text+latex/',
+                                                       add_prefix_space=True)
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 

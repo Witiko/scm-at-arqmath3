@@ -51,6 +51,6 @@ jobs:
           set -ex
           python -V
           pip install -U pip setuptools wheel
-          pip install .[test,all]
+          pip install .[test,all,word2vec]
       - name: Type check
         run: pytype scm_at_arqmath3

@@ -24,7 +24,7 @@ This repository contains our math information retrieval (MIR) system for
 2. [x] [Train tokenizer][6]
     - [x] The LaTeX format
     - [x] The text + LaTeX format
-3. [x] Train language models
+3. [ ] Train language models
     - [ ] [Tune `roberta-base` model][7]
         - [ ] The text + LaTeX format
     - [ ] [Train non-positional `word2vec` models][8]
@@ -37,15 +37,15 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + LaTeX format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
-4. [ ] [Produce word embeddings][5]
+4. [ ] Produce word embeddings
     - [ ] Produce non-positional `word2vec` embeddings
-        - [ ] The text format
         - [ ] The text + LaTeX format
+        - [ ] The text format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
     - [ ] Produce positional `word2vec` embeddings
-        - [ ] The text format
         - [ ] The text + LaTeX format
+        - [ ] The text format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
     - [ ] Produce decontextualized `roberta-base` embeddings
@@ -53,28 +53,28 @@ This repository contains our math information retrieval (MIR) system for
         - [ ] The text + LaTeX format
     - [ ] Produce decontextualized tuned `roberta-base` embeddings
         - [ ] The text + LaTeX format
-5. [ ] Produce dictionaries and Lucene BM25 models
-   <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
-   <!-- See https://drive.google.com/file/d/1T06JUueKi0fZpyRNjspjfqGRda0T6iAp/view -->
-    - [ ] The text format
+5. [ ] Produce dictionaries
     - [ ] The text + LaTeX format
+    - [ ] The text format
     - [ ] The LaTeX format
     - [ ] The Tangent-L format
 6. [ ] Produce term similarity matrices
+   <!-- See mir:/mnt/storage/2022-04-05-introduction-to-information-retrieval/ARQMath 2021 lab/ARQMath solution by Vítek Novotný (0.424 nDCG') -->
+   <!-- See https://drive.google.com/file/d/1T06JUueKi0fZpyRNjspjfqGRda0T6iAp/view -->
    <!-- See mir:scm-demo-for-radim-rehurek/ -->
     - [ ] Produce Levenshtein term similarity matrices
-        - [ ] The text format
         - [ ] The text + LaTeX format
+        - [ ] The text format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
     - [ ] Produce term similarity matrices using non-positional `word2vec` embeddings
-        - [ ] The text format
         - [ ] The text + LaTeX format
+        - [ ] The text format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
     - [ ] Produce term similarity matrices using positional `word2vec` embeddings
-        - [ ] The text format
         - [ ] The text + LaTeX format
+        - [ ] The text format
         - [ ] The LaTeX format
         - [ ] The Tangent-L format
     - [ ] Produce term similarity matrices using decontextualized `roberta-base` embeddings
@@ -105,3 +105,23 @@ This repository contains our math information retrieval (MIR) system for
  [6]: 02-train-tokenizers.ipynb
  [7]: 03-finetune-roberta.ipynb
  [8]: 04-train-word2vec.ipynb
+
+## Future work
+
+- [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][1] and
+  [`fp16_full_eval=True`][2] to decrease the VRAM used by training and
+  evaluation. Increase batch size accordingly.
+- [ ] In `scm_at_arqmath3/extract_decontextualized_word_embeddings.py`, accept
+  dictionary and [build a tensor of decontextualized word embeddings][4] on GPU
+  instead of transferring to CPU in order to increase throughput.
+- [ ] Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:
+    - [ ] Describe how the tokenizer was trained.
+    - [ ] Describe how the model was trained.
+    - [ ] Show a causal language modeling demo. (Can the model [integrate][9]?)
+    - [ ] Cite ARQMath3 report.
+    - [ ] Cite this Git repository.
+
+ [1]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16
+ [2]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16_full_eval
+ [4]: https://github.com/authoranonymous321/soft_mt_adaptation/blob/9ff8bc11499e133c110749cc9a80944874b0bbf6/adaptor/objectives/seq_bertscr_objectives.py#L326-L362
+ [9]: https://arxiv.org/abs/1912.01412v1

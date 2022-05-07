@@ -92,7 +92,7 @@ This repository contains our math information retrieval (MIR) system for
 - [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][1] and
   [`fp16_full_eval=True`][2] to decrease the VRAM used by training and
   evaluation. Increase batch size accordingly.
-- [ ] In `scm_at_arqmath3/extract_decontextualized_word_embeddings.py`, accept
+- [x] In `scm_at_arqmath3/extract_decontextualized_word_embeddings.py`, accept
   dictionary and [build a tensor of decontextualized word embeddings][4] on GPU
   instead of transferring to CPU in order to increase throughput.
 - [ ] Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:

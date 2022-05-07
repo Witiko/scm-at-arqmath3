@@ -96,13 +96,6 @@ tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validat
 	python -m scm_at_arqmath3.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
 
 
-decontextualized-word-embeddings-roberta-base: dataset-text+latex-smaller-train.txt
-	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings roberta-base $^ $@
-
-decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-base-text+latex dataset-text+latex-smaller-train.txt
-	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings $^ $@
-
-
 dictionary-text: dataset-text.txt
 	python -m scm_at_arqmath3.prepare_dictionary text $< $@
 
@@ -114,6 +107,13 @@ dictionary-latex: dataset-latex.txt tokenizer-latex.json
 
 dictionary-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.prepare_dictionary tangentl $< $@
+
+
+decontextualized-word-embeddings-roberta-base: dictionary-text+latex dataset-text+latex-smaller-train.txt
+	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings roberta-base $^ $@
+
+decontextualized-word-embeddings-tuned-roberta-base-text+latex: dictionary-text+latex tuned-roberta-base-text+latex dataset-text+latex-smaller-train.txt
+	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings $^ $@
 
 
 levenshtein-similarity-matrix-%: dictionary-%

@@ -56,7 +56,7 @@ def get_model(input_model: PathOrIdentifier) -> AutoModel:
 
 
 def get_batch_size() -> int:
-    batch_size = 500
+    batch_size = 250
     return batch_size
 
 

@@ -13,6 +13,9 @@ arxiv-text.txt:
 arxiv-text+latex.txt:
 	python -m scm_at_arqmath3.prepare_arxiv_dataset text+latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
+arxiv-text+latex-no-problem.txt:
+	python -m scm_at_arqmath3.prepare_arxiv_dataset text+latex no-problem $(ARXIV_INPUT_DIRECTORY) $@
+
 arxiv-text+latex-error.txt:
 	python -m scm_at_arqmath3.prepare_arxiv_dataset text+latex error $(ARXIV_INPUT_DIRECTORY) $@
 
@@ -44,6 +47,9 @@ dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
 
 dataset-text+latex-validation.txt: arxiv-text+latex-error.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ | head -n 514211 > $@
+
+dataset-text+latex-smaller-train.txt: arxiv-text+latex-no-problem.txt
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 dataset-latex.txt: arxiv-latex.txt msm-latex.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
@@ -90,10 +96,10 @@ tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validat
 	python -m scm_at_arqmath3.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
 
 
-decontextualized-word-embeddings-roberta-base: dataset-text+latex.txt
+decontextualized-word-embeddings-roberta-base: dataset-text+latex-smaller-train.txt
 	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings roberta-base $^ $@
 
-decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-base-text+latex dataset-text+latex.txt
+decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-base-text+latex dataset-text+latex-smaller-train.txt
 	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings $^ $@
 
 

@@ -58,10 +58,18 @@ dataset-tangentl.txt: arxiv-tangentl.txt msm-tangentl.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 
+tokenizer-latex.json: dataset-latex.txt
+	python -m scm_at_arqmath3.train_math_tokenizer $< $@
+
+
+roberta-base-text+latex: tokenizer-latex.json
+	python -m scm_at_arqmath3.train_extended_tokenizer roberta-base $< ./$@/
+
+
 word2vec-text: dataset-text.txt
 	python -m scm_at_arqmath3.train_word2vec_model text nonpositional $< $@
 
-word2vec-text+latex: dataset-text+latex.txt tokenizer-latex.json
+word2vec-text+latex: dataset-text+latex.txt tokenizer-latex.json roberta-base-text+latex
 	python -m scm_at_arqmath3.train_word2vec_model text+latex nonpositional $< $@
 
 word2vec-latex: dataset-latex.txt tokenizer-latex.json
@@ -74,22 +82,14 @@ word2vec-tangentl: dataset-tangentl.txt
 word2vec-text-positional: dataset-text.txt
 	python -m scm_at_arqmath3.train_word2vec_model text positional $< $@
 
-word2vec-text+latex-positional: dataset-text+latex.txt
+word2vec-text+latex-positional: dataset-text+latex.txt tokenizer-latex.json roberta-base-text+latex
 	python -m scm_at_arqmath3.train_word2vec_model text+latex positional $< $@
 
-word2vec-latex-positional: dataset-latex.txt
+word2vec-latex-positional: dataset-latex.txt tokenizer-latex.json
 	python -m scm_at_arqmath3.train_word2vec_model latex positional $< $@
 
 word2vec-tangentl-positional: dataset-tangentl.txt
 	python -m scm_at_arqmath3.train_word2vec_model tangentl positional $< $@
-
-
-tokenizer-latex.json: dataset-latex.txt
-	python -m scm_at_arqmath3.train_math_tokenizer $< $@
-
-
-roberta-base-text+latex: tokenizer-latex.json
-	python -m scm_at_arqmath3.train_extended_tokenizer roberta-base $< ./$@/
 
 
 tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validation.txt roberta-base-text+latex tokenizer-latex.json

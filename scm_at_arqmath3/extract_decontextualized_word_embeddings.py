@@ -94,12 +94,23 @@ def get_embedding_size(model: AutoModel) -> int:
     return embedding_size
 
 
+def get_max_contextual_word_embeddings_per_token() -> int:
+    max_contextual_word_embeddings_per_token = 100
+    return max_contextual_word_embeddings_per_token
+
+
 def get_decontextualized_word_embeddings(tokenizer: AutoTokenizer, model: AutoModel,
                                          dataset: Dataset) -> KeyedVectors:
+    max_contextual_word_embeddings_per_token = get_max_contextual_word_embeddings_per_token()
     contextual_word_embeddings = defaultdict(lambda: list())
     for tokens_and_embeddings in tokenize_and_embed_dataset(tokenizer, model, dataset):
         for token, embedding in tokens_and_embeddings:
             contextual_word_embeddings[token].append(embedding)
+            # Incrementally decontextualize embeddings to reduce RAM footprint
+            embeddings = contextual_word_embeddings[token]
+            if len(embeddings) > max_contextual_word_embeddings_per_token:
+                embeddings = [np.mean(embeddings, axis=0)]
+                contextual_word_embeddings[token] = embeddings
 
     number_of_tokens = len(contextual_word_embeddings)
     embedding_size = get_embedding_size(model)

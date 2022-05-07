@@ -48,6 +48,10 @@ def get_model(input_model: PathOrIdentifier) -> AutoModel:
     assert 0 <= top_layer_number <= len(model.encoder.layer)
     model.encoder.layer = ModuleList([layer for layer in model.encoder.layer[:top_layer_number]])
 
+    device = get_device()
+    model.to(device)
+    model.eval()
+
     return model
 
 
@@ -94,9 +98,6 @@ def get_embedding_size(model: AutoModel) -> int:
 
 def get_decontextualized_word_embeddings(tokenizer: AutoTokenizer, model: AutoModel,
                                          dataset: Dataset) -> KeyedVectors:
-    device = get_device()
-    model.to(device)
-
     contextual_word_embeddings = defaultdict(lambda: list())
     for tokens_and_embeddings in tokenize_and_embed_dataset(tokenizer, model, dataset):
         for token, embedding in tokens_and_embeddings:

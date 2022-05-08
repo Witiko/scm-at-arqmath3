@@ -128,9 +128,17 @@ word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positiona
 	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 
+decontextualized-word-embedding-similarity-matrix-%: dictionary-text+latex decontextualized-word-embeddings-%
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
+
+
 similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%
 	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@
 
 
 similarity-matrix-%-positional: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%-positional
+	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@
+
+
+decontextualized-similarity-matrix-%: levenshtein-similarity-matrix-text+latex decontextualized-word-embedding-similarity-matrix-%
 	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@

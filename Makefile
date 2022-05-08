@@ -10,6 +10,9 @@ NUM_CPUS = $(shell nproc)
 arxiv-text.txt:
 	python -m scm_at_arqmath3.prepare_arxiv_dataset text no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
+arxiv-text-no-problem.txt:
+	python -m scm_at_arqmath3.prepare_arxiv_dataset text no-problem $(ARXIV_INPUT_DIRECTORY) $@
+
 arxiv-text+latex.txt:
 	python -m scm_at_arqmath3.prepare_arxiv_dataset text+latex no-problem,warning $(ARXIV_INPUT_DIRECTORY) $@
 
@@ -40,6 +43,9 @@ msm-tangentl.txt:
 
 
 dataset-text.txt: arxiv-text.txt msm-text.txt
+	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
+
+dataset-text-smaller-train.txt: arxiv-text-no-problem.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
@@ -109,7 +115,7 @@ dictionary-tangentl: dataset-tangentl.txt
 	python -m scm_at_arqmath3.prepare_dictionary tangentl $< $@
 
 
-decontextualized-word-embeddings-roberta-base: dictionary-text+latex dataset-text+latex-smaller-train.txt
+decontextualized-word-embeddings-roberta-base: dictionary-text dataset-text-smaller-train.txt
 	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings roberta-base $^ $@
 
 decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-base-text+latex dictionary-text+latex dataset-text+latex-smaller-train.txt
@@ -128,7 +134,10 @@ word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positiona
 	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 
-decontextualized-word-embedding-similarity-matrix-%: dictionary-text+latex decontextualized-word-embeddings-%
+decontextualized-word-embedding-similarity-matrix-roberta-base: dictionary-text decontextualized-word-embeddings-roberta-base
+	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
+
+decontextualized-word-embedding-similarity-matrix-tuned-roberta-base-text+latex: dictionary-text+latex decontextualized-word-embeddings-tuned-roberta-base-text+latex
 	python -m scm_at_arqmath3.prepare_word_embedding_similarity_matrix $^ $@
 
 

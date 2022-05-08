@@ -46,7 +46,7 @@ def iterate_math_elements(paragraph: Element) -> Iterable[Element]:
 def read_document_text(paragraph: Element, min_paragraph_length: int = 100) -> Iterable[Line]:
     for math in iterate_math_elements(paragraph):
         math.text = ' '
-    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
+    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().strip())
     if len(paragraph_text) >= min_paragraph_length:
         yield paragraph_text
 

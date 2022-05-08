@@ -48,6 +48,9 @@ dataset-text.txt: arxiv-text.txt msm-text.txt
 dataset-text-smaller-train.txt: arxiv-text-no-problem.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
+dataset-text-smallest-train.txt: dataset-text-smaller-train.txt
+	head -n 3000000 $< > $@
+
 dataset-text+latex.txt: arxiv-text+latex.txt msm-text+latex.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 

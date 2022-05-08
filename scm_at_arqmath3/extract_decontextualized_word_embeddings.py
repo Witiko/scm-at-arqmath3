@@ -68,7 +68,7 @@ def get_dataset(input_file: Path) -> Dataset:
 
 
 def tokenize_and_embed_dataset(tokenizer: AutoTokenizer, model: AutoModel,
-                               dataset: Dataset) -> Iterable[List[Tuple[Token, Tensor]]]:
+                               dataset: Dataset) -> Iterable[List[List[Tuple[Token, Tensor]]]]:
     device = get_device()
     batch_size = get_batch_size()
     for lines_batch in chunked(dataset, batch_size):
@@ -78,6 +78,7 @@ def tokenize_and_embed_dataset(tokenizer: AutoTokenizer, model: AutoModel,
         with no_grad():
             outputs_batch = model(**inputs_batch)
         embeddings_batch = outputs_batch[0].detach()
+        filtered_tokens_and_embeddings_batch = []
         for tokens, embeddings in zip_equal(tokens_batch, embeddings_batch):
 
             def filter_tokens_and_embeddings() -> Iterable[Tuple[Token, Tensor]]:
@@ -87,7 +88,9 @@ def tokenize_and_embed_dataset(tokenizer: AutoTokenizer, model: AutoModel,
                     yield token, embedding
 
             filtered_tokens_and_embeddings = list(filter_tokens_and_embeddings())
-            yield filtered_tokens_and_embeddings
+            filtered_tokens_and_embeddings_batch.append(filtered_tokens_and_embeddings)
+
+        yield filtered_tokens_and_embeddings_batch
 
 
 def get_embedding_size(model: AutoModel) -> int:
@@ -103,22 +106,28 @@ def get_decontextualized_word_embeddings(dictionary: Dictionary, tokenizer: Auto
     moving_averages = torch.zeros(number_of_tokens, embedding_size, device=device)
     sample_sizes = defaultdict(lambda: 0)
 
-    for tokens_and_embeddings in tokenize_and_embed_dataset(tokenizer, model, dataset):
-        for token, embedding in tokens_and_embeddings:
-            if token not in dictionary.token2id:
-                continue
-            token_id = dictionary.token2id[token]
-            assert token_id < len(dictionary)
+    for tokens_and_embeddings_batch in tokenize_and_embed_dataset(tokenizer, model, dataset):
 
-            # Welford's online algorithm for calculating average
-            sample_size = sample_sizes[token_id]
-            moving_average = moving_averages[token_id]
-            sample_size = sample_size + 1
-            a = 1.0 / sample_size
-            b = 1.0 - a
-            moving_average = a * embedding + b * moving_average
-            sample_sizes[token_id] = sample_size
-            moving_averages[token_id] = moving_average
+        moving_averages_batch = defaultdict(lambda: list())
+        sample_sizes_batch = defaultdict(lambda: 0)
+
+        for tokens_and_embeddings in tokens_and_embeddings_batch:
+            for token, embedding in tokens_and_embeddings:
+                if token not in dictionary.token2id:
+                    continue
+                token_id = dictionary.token2id[token]
+                assert token_id < len(dictionary)
+
+                sample_sizes_batch[token_id] += 1
+                moving_averages_batch[token_id].append(embedding)
+
+        # Batched online algorithm for moving averages by Matt Hancock
+        # <https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html>
+        for token_id, embeddings_batch in moving_averages_batch.items():
+            m, n = sample_sizes[token_id], sample_sizes_batch[token_id]
+            mu_m, mu_n = moving_averages[token_id], torch.mean(torch.stack(embeddings_batch), axis=0)
+            sample_sizes[token_id] = m + n
+            moving_averages[token_id] = m / (m + n) * mu_m + n / (m + n) * mu_n
 
     decontextualized_word_embeddings = KeyedVectors(embedding_size, number_of_tokens, dtype=float)
     for token, token_id in dictionary.token2id.items():

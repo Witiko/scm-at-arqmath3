@@ -112,7 +112,7 @@ dictionary-tangentl: dataset-tangentl.txt
 decontextualized-word-embeddings-roberta-base: dictionary-text+latex dataset-text+latex-smaller-train.txt
 	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings roberta-base $^ $@
 
-decontextualized-word-embeddings-tuned-roberta-base-text+latex: dictionary-text+latex tuned-roberta-base-text+latex dataset-text+latex-smaller-train.txt
+decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-base-text+latex dictionary-text+latex dataset-text+latex-smaller-train.txt
 	python -m scm_at_arqmath3.extract_decontextualized_word_embeddings $^ $@
 
 

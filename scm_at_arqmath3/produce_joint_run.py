@@ -1,11 +1,10 @@
 from abc import ABC, ABCMeta, abstractmethod
 from collections import defaultdict, OrderedDict
 import csv
-from datetime import datetime
 from itertools import chain
+import logging
 from multiprocessing import get_context
 from pathlib import Path
-from statistics import mean
 from sys import argv, setrecursionlimit
 from typing import Optional, Iterable, List, Dict, Tuple, Union
 
@@ -18,6 +17,7 @@ from gensim.similarities import (
     SparseTermSimilarityMatrix,  # type: ignore
 )
 from lxml.html import fromstring
+from more_itertools import zip_equal
 from pv211_utils.arqmath.entities import (
     ArqmathQueryBase as Query,
     ArqmathAnswerBase as Answer,
@@ -42,6 +42,9 @@ from .prepare_msm_dataset import (
 )
 from .combine_similarity_matrices import get_term_similarity_matrix
 from .prepare_levenshtein_similarity_matrix import get_dictionary
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 AnswerIndex = int
@@ -170,44 +173,19 @@ def get_preprocessor(text_format: TextFormat, questions: Iterable[Question]) -> 
     return preprocessor
 
 
-class TimedSystem(System):
-    def __init__(self, system: System):
-        self.system = system
-        self.durations = dict()
-
-    def search(self, query: Query) -> Iterable[Answer]:
-        before = datetime.now()
-        results = list(self.system.search(query))
-        after = datetime.now()
-        duration = after - before
-        self.durations[query] = duration.total_seconds()
-        return results
-
-    def __str__(self) -> str:
-        assert self.durations
-        mean_duration = mean(self.durations.values())
-        min_query, min_duration = None, float('inf')
-        max_query, max_duration = None, float('-inf')
-        for query, duration in self.durations.items():
-            if duration < min_duration:
-                min_query, min_duration = query, duration
-            if duration > max_duration:
-                max_query, max_duration = query, duration
-        assert min_query is not None
-        assert max_query is not None
-        return '\n'.join([
-            f'Mean duration: {mean_duration:.2f}',
-            f'Shortest duration: {min_duration:.2f} (A.{min_query.query_id})',
-            f'Longest duration: {max_duration:.2f} (A.{max_query.query_id})',
-        ])
-
-
 def get_number_of_workers() -> Optional[int]:
     number_of_workers = None
     return number_of_workers
 
 
-class JointBM25System(System, metaclass=ABCMeta):
+class BulkSearchSystem(System):
+    def bulk_search(self, queries: Iterable[Query]) -> Iterable[Tuple[Query, Iterable[Answer]]]:
+        for query in queries:
+            answers = self.search(queries)
+            yield (query, answers)
+
+
+class JointBM25System(BulkSearchSystem, metaclass=ABCMeta):
     CURRENT_INSTANCE: Optional['JointBM25System'] = None
 
     def __init__(self, dictionary: Dictionary, preprocessor: Preprocessor, answers: Iterable[Answer]):
@@ -241,12 +219,13 @@ class JointBM25System(System, metaclass=ABCMeta):
         return cls.CURRENT_INSTANCE._document_to_vector(document)
 
     def get_similarities(self, query: Query) -> Dict[Answer, Similarity]:
-        query_vector = self._document_to_vector(query)
         similarity_index = self.get_similarity_index()
+        query_vector = self._document_to_vector(query)
+        similarity_vector = similarity_index[query_vector]
         similarities = {
             self.index_to_answer[answer_index]: similarity
             for answer_index, similarity
-            in enumerate(similarity_index[query_vector])
+            in enumerate(similarity_vector)
         }
         return similarities
 
@@ -254,6 +233,25 @@ class JointBM25System(System, metaclass=ABCMeta):
         similarities = self.get_similarities(query)
         for answer, _ in sorted(similarities.items(), key=result_sort_key):
             yield answer
+
+    def get_bulk_similarities(self, queries: Iterable[Query]) -> Iterable[Tuple[Query, Dict[Answer, Similarity]]]:
+        queries = list(queries)
+        similarity_index = self.get_similarity_index()
+        query_vectors = list(self._documents_to_vectors(queries))
+        bulk_similarities = similarity_index[query_vectors]
+        for query, similarity_vector in zip_equal(queries, bulk_similarities):
+            similarities = {
+                self.index_to_answer[answer_index]: similarity
+                for answer_index, similarity
+                in enumerate(similarity_vector)
+            }
+            yield (query, similarities)
+
+    def bulk_search(self, queries: Iterable[Query]) -> Iterable[Tuple[Query, Iterable[Answer]]]:
+        bulk_similarities = self.get_bulk_similarities(queries)
+        for query, similarities in bulk_similarities:
+            answers = (answer for answer, _ in sorted(similarities.items(), key=result_sort_key))
+            yield (query, answers)
 
 
 def result_sort_key(args: Tuple[Answer, Similarity]):
@@ -298,7 +296,8 @@ class SCMSystem(JointBM25System):
 
 
 def get_system(text_format: TextFormat, questions: Iterable[Question], answers: Iterable[Answer],
-               dictionary: Dictionary, similarity_matrix: Optional[SparseTermSimilarityMatrix]) -> System:
+               dictionary: Dictionary,
+               similarity_matrix: Optional[SparseTermSimilarityMatrix]) -> BulkSearchSystem:
     preprocessor = get_preprocessor(text_format, questions)
     if similarity_matrix is None:
         system = LuceneBM25System(dictionary, preprocessor, answers)
@@ -364,16 +363,15 @@ def get_topn() -> int:
     return topn
 
 
-def produce_serp(system: System, queries: Iterable[Query], output_run_file: Path,
-                 output_timer_file: Path, run_name: str) -> None:
+def produce_serp(system: BulkSearchSystem, queries: Iterable[Query], output_run_file: Path,
+                 run_name: str) -> None:
     queries = list(queries)
-    timed_system = TimedSystem(system)
     topn = get_topn()
 
     output_run_file.parent.mkdir(exist_ok=True)
     with output_run_file.open('wt') as f:
-        for query in tqdm(queries, desc='Querying the system'):
-            answers = timed_system.search(query)
+        LOGGER.info(f'Sent a batch of {len(queries)} queries to {system.__class__.__name__}')
+        for query, answers in system.bulk_search(queries):
             for rank, answer in enumerate(answers):
                 rank = rank + 1
                 if rank > topn:
@@ -383,10 +381,6 @@ def produce_serp(system: System, queries: Iterable[Query], output_run_file: Path
                 answer_id = answer.document_id
                 line = f'{query_id}\t{answer_id}\t{rank}\t{score}\t{run_name}'
                 print(line, file=f)
-
-    output_timer_file.parent.mkdir(exist_ok=True)
-    with output_timer_file.open('wt') as f:
-        print(timed_system, file=f)
 
 
 def read_tsv_file(input_file: Path) -> Iterable[Tuple[str, str, int, float, str]]:
@@ -454,8 +448,7 @@ def evaluate_serp_with_ndcg(input_run_file: Path, run_type: RunType, output_ndcg
 
 def main(run_type: RunType, msm_input_directory: Path, output_text_format: TextFormat,
          input_dictionary_file: Path, input_similarity_matrix_file: Optional[Path], run_name: str,
-         output_run_file: Path, output_timer_file: Path, output_map_file: Path,
-         output_ndcg_file: Path) -> None:
+         output_run_file: Path, output_map_file: Path, output_ndcg_file: Path) -> None:
 
     input_text_format = get_input_text_format(output_text_format)
     dictionary = get_dictionary(input_dictionary_file)
@@ -465,7 +458,7 @@ def main(run_type: RunType, msm_input_directory: Path, output_text_format: TextF
     system = get_system(output_text_format, questions, answers, dictionary, similarity_matrix)
 
     queries = list(get_queries(run_type, input_text_format))
-    produce_serp(system, queries, output_run_file, output_timer_file, run_name)
+    produce_serp(system, queries, output_run_file, run_name)
 
     judgements = maybe_get_judgements(run_type, queries, answers)
     evaluate_serp_with_map(output_run_file, queries, answers, judgements, output_map_file)
@@ -474,6 +467,7 @@ def main(run_type: RunType, msm_input_directory: Path, output_text_format: TextF
 
 if __name__ == '__main__':
     setrecursionlimit(15000)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
     run_type = argv[1]
     msm_input_directory = Path(argv[2])
@@ -482,10 +476,8 @@ if __name__ == '__main__':
     input_similarity_matrix_file = Path(argv[5]) if argv[5] != 'none' else None
     run_name = argv[6]
     output_run_file = Path(argv[7])
-    output_timer_file = Path(argv[8])
-    output_map_file = Path(argv[9])
-    output_ndcg_file = Path(argv[10])
+    output_map_file = Path(argv[8])
+    output_ndcg_file = Path(argv[9])
 
     main(run_type, msm_input_directory, text_format, input_dictionary_file,
-         input_similarity_matrix_file, run_name, output_run_file, output_timer_file,
-         output_map_file, output_ndcg_file)
+         input_similarity_matrix_file, run_name, output_run_file, output_map_file, output_ndcg_file)

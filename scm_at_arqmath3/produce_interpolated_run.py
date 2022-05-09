@@ -1,15 +1,16 @@
 from collections import defaultdict
+import logging
 from pathlib import Path
 from sys import argv, setrecursionlimit
-from typing import Optional, Dict, Iterable
+from typing import Optional, Dict, Iterable, Tuple
 
 from pv211_utils.arqmath.entities import (
     ArqmathQueryBase as Query,
     ArqmathAnswerBase as Answer,
 )
-from pv211_utils.arqmath.irsystem import ArqmathIRSystemBase as System
 
 from .produce_joint_run import (
+    BulkSearchSystem,
     evaluate_serp_with_map,
     evaluate_serp_with_ndcg,
     get_dictionary,
@@ -25,7 +26,7 @@ from .produce_joint_run import (
 from .prepare_msm_dataset import get_questions_and_answers, get_input_text_format, TextFormat
 
 
-class InterpolatedBM25System(System):
+class InterpolatedBM25System(BulkSearchSystem):
     FIRST_COEFFICIENT = 0.5
     SECOND_COEFFICIENT = 0.5
 
@@ -55,6 +56,29 @@ class InterpolatedBM25System(System):
         for answer, _ in sorted(interpolated_similarities.items(), key=result_sort_key):
             yield answer
 
+    def bulk_search(self, first_queries: Iterable[Query]) -> Iterable[Tuple[Query, Iterable[Answer]]]:
+        first_queries = list(first_queries)
+        second_queries = [
+            self.first_queries_to_second_queries[first_query]
+            for first_query
+            in first_queries
+        ]
+
+        first_bulk_similarities = dict(self.first_system.get_bulk_similarities(first_queries))
+        second_bulk_similarities = dict(self.second_system.get_bulk_similarities(second_queries))
+
+        for query in first_queries:
+            first_similarities = first_bulk_similarities[query]
+            second_similarities = second_bulk_similarities[query]
+            interpolated_similarities = defaultdict(lambda: 0.0)
+            for answer, similarity in first_similarities.items():
+                interpolated_similarities[answer] += self.FIRST_COEFFICIENT * similarity
+            for answer, similarity in second_similarities.items():
+                interpolated_similarities[answer] += self.SECOND_COEFFICIENT * similarity
+
+            answers = (answer for answer, _ in sorted(interpolated_similarities.items(), key=result_sort_key))
+            yield (query, answers)
+
 
 def get_interpolated_system(first_system: JointBM25System, second_system: JointBM25System,
                             first_queries: Iterable[Query], second_queries: Iterable[Query]) -> InterpolatedBM25System:
@@ -67,8 +91,7 @@ def main(run_type: RunType, msm_input_directory: Path,
          first_input_similarity_matrix_file: Optional[Path],
          second_output_text_format: TextFormat, second_input_dictionary_file: Path,
          second_input_similarity_matrix_file: Optional[Path],
-         run_name: str, output_run_file: Path, output_timer_file: Path,
-         output_map_file: Path, output_ndcg_file: Path) -> None:
+         run_name: str, output_run_file: Path, output_map_file: Path, output_ndcg_file: Path) -> None:
 
     first_input_text_format = get_input_text_format(first_output_text_format)
     first_dictionary = get_dictionary(first_input_dictionary_file)
@@ -89,7 +112,7 @@ def main(run_type: RunType, msm_input_directory: Path,
     first_queries = list(get_queries(run_type, first_input_text_format))
     second_queries = list(get_queries(run_type, second_input_text_format))
     system = get_interpolated_system(first_system, second_system, first_queries, second_queries)
-    produce_serp(system, first_queries, output_run_file, output_timer_file, run_name)
+    produce_serp(system, first_queries, output_run_file, run_name)
 
     queries, answers = first_queries, first_answers
     judgements = maybe_get_judgements(run_type, queries, answers)
@@ -99,6 +122,7 @@ def main(run_type: RunType, msm_input_directory: Path,
 
 if __name__ == '__main__':
     setrecursionlimit(15000)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
     run_type = argv[1]
     msm_input_directory = Path(argv[2])
@@ -110,11 +134,10 @@ if __name__ == '__main__':
     second_input_similarity_matrix_file = Path(argv[8]) if argv[8] != 'none' else None
     run_name = argv[9]
     output_run_file = Path(argv[10])
-    output_timer_file = Path(argv[11])
-    output_map_file = Path(argv[12])
-    output_ndcg_file = Path(argv[13])
+    output_map_file = Path(argv[11])
+    output_ndcg_file = Path(argv[12])
 
     main(run_type, msm_input_directory, first_text_format, first_input_dictionary_file,
          first_input_similarity_matrix_file, second_text_format, second_input_dictionary_file,
-         second_input_similarity_matrix_file, run_name, output_run_file, output_timer_file,
-         output_map_file, output_ndcg_file)
+         second_input_similarity_matrix_file, run_name, output_run_file, output_map_file,
+         output_ndcg_file)

@@ -1,11 +1,12 @@
 .SECONDARY:
-.PHONY: all primary secondary ternary
+.PHONY: all primary primary2020 primary2021 primary2022 secondary secondary2020 secondary2021 secondary2022 ternary ternary2020 ternary2021 ternary2022
 
 ARXIV_INPUT_DIRECTORY = /mnt/storage/arxiv-dataset-arXMLiv-2020
 # MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 MSM_INPUT_DIRECTORY = /var/tmp/xnovot32/introduction-to-information-retrieval
 
 NUM_CPUS = $(shell nproc)
+
 
 RUN_BASENAMES_PRIMARY = \
 	SCM-task1-interpolated_text+positional_word2vec_tangentl-both-auto-P \
@@ -26,20 +27,34 @@ RUN_BASENAMES_TERNARY = \
 	SCM-task1-baseline_interpolated_text+langentl-both-auto-X
 
 
-RUNS_PRIMARY = \
-	$(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY))) \
-	$(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY))) \
-	$(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY)))
+RUNS_PRIMARY_2021 = $(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY)))
+RUNS_PRIMARY_2022 = $(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY)))
+RUNS_PRIMARY_2020 = $(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY)))
 
-RUNS_SECONDARY = \
-	$(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY))) \
-	$(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY))) \
-	$(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY)))
+primary2021: $(RUNS_PRIMARY_2021)
+primary2022: $(RUNS_PRIMARY_2022)
+primary2020: $(RUNS_PRIMARY_2020)
 
-RUNS_TERNARY = \
-	$(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY))) \
-	$(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY))) \
-	$(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY)))
+RUNS_SECONDARY_2021 = $(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY)))
+RUNS_SECONDARY_2022 = $(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY)))
+RUNS_SECONDARY_2020 = $(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY)))
+
+secondary2021: $(RUNS_SECONDARY_2021)
+secondary2022: $(RUNS_SECONDARY_2022)
+secondary2020: $(RUNS_SECONDARY_2020)
+
+RUNS_TERNARY_2021 = $(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY)))
+RUNS_TERNARY_2022 = $(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY)))
+RUNS_TERNARY_2020 = $(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY)))
+
+ternary2021: $(RUNS_TERNARY_2021)
+ternary2022: $(RUNS_TERNARY_2022)
+ternary2020: $(RUNS_TERNARY_2020)
+
+
+RUNS_PRIMARY = $(RUNS_PRIMARY_2021) $(RUNS_PRIMARY_2022) $(RUNS_PRIMARY_2020)
+RUNS_SECONDARY = $(RUNS_SECONDARY_2021) $(RUNS_SECONDARY_2022) $(RUNS_SECONDARY_2020)
+RUNS_TERNARY = $(RUNS_TERNARY_2021) $(RUNS_TERNARY_2022) $(RUNS_TERNARY_2020)
 
 primary: $(RUNS_PRIMARY)
 secondary: $(RUNS_SECONDARY)
@@ -204,7 +219,7 @@ decontextualized-similarity-matrix-tuned-roberta-base-text+latex: levenshtein-si
 
 
 define produce_joint_run
-python -m scm_at_arqmath3.produce_joint_run $(patsubst %/,%,$(dir $(5))) $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) Run_$(patsubst %/,%,$(dir $(5)))_$(basename $(notdir $(5)))_$(4) $(5) $(basename $(5)).timer $(basename $(5)).map_score $(basename $(5)).ndcg_score
+python -m scm_at_arqmath3.produce_joint_run $(patsubst %/,%,$(dir $(5))) $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) Run_$(patsubst %/,%,$(dir $(5)))_$(basename $(notdir $(5)))_$(4) $(5) $(basename $(5)).map_score $(basename $(5)).ndcg_score
 endef
 
 %/SCM-task1-baseline_joint_text-text-auto-X.tsv: dictionary-text
@@ -226,7 +241,7 @@ endef
 	$(call produce_joint_run,text+latex,$<,$(word 3,$^),0,$@)
 
 define produce_interpolated_run
-python -m scm_at_arqmath3.produce_interpolated_run $(patsubst %/,%,$(dir $(8))) $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) $(4) $(5) $(6) Run_$(patsubst %/,%,$(dir $(8)))_$(basename $(notdir $(8)))_$(7) $(8) $(basename $(8)).timer $(basename $(8)).map_score $(basename $(8)).ndcg_score
+python -m scm_at_arqmath3.produce_interpolated_run $(patsubst %/,%,$(dir $(8))) $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) $(4) $(5) $(6) Run_$(patsubst %/,%,$(dir $(8)))_$(basename $(notdir $(8)))_$(7) $(8) $(basename $(8)).map_score $(basename $(8)).ndcg_score
 endef
 
 %/SCM-task1-baseline_interpolated_text+latex-both-auto-X.tsv: dictionary-text dictionary-latex tokenizer-latex.json

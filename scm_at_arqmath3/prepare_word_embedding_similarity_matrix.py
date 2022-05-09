@@ -32,10 +32,8 @@ def get_term_similarity_matrix(input_dictionary_file: Path,
     term_similarity_index = get_term_similarity_index(word_embeddings)
     dictionary = get_dictionary(input_dictionary_file)
     tfidf_model = get_tfidf_model(dictionary)
-    # Do not use dominance contraint for decontextualized word embeddings, only for word2vec
-    dominant = input_word_embedding_file_or_directory.is_dir()
     term_similarity_matrix = SparseTermSimilarityMatrix(term_similarity_index, dictionary, tfidf_model,
-                                                        symmetric=True, dominant=dominant, nonzero_limit=100)
+                                                        symmetric=True, dominant=True, nonzero_limit=100)
     return term_similarity_matrix
 
 

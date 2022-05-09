@@ -1,21 +1,19 @@
 from pathlib import Path
 from sys import argv
-from typing import Iterable, Iterator, List
+from typing import Iterable, Iterator
 
 from pine import LanguageModel
 from tqdm import tqdm
-from tokenizers import Tokenizer
-from transformers import AutoTokenizer
+
+from .produce_joint_run import Text, Tokenizer, get_tokenizer
 
 
-Token = str
-Text = List[Token]
 Corpus = Iterable[Text]
 
 
-class TextCorpus():
-    def __init__(self, input_file: Path) -> None:
-        self.tokenizer = AutoTokenizer.from_pretrained('roberta-base')
+class FileCorpus():
+    def __init__(self, input_file: Path, tokenizer: Tokenizer) -> None:
+        self.tokenizer = tokenizer
         self.input_file = input_file
         self.number_of_lines = count_lines(input_file)
 
@@ -24,48 +22,6 @@ class TextCorpus():
             lines = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
             for line in lines:
                 tokens = self.tokenizer.tokenize(line)
-                yield tokens
-
-
-class TextLaTeXCorpus():
-    def __init__(self, input_file: Path) -> None:
-        self.tokenizer = AutoTokenizer.from_pretrained('./roberta-base-text+latex/',
-                                                       add_prefix_space=True)
-        self.input_file = input_file
-        self.number_of_lines = count_lines(input_file)
-
-    def __iter__(self) -> Iterator[Text]:
-        with self.input_file.open('rt') as f:
-            sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
-            for sentence in sentences:
-                tokens = self.tokenizer.tokenize(sentence)
-                yield tokens
-
-
-class LaTeXCorpus():
-    def __init__(self, input_file: Path) -> None:
-        self.tokenizer = Tokenizer.from_file('tokenizer-latex.json')
-        self.input_file = input_file
-        self.number_of_lines = count_lines(input_file)
-
-    def __iter__(self) -> Iterator[Text]:
-        with self.input_file.open('rt') as f:
-            sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
-            for sentence in sentences:
-                tokens = self.tokenizer.encode(sentence).tokens
-                yield tokens
-
-
-class TangentLCorpus():
-    def __init__(self, input_file: Path) -> None:
-        self.input_file = input_file
-        self.number_of_lines = count_lines(input_file)
-
-    def __iter__(self) -> Iterator[Text]:
-        with self.input_file.open('rt') as f:
-            sentences = tqdm(f, desc=f'Reading {self.input_file}', total=self.number_of_lines)
-            for sentence in sentences:
-                tokens = sentence.strip('#').split('# #')
                 yield tokens
 
 
@@ -107,16 +63,8 @@ def get_number_of_epochs(text_format: str) -> int:
 
 
 def get_corpus(text_format: str, input_file: Path) -> Corpus:
-    if text_format == 'text':
-        corpus = TextCorpus(input_file)
-    elif text_format == 'text+latex':
-        corpus = TextLaTeXCorpus(input_file)
-    elif text_format == 'latex':
-        corpus = LaTeXCorpus(input_file)
-    elif text_format == 'tangentl':
-        corpus = TangentLCorpus(input_file)
-    else:
-        raise ValueError(f'Unknown text format {text_format}')
+    tokenizer = get_tokenizer(text_format)
+    corpus = FileCorpus(input_file, tokenizer)
     return corpus
 
 

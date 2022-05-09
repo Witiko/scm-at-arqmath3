@@ -13,7 +13,8 @@ from transformers import AutoModel, AutoTokenizer
 from tqdm import tqdm
 
 from .prepare_levenshtein_similarity_matrix import get_dictionary
-from .train_word2vec_model import Token, count_lines
+from .train_word2vec_model import count_lines
+from .produce_joint_run import Token
 
 
 Line = str

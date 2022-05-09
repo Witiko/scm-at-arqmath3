@@ -1,10 +1,54 @@
 .SECONDARY:
-
+.PHONY: all primary secondary ternary
 
 ARXIV_INPUT_DIRECTORY = /mnt/storage/arxiv-dataset-arXMLiv-2020
-MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
+# MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
+MSM_INPUT_DIRECTORY = /var/tmp/xnovot32/introduction-to-information-retrieval
 
 NUM_CPUS = $(shell nproc)
+
+RUN_BASENAMES_PRIMARY = \
+	SCM-task1-interpolated_text+positional_word2vec_tangentl-both-auto-P \
+	SCM-task1-joint_tuned_roberta_base-both-auto-A
+
+RUN_BASENAMES_SECONDARY = \
+	SCM-task1-joint_word2vec-both-auto-A \
+	SCM-task1-joint_positional_word2vec-both-auto-A \
+	SCM-task1-joint_roberta_base-both-auto-A \
+	SCM-task1-interpolated_text+word2vec_latex-both-auto-A \
+	SCM-task1-interpolated_text+positional_word2vec_latex-both-auto-A \
+	SCM-task1-interpolated_text+word2vec_tangentl-both-auto-A
+
+RUN_BASENAMES_TERNARY = \
+	SCM-task1-baseline_joint_text-text-auto-X \
+	SCM-task1-baseline_joint_text+latex-both-auto-X \
+	SCM-task1-baseline_interpolated_text+latex-both-auto-X \
+	SCM-task1-baseline_interpolated_text+langentl-both-auto-X
+
+
+RUNS_PRIMARY = \
+	$(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY))) \
+	$(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY))) \
+	$(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_PRIMARY)))
+
+RUNS_SECONDARY = \
+	$(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY))) \
+	$(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY))) \
+	$(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_SECONDARY)))
+
+RUNS_TERNARY = \
+	$(addprefix submission2021/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY))) \
+	$(addprefix submission2022/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY))) \
+	$(addprefix submission2020/,$(addsuffix .tsv,$(RUN_BASENAMES_TERNARY)))
+
+primary: $(RUNS_PRIMARY)
+secondary: $(RUNS_SECONDARY)
+ternary: $(RUNS_TERNARY)
+
+
+RUNS = $(RUNS_PRIMARY) $(RUNS_SECONDARY) $(RUNS_TERNARY)
+
+all: $(RUNS)
 
 
 arxiv-text.txt:
@@ -152,5 +196,53 @@ similarity-matrix-%-positional: levenshtein-similarity-matrix-% word-embedding-s
 	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@
 
 
-decontextualized-similarity-matrix-%: levenshtein-similarity-matrix-text+latex decontextualized-word-embedding-similarity-matrix-%
+decontextualized-similarity-matrix-roberta-base: levenshtein-similarity-matrix-text decontextualized-word-embedding-similarity-matrix-roberta-base
 	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@
+
+decontextualized-similarity-matrix-tuned-roberta-base-text+latex: levenshtein-similarity-matrix-text+latex decontextualized-word-embedding-similarity-matrix-tuned-roberta-base-text+latex
+	python -m scm_at_arqmath3.combine_similarity_matrices $^ $@
+
+
+define produce_joint_run
+python -m scm_at_arqmath3.produce_joint_run $(patsubst %/,%,$(dir $(5))) $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) Run_$(patsubst %/,%,$(dir $(5)))_$(basename $(notdir $(5)))_$(4) $(5) $(basename $(5)).timer $(basename $(5)).map_score $(basename $(5)).ndcg_score
+endef
+
+%/SCM-task1-baseline_joint_text-text-auto-X.tsv: dictionary-text
+	$(call produce_joint_run,text,$<,none,0,$@)
+
+%/SCM-task1-baseline_joint_text+latex-both-auto-X.tsv: dictionary-text+latex roberta-base-text+latex
+	$(call produce_joint_run,text+latex,$<,none,0,$@)
+
+%/SCM-task1-joint_word2vec-both-auto-A.tsv: dictionary-text+latex roberta-base-text+latex similarity-matrix-text+latex
+	$(call produce_joint_run,text+latex,$<,$(word 3,$^),0,$@)
+
+%/SCM-task1-joint_positional_word2vec-both-auto-A.tsv: dictionary-text+latex roberta-base-text+latex similarity-matrix-text+latex-positional
+	$(call produce_joint_run,text+latex,$<,$(word 3,$^),0,$@)
+
+%/SCM-task1-joint_roberta_base-both-auto-A.tsv: dictionary-text decontextualized-similarity-matrix-roberta-base
+	$(call produce_joint_run,text,$<,$(word 2,$^),0,$@)
+
+%/SCM-task1-joint_tuned_roberta_base-both-auto-A.tsv: dictionary-text+latex roberta-base-text+latex decontextualized-similarity-matrix-tuned-roberta-base-text+latex
+	$(call produce_joint_run,text+latex,$<,$(word 3,$^),0,$@)
+
+define produce_interpolated_run
+python -m scm_at_arqmath3.produce_interpolated_run $(patsubst %/,%,$(dir $(8))) $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) $(4) $(5) $(6) Run_$(patsubst %/,%,$(dir $(8)))_$(basename $(notdir $(8)))_$(7) $(8) $(basename $(8)).timer $(basename $(8)).map_score $(basename $(8)).ndcg_score
+endef
+
+%/SCM-task1-baseline_interpolated_text+latex-both-auto-X.tsv: dictionary-text dictionary-latex tokenizer-latex.json
+	$(call produce_interpolated_run,text,$<,none,latex,$(word 2,$^),none,0,$@)
+
+%/SCM-task1-baseline_interpolated_text+langentl-both-auto-X.tsv: dictionary-text dictionary-tangentl
+	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),none,0,$@)
+
+%/SCM-task1-interpolated_text+word2vec_latex-both-auto-A.tsv: dictionary-text dictionary-latex similarity-matrix-latex tokenizer-latex.json
+	$(call produce_interpolated_run,text,$<,none,latex,$(word 2,$^),$(word 3,$^),0,$@)
+
+%/SCM-task1-interpolated_text+positional_word2vec_latex-both-auto-A.tsv: dictionary-text dictionary-latex similarity-matrix-latex-positional tokenizer-latex.json
+	$(call produce_interpolated_run,text,$<,none,latex,$(word 2,$^),$(word 3,$^),0,$@)
+
+%/SCM-task1-interpolated_text+word2vec_tangentl-both-auto-A.tsv: dictionary-text dictionary-tangentl similarity-matrix-tangentl
+	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),$(word 3,$^),0,$@)
+
+%/SCM-task1-interpolated_text+positional_word2vec_tangentl-both-auto-P.tsv: dictionary-text dictionary-tangentl similarity-matrix-tangentl-positional
+	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),$(word 3,$^),0,$@)

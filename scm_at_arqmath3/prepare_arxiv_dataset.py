@@ -19,6 +19,8 @@ from mathtuples.mathsymbol import MathSymbol
 from mathtuples.convert import check_node, expand_nodes_with_location, format_node, START_TAG, END_TAG
 from tqdm import tqdm
 
+from .produce_joint_run import Line
+
 
 LOGGER = logging.getLogger(__name__)
 
@@ -27,7 +29,6 @@ DocumentIdentifier = Path
 ZipPath = Tuple[Path, Path]
 Document = ZipPath
 Severity = str
-Line = str
 TextFormat = str
 
 

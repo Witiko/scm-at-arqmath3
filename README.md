@@ -93,6 +93,7 @@ This repository contains our math information retrieval (MIR) system for
 ## Future work
 
 - [ ] Add missing jupyter notebooks for above tasks.
+- [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
 - [ ] Fix `scm_at_arqmath/extract_decontextualized_word_embeddings.py` producing matrices with NaNs
   since commit 4168f32.
 - [ ] Recompute decontextualized similarity matrices and update

@@ -93,6 +93,8 @@ This repository contains our math information retrieval (MIR) system for
 ## Future work
 
 - [ ] Add missing jupyter notebooks for above tasks.
+- [ ] Fix `scm_at_arqmath/extract_decontextualized_word_embeddings.py` producing matrices with NaNs
+  since commit 4168f32.
 - [ ] Recompute decontextualized similarity matrices and update
   `07-produce-term-similarity-matrices.ipynb` and
   `05-produce-decontextualized-word-embeddings.ipynb`.

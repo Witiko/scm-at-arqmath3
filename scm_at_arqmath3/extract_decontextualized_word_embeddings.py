@@ -1,7 +1,7 @@
 from collections import defaultdict
 from pathlib import Path
 from sys import argv
-from typing import Iterable, Tuple, List, Union
+from typing import Iterable, Tuple, List, Union, Dict, Set
 
 from gensim.corpora import Dictionary  # type: ignore
 from gensim.models.keyedvectors import KeyedVectors, _add_word_to_kv  # type: ignore
@@ -20,6 +20,8 @@ from .produce_joint_run import Token
 Line = str
 Dataset = Iterable[Line]
 PathOrIdentifier = Union[Path, str]
+
+TermId = int
 
 
 def get_tokenizer(input_model: PathOrIdentifier) -> AutoTokenizer:
@@ -56,7 +58,7 @@ def get_model(input_model: PathOrIdentifier) -> AutoModel:
 
 
 def get_batch_size() -> int:
-    batch_size = 450
+    batch_size = 250
     return batch_size
 
 
@@ -102,38 +104,39 @@ def get_embedding_size(model: AutoModel) -> int:
 def get_decontextualized_word_embeddings(dictionary: Dictionary, tokenizer: AutoTokenizer,
                                          model: AutoModel, dataset: Dataset) -> KeyedVectors:
     device = get_device()
-    number_of_tokens = len(dictionary)
-    embedding_size = get_embedding_size(model)
-    moving_averages = torch.zeros(number_of_tokens, embedding_size, device=device)
-    sample_sizes = defaultdict(lambda: 0)
+    number_of_tokens, embedding_size = len(dictionary), get_embedding_size(model)
 
-    for tokens_and_embeddings_batch in tokenize_and_embed_dataset(tokenizer, model, dataset):
+    seen_tokens: Set[Token] = set()
+    moving_averages: Tensor = torch.zeros(number_of_tokens, embedding_size, device=device)
+    sample_sizes: Dict[TermId, int] = defaultdict(lambda: 0)
 
+    for batch_number, tokens_and_embeddings_batch in enumerate(tokenize_and_embed_dataset(tokenizer, model, dataset)):
         moving_averages_batch = defaultdict(lambda: list())
-        sample_sizes_batch = defaultdict(lambda: 0)
-
         for tokens_and_embeddings in tokens_and_embeddings_batch:
             for token, embedding in tokens_and_embeddings:
                 if token not in dictionary.token2id:
                     continue
-                token_id = dictionary.token2id[token]
-                assert token_id < len(dictionary)
-
-                sample_sizes_batch[token_id] += 1
-                moving_averages_batch[token_id].append(embedding)
+                seen_tokens.add(token)
+                term_id = dictionary.token2id[token]
+                assert term_id < len(dictionary)
+                moving_averages_batch[term_id].append(embedding)
 
         # Batched online algorithm for moving averages by Matt Hancock
         # <https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html>
-        for token_id, embeddings_batch in moving_averages_batch.items():
-            m, n = sample_sizes[token_id], sample_sizes_batch[token_id]
-            mu_m, mu_n = moving_averages[token_id], torch.mean(torch.stack(embeddings_batch), axis=0)
-            sample_sizes[token_id] = m + n
-            moving_averages[token_id] = m / (m + n) * mu_m + n / (m + n) * mu_n
+        for term_id, embeddings_batch in moving_averages_batch.items():
+            m, n = sample_sizes[term_id], len(embeddings_batch)
+            mu_m, mu_n = moving_averages[term_id], torch.mean(torch.stack(embeddings_batch), axis=0)
+            coeff_m, coeff_n = m / (m + n), n / (m + n)
+            moving_average = coeff_m * mu_m + coeff_n * mu_n
+            moving_averages[term_id] = moving_average
+            sample_sizes[term_id] = m + n
 
-    decontextualized_word_embeddings = KeyedVectors(embedding_size, number_of_tokens, dtype=float)
-    for token, token_id in dictionary.token2id.items():
-        moving_average = moving_averages[token_id].cpu().numpy()  # Here we transfer the embedding from GPU to CPU
-        _add_word_to_kv(decontextualized_word_embeddings, None, token, moving_average, number_of_tokens)
+    number_of_terms = len(seen_tokens)
+    decontextualized_word_embeddings = KeyedVectors(embedding_size, number_of_terms, dtype=float)
+    for term in seen_tokens:
+        term_id = dictionary.token2id[term]
+        moving_average = moving_averages[term_id].cpu().numpy()  # Here we transfer the embedding from GPU to CPU
+        _add_word_to_kv(decontextualized_word_embeddings, None, term, moving_average, number_of_terms)
 
     return decontextualized_word_embeddings
 

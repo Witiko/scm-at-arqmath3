@@ -94,9 +94,8 @@ This repository contains our math information retrieval (MIR) system for
 
 - [ ] Add missing jupyter notebooks for above tasks.
 - [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
-- [ ] Fix `scm_at_arqmath/extract_decontextualized_word_embeddings.py` producing matrices with NaNs
-  since commit 4168f32.
-- [ ] Recompute decontextualized similarity matrices and update
+- [ ] After finishing the training of `tuned-roberta-base-text+latex`,
+  recompute decontextualized word embeddings and similarity matrices and update
   `07-produce-term-similarity-matrices.ipynb` and
   `05-produce-decontextualized-word-embeddings.ipynb`.
 - [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][1] and

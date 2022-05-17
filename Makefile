@@ -123,6 +123,10 @@ dataset-tangentl.txt: arxiv-tangentl.txt msm-tangentl.txt
 	sort -R -u --parallel=$(NUM_CPUS) $^ > $@
 
 
+out-of-domain-dataset-text-validation.txt:
+	wget 'https://opus.nlpl.eu/download.php?f=EUconst/v1/mono/EUconst.raw.en.gz' -O - | gzip -d > $@
+
+
 tokenizer-latex.json: dataset-latex.txt
 	python -m scm_at_arqmath3.train_math_tokenizer $< $@
 

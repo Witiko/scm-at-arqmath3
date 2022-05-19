@@ -155,7 +155,7 @@ def main(input_path_or_identifier: PathOrIdentifier, input_dictionary_file: Path
 if __name__ == '__main__':
     input_path_or_identifier = argv[1]
     if Path(input_path_or_identifier).exists():
-        input_path_or_identifier = Path(input_path_or_identifier)
+        input_path_or_identifier = Path(input_path_or_identifier) / 'MaskedLanguageModeling'
     input_dictionary_file = Path(argv[2])
     input_dataset_file = Path(argv[3])
     output_file = Path(argv[4])

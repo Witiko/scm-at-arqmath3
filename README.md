@@ -37,11 +37,11 @@ This repository contains our math information retrieval (MIR) system for
         - [x] The text + LaTeX format
         - [x] The LaTeX format
         - [x] The Tangent-L format
-5. [ ] [Produce decontextualized word embeddings][10]
-    - [ ] The `roberta-base` model
-        - [ ] The text format
-    - [ ] The tuned `roberta-base` model
-        - [ ] The text + LaTeX format
+5. [x] [Produce decontextualized word embeddings][10]
+    - [x] The `roberta-base` model
+        - [x] The text format
+    - [x] The tuned `roberta-base` model
+        - [x] The text + LaTeX format
 6. [x] [Produce dictionaries][11]
     - [x] The text + LaTeX format
     - [x] The text format
@@ -95,8 +95,6 @@ This repository contains our math information retrieval (MIR) system for
 - [ ] Add missing jupyter notebooks for above tasks.
 - [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
 - [ ] After finishing the training of `tuned-roberta-base-text+latex`:
-    - [ ] Recompute decontextualized word embeddings.
-    - [ ] Update`05-produce-decontextualized-word-embeddings.ipynb`.
     - [ ] Recompute decontextualized similarity matrices.
     - [ ] Update `07-produce-term-similarity-matrices.ipynb`.
     - [ ] Plot baseline results of `roberta-base` to `03-finetune-roberta.ipynb`.

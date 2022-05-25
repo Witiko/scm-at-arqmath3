@@ -101,6 +101,7 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] Update `07-produce-term-similarity-matrices.ipynb`.
     - [ ] Plot baseline results of `roberta-base` to `03-finetune-roberta.ipynb`.
     - [ ] Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
+    - [ ] Add [end-task evaluation][14] to `03-finetune-roberta.ipynb`.
     - [ ] Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
 - [ ] After we have received task 1 annotations:
     - [ ] Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
@@ -127,3 +128,4 @@ This repository contains our math information retrieval (MIR) system for
  [11]: 06-produce-dicttionaries.ipynb
  [12]: 07-produce-term-similarity-matrices.ipynb
  [13]: https://opus.nlpl.eu/EUconst.php
+ [14]: http://allenai.org/data/numglue

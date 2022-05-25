@@ -53,7 +53,7 @@ This repository contains our math information retrieval (MIR) system for
         - [x] The text format
         - [x] The LaTeX format
         - [x] The Tangent-L format
-    - [ ] Word embedding similarities
+    - [x] Word embedding similarities
         - [x] Non-positional `word2vec` embeddings
             - [x] The text + LaTeX format
             - [x] The text format
@@ -64,10 +64,10 @@ This repository contains our math information retrieval (MIR) system for
             - [x] The text format
             - [x] The LaTeX format
             - [x] The Tangent-L format
-        - [ ] Decontextualized `roberta-base` embeddings
-            - [ ] The text format
-        - [ ] Decontextualized tuned `roberta-base` embeddings
-            - [ ] The text + LaTeX format
+        - [x] Decontextualized `roberta-base` embeddings
+            - [x] The text format
+        - [x] Decontextualized tuned `roberta-base` embeddings
+            - [x] The text + LaTeX format
 8. [ ] Evaluate systems and produce runs on ARQMath-1, ARQMath-2, and ARQMath-3 topics
     - [ ] Joint SCM over Lucene BM25 systems
         - [ ] The text format with no embeddings (baseline)
@@ -95,8 +95,6 @@ This repository contains our math information retrieval (MIR) system for
 - [ ] Add missing jupyter notebooks for above tasks.
 - [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
 - [ ] After finishing the training of `tuned-roberta-base-text+latex`:
-    - [ ] Recompute decontextualized similarity matrices.
-    - [ ] Update `07-produce-term-similarity-matrices.ipynb`.
     - [ ] Plot baseline results of `roberta-base` to `03-finetune-roberta.ipynb`.
     - [ ] Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
     - [ ] Add [end-task evaluation][14] to `03-finetune-roberta.ipynb`.

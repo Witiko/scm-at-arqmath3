@@ -8,10 +8,14 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Goals
 
-- Compare performance of text, text + LaTeX, and text + Tangent-L as math representations
-- Compare performance of non-positional word2vec and positional `word2vec` embeddings
-- Compare performance of word2vec embeddings and decontextualized `roberta-base` embeddings
-- Compare performance of decontextualized embeddings of `roberta-base` and tuned `roberta-base`
+- Compare performance of text, text + LaTeX, and text + Tangent-L as math
+  representations
+- Compare performance of non-positional word2vec and positional `word2vec`
+  embeddings
+- Compare performance of word2vec embeddings and decontextualized
+  `roberta-base` embeddings
+- Compare performance of decontextualized embeddings of `roberta-base` and
+  tuned `roberta-base`
 - Compare performance of interpolated and joint SCM models for text and math
 
 ## Tasks
@@ -32,22 +36,22 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Future work
 
-- [ ] After finishing the training of `tuned-roberta-base-text+latex`:
-    - [ ] Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
-    - [ ] Add [end-task evaluation on NumGLUE][14] for `roberta-base` and `tuned-roberta-base-text+latex` to
-      `03-finetune-roberta.ipynb`.
-    - [ ] Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
-- [ ] After we have received task 1 annotations:
-    - [ ] Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
-- [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][16] and
+- After finishing the training of `tuned-roberta-base-text+latex`:
+  - Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
+  - Add [end-task evaluation on NumGLUE][14] for `roberta-base` and
+    `tuned-roberta-base-text+latex` to `03-finetune-roberta.ipynb`.
+  - Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
+- After we have received task 1 annotations:
+  - Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
+- In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][16] and
   [`fp16_full_eval=True`][17] to decrease the VRAM used by training and
   evaluation. Increase batch size accordingly.
-- [ ] Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:
-    - [ ] Describe how the tokenizer was trained.
-    - [ ] Describe how the model was trained.
-    - [ ] Show a causal language modeling demo. (Can the model [integrate][9]?)
-    - [ ] Cite ARQMath3 report.
-    - [ ] Cite this Git repository.
+- Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:
+  - Describe how the tokenizer was trained.
+  - Describe how the model was trained.
+  - Show a causal language modeling demo. (Can the model [integrate][9]?)
+  - Cite ARQMath3 report.
+  - Cite this Git repository.
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

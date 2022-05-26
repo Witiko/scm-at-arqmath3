@@ -32,7 +32,7 @@ This repository contains our math information retrieval (MIR) system for
 ## Code pearls
 
 - [Accelerated word embedding decontextualization][16] using
-  [the batched online algorithm for moving averages by Matt Hancock][4].
+  [the batched algorithm for averages by Matt Hancock][4].
 
 ## Artefacts
 

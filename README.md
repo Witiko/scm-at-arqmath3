@@ -40,8 +40,8 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
 - [ ] After we have received task 1 annotations:
     - [ ] Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
-- [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][1] and
-  [`fp16_full_eval=True`][2] to decrease the VRAM used by training and
+- [ ] In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][16] and
+  [`fp16_full_eval=True`][17] to decrease the VRAM used by training and
   evaluation. Increase batch size accordingly.
 - [ ] Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:
     - [ ] Describe how the tokenizer was trained.
@@ -50,8 +50,6 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] Cite ARQMath3 report.
     - [ ] Cite this Git repository.
 
- [1]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16
- [2]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16_full_eval
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html
  [5]: 05-produce-word-embeddings.ipynb
@@ -65,3 +63,5 @@ This repository contains our math information retrieval (MIR) system for
  [13]: https://opus.nlpl.eu/EUconst.php
  [14]: http://allenai.org/data/numglue
  [15]: 08-produce-arqmath-runs.ipynb
+ [16]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16
+ [17]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16_full_eval

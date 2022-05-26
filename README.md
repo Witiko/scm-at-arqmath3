@@ -34,6 +34,10 @@ This repository contains our math information retrieval (MIR) system for
 - [Accelerated word embedding decontextualization][16] using
   [the batched online algorithm for moving averages by Matt Hancock][4].
 
+## Artefacts
+
+- [The `witiko/mathberta` model][7] at [the 🤗 Model Hub][17].
+
 ## Future work
 
 - After finishing the training of `tuned-roberta-base-text+latex`:
@@ -43,12 +47,9 @@ This repository contains our math information retrieval (MIR) system for
   - Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
 - After we have received task 1 annotations:
   - Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
-- Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:
-  - Describe how the tokenizer was trained.
-  - Describe how the model was trained.
-  - Show a causal language modeling demo. (Can the model [integrate][9]?)
-  - Cite ARQMath3 report.
-  - Cite this Git repository.
+- After the ARQMath-3 paper has been published:
+  - Add [a *Citing* section][18] to `README.md`.
+  - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html
@@ -64,3 +65,8 @@ This repository contains our math information retrieval (MIR) system for
  [14]: http://allenai.org/data/numglue
  [15]: 08-produce-arqmath-runs.ipynb
  [16]: https://github.com/Witiko/scm-at-arqmath3/blob/d43cdced1bfd15754b4ca54291cf94b097b93068/scm_at_arqmath3/extract_decontextualized_word_embeddings.py#L104-L141
+ [17]: https://huggingface.co/witiko/mathberta
+ [18]: https://github.com/MIR-MU/WebMIaS#citing-webmias
+ [19]: https://huggingface.co/roberta-base#roberta-base-model
+ [20]: https://huggingface.co/roberta-base#bibtex-entry-and-citation-info
+ [21]: https://huggingface.co/roberta-base#how-to-use

@@ -5,7 +5,7 @@ set -e -o xtrace
 
 HOSTNAME=docker.apollo.fi.muni.cz
 GPUS=10
-PORT=8890
+PORT=8888
 IMAGE_NAME=witiko/arqmath3:latest
 
 DOCKER_BUILDKIT=1 docker build --build-arg UID="$(id -u)" --build-arg GID="$(id -g)" --build-arg UNAME="$(id -u -n)" . -t "$IMAGE_NAME"

@@ -40,13 +40,14 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Future work
 
-- After finishing the training of `tuned-roberta-base-text+latex`:
-  - Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
-  - Add [end-task evaluation on NumGLUE][14] for `roberta-base` and
-    `tuned-roberta-base-text+latex` to `03-finetune-roberta.ipynb`.
-  - Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
+- After gaussalgo/adaptor#21 has been closed, cherry-pick branch
+  `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
+  evaluation][13] to `03-finetune-roberta.ipynb`.
+- Add [end-task evaluation on NumGLUE][14] for `roberta-base` and
+  `tuned-roberta-base-text+latex` to `03-finetune-roberta.ipynb`.
 - After we have received task 1 annotations:
-  - Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
+  - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
+  - Add end-task evaluation on ARQMath-1, 2, and 3 topics to `09-evaluate-roberta.ipynb`.
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].

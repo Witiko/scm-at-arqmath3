@@ -92,7 +92,8 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Future work
 
-- [ ] Add missing jupyter notebooks for above tasks.
+- [ ] Add missing jupyter notebooks for above tasks:
+    - [ ] Add `08-produce-arqmath-runs.ipynb` jupyter notebook
 - [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
 - [ ] After finishing the training of `tuned-roberta-base-text+latex`:
     - [ ] Plot baseline results of `roberta-base` to `03-finetune-roberta.ipynb`.

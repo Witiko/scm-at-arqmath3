@@ -14,7 +14,7 @@ from .extract_decontextualized_word_embeddings import PathOrIdentifier, get_toke
 
 
 def get_batch_size() -> int:
-    batch_size = 48
+    batch_size = 54
     return batch_size
 
 
@@ -47,6 +47,7 @@ def get_adaptation_arguments(objective_directory: Optional[Path] = None) -> Adap
         gradient_accumulation_steps=gradient_accumulation_steps,
         num_train_epochs=1000,
         remove_unused_columns=False,
+        fp16=True, fp16_full_eval=True,
     )
     return adaptation_arguments
 

@@ -31,7 +31,7 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Code pearls
 
-- [Accelerated word embedding decontextualization][18] using
+- [Accelerated word embedding decontextualization][16] using
   [the batched online algorithm for moving averages by Matt Hancock][4].
 
 ## Future work
@@ -43,9 +43,6 @@ This repository contains our math information retrieval (MIR) system for
   - Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
 - After we have received task 1 annotations:
   - Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.
-- In `scm_at_arqmath3/finetune_transformer.py`, use [`fp16=True`][16] and
-  [`fp16_full_eval=True`][17] to decrease the VRAM used by training and
-  evaluation. Increase batch size accordingly.
 - Publish `tuned-roberta-base-text+latex` to <https://huggingface.co/models/>:
   - Describe how the tokenizer was trained.
   - Describe how the model was trained.
@@ -66,6 +63,4 @@ This repository contains our math information retrieval (MIR) system for
  [13]: https://opus.nlpl.eu/EUconst.php
  [14]: http://allenai.org/data/numglue
  [15]: 08-produce-arqmath-runs.ipynb
- [16]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16
- [17]: https://huggingface.co/docs/transformers/v4.18.0/en/main_classes/trainer#transformers.TrainingArguments.fp16_full_eval
- [18]: https://github.com/Witiko/scm-at-arqmath3/blob/d43cdced1bfd15754b4ca54291cf94b097b93068/scm_at_arqmath3/extract_decontextualized_word_embeddings.py#L104-L141
+ [16]: https://github.com/Witiko/scm-at-arqmath3/blob/d43cdced1bfd15754b4ca54291cf94b097b93068/scm_at_arqmath3/extract_decontextualized_word_embeddings.py#L104-L141

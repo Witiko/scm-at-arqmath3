@@ -96,9 +96,9 @@ This repository contains our math information retrieval (MIR) system for
     - [ ] Add `08-produce-arqmath-runs.ipynb` jupyter notebook
 - [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
 - [ ] After finishing the training of `tuned-roberta-base-text+latex`:
-    - [ ] Plot baseline results of `roberta-base` to `03-finetune-roberta.ipynb`.
     - [ ] Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
-    - [ ] Add [end-task evaluation][14] to `03-finetune-roberta.ipynb`.
+    - [ ] Add [end-task evaluation on NumGLUE][14] for `roberta-base` and `tuned-roberta-base-text+latex` to
+      `03-finetune-roberta.ipynb`.
     - [ ] Add end-task evaluation on ARQMath-1 and 2 topics to `09-evaluate-roberta.ipynb`.
 - [ ] After we have received task 1 annotations:
     - [ ] Add end-task evaluation on ARQMath-3 topics to `09-evaluate-roberta.ipynb`.

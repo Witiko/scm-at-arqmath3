@@ -1,8 +1,10 @@
 from math import ceil
 from pathlib import Path
 from sys import argv
+from typing import Optional
 
 from adaptor.lang_module import LangModule
+from adaptor.objectives.objective_base import Objective
 from adaptor.objectives.MLM import MaskedLanguageModeling
 from adaptor.schedules import SequentialSchedule
 from adaptor.adapter import Adapter
@@ -14,6 +16,11 @@ from .extract_decontextualized_word_embeddings import PathOrIdentifier, get_toke
 def get_batch_size() -> int:
     batch_size = 48
     return batch_size
+
+
+def get_stopping_patience() -> int:
+    stopping_patience = 2
+    return stopping_patience
 
 
 def get_effective_batch_size() -> int:
@@ -28,17 +35,18 @@ def get_gradient_accumulation_steps() -> float:
     return gradient_accumulation_steps
 
 
-def get_adaptation_arguments(objective_directory: Path) -> AdaptationArguments:
+def get_adaptation_arguments(objective_directory: Optional[Path] = None) -> AdaptationArguments:
     gradient_accumulation_steps = get_gradient_accumulation_steps()
     adaptation_arguments = AdaptationArguments(
-        output_dir=str(objective_directory),
-        stopping_strategy=StoppingStrategy.FIRST_OBJECTIVE_CONVERGED, stopping_patience=2,
+        output_dir=str(objective_directory) if objective_directory is not None else '.',
+        stopping_strategy=StoppingStrategy.FIRST_OBJECTIVE_CONVERGED,
         evaluation_strategy='steps', eval_steps=1000,
         save_strategy='steps', save_steps=1000,
         logging_strategy='steps', logging_steps=1000,
         do_train=True, do_eval=True,
         gradient_accumulation_steps=gradient_accumulation_steps,
-        num_train_epochs=1,
+        num_train_epochs=1000,
+        remove_unused_columns=False,
     )
     return adaptation_arguments
 
@@ -49,16 +57,28 @@ class LangModuleWithSpacePrefixingTokenizer(LangModule):
         self.tokenizer = get_tokenizer(input_model_directory)
 
 
+def get_language_module(input_model_directory: PathOrIdentifier) -> LangModule:
+    language_module = LangModuleWithSpacePrefixingTokenizer(input_model_directory)
+    return language_module
+
+
+def get_objective(input_training_dataset_file: Path,
+                  input_validation_dataset_file: Path,
+                  language_module: LangModule) -> Objective:
+    batch_size = get_batch_size()
+    objective = MaskedLanguageModeling(language_module, batch_size=batch_size,
+                                       texts_or_path=str(input_training_dataset_file),
+                                       val_texts_or_path=str(input_validation_dataset_file))
+    return objective
+
+
 def get_adapter(input_training_dataset_file: Path,
                 input_validation_dataset_file: Path,
                 input_model_directory: PathOrIdentifier,
                 adaptation_arguments: AdaptationArguments) -> Adapter:
-    language_module = LangModuleWithSpacePrefixingTokenizer(input_model_directory)
-    batch_size = get_batch_size()
-    objectives = MaskedLanguageModeling(language_module, batch_size=batch_size,
-                                        texts_or_path=str(input_training_dataset_file),
-                                        val_texts_or_path=str(input_validation_dataset_file))
-    schedule = SequentialSchedule([objectives], adaptation_arguments)
+    language_module = get_language_module(input_model_directory)
+    objective = get_objective(input_training_dataset_file, input_validation_dataset_file, language_module)
+    schedule = SequentialSchedule([objective], adaptation_arguments)
     adapter = Adapter(language_module, schedule, adaptation_arguments)
     return adapter
 

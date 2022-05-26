@@ -15,7 +15,7 @@ RUN_BASENAMES_PRIMARY = \
 RUN_BASENAMES_SECONDARY = \
 	SCM-task1-joint_word2vec-both-auto-A \
 	SCM-task1-joint_positional_word2vec-both-auto-A \
-	SCM-task1-joint_roberta_base-both-auto-A \
+	SCM-task1-joint_roberta_base-text-auto-A \
 	SCM-task1-interpolated_text+word2vec_latex-both-auto-A \
 	SCM-task1-interpolated_text+positional_word2vec_latex-both-auto-A \
 	SCM-task1-interpolated_text+word2vec_tangentl-both-auto-A
@@ -235,7 +235,7 @@ endef
 %/SCM-task1-joint_positional_word2vec-both-auto-A.tsv: dictionary-text+latex roberta-base-text+latex similarity-matrix-text+latex-positional
 	$(call produce_joint_run,text+latex,$<,$(word 3,$^),0,$@)
 
-%/SCM-task1-joint_roberta_base-both-auto-A.tsv: dictionary-text decontextualized-similarity-matrix-roberta-base
+%/SCM-task1-joint_roberta_base-text-auto-A.tsv: dictionary-text decontextualized-similarity-matrix-roberta-base
 	$(call produce_joint_run,text,$<,$(word 2,$^),0,$@)
 
 %/SCM-task1-joint_tuned_roberta_base-both-auto-A.tsv: dictionary-text+latex roberta-base-text+latex decontextualized-similarity-matrix-tuned-roberta-base-text+latex

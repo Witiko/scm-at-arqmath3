@@ -16,73 +16,14 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Tasks
 
-1. [x] [Prepare dataset][3]
-    - [x] The text + LaTeX format
-    - [x] The text format
-    - [x] The LaTeX format
-    - [x] The Tangent-L format
-2. [x] [Train tokenizer][6]
-    - [x] The LaTeX format
-    - [x] The text + LaTeX format
-3. [x] [Tune `roberta-base` model][7]
-    - [x] The text + LaTeX format
-4. [y] [Train `word2vec` models][8]
-    - [x] [Train non-positional `word2vec` models][8]
-        - [x] The text format
-        - [x] The text + LaTeX format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
-    - [x] [Train positional `word2vec` models][8]
-        - [x] The text format
-        - [x] The text + LaTeX format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
-5. [x] [Produce decontextualized word embeddings][10]
-    - [x] The `roberta-base` model
-        - [x] The text format
-    - [x] The tuned `roberta-base` model
-        - [x] The text + LaTeX format
-6. [x] [Produce dictionaries][11]
-    - [x] The text + LaTeX format
-    - [x] The text format
-    - [x] The LaTeX format
-    - [x] The Tangent-L format
-7. [x] [Produce term similarity matrices][12]
-    - [x] Levenshtein similarities
-        - [x] The text + LaTeX format
-        - [x] The text format
-        - [x] The LaTeX format
-        - [x] The Tangent-L format
-    - [x] Word embedding similarities
-        - [x] Non-positional `word2vec` embeddings
-            - [x] The text + LaTeX format
-            - [x] The text format
-            - [x] The LaTeX format
-            - [x] The Tangent-L format
-        - [x] Positional `word2vec` embeddings
-            - [x] The text + LaTeX format
-            - [x] The text format
-            - [x] The LaTeX format
-            - [x] The Tangent-L format
-        - [x] Decontextualized `roberta-base` embeddings
-            - [x] The text format
-        - [x] Decontextualized tuned `roberta-base` embeddings
-            - [x] The text + LaTeX format
-8. [ ] Evaluate systems and produce runs on ARQMath-1, ARQMath-2, and ARQMath-3 topics
-    - [ ] Joint SCM over Lucene BM25 systems
-        - [ ] The text format with no embeddings (baseline)
-        - [ ] The text + LaTeX format with no embeddings (baseline)
-        - [ ] The text + LaTeX format with non-positional `word2vec` embeddings
-        - [ ] The text + LaTeX format with positional `word2vec` embeddings
-        - [ ] The text + LaTeX format with decontextualized `roberta-base` embeddings
-        - [ ] The text + LaTeX format with decontextualized tuned `roberta-base` embeddings
-    - [ ] Interpolated SCM over Lucene BM25 systems
-        - [ ] The text and LaTeX formats with no embeddings (baseline)
-        - [ ] The text and Tangent-L formats with no embeddings (baseline)
-        - [ ] The text and LaTeX formats with non-positional `word2vec` embeddings for math
-        - [ ] The text and LaTeX formats with positional `word2vec` embeddings for math
-        - [ ] The text and Tangent-L formats with non-positional `word2vec` embeddings for math
-        - [ ] The text and Tangent-L formats with positional `word2vec` embeddings for math (primary)
+1. [Prepare dataset][3]
+2. [Train tokenizer][6]
+3. [Tune `roberta-base` model][7]
+4. [Train `word2vec` models][8]
+5. [Produce decontextualized word embeddings][10]
+6. [Produce dictionaries][11]
+7. [Produce term similarity matrices][12]
+8. [Produce ARQMath runs][15]
 
 ## Code pearls
 
@@ -92,9 +33,6 @@ This repository contains our math information retrieval (MIR) system for
 
 ## Future work
 
-- [ ] Add missing jupyter notebooks for above tasks:
-    - [ ] Add `08-produce-arqmath-runs.ipynb` jupyter notebook
-- [ ] Rename `SCM-task1-joint_roberta_base-both-auto-A.tsv` to `SCM-task1-joint_roberta_base-text-auto-A.tsv`.
 - [ ] After finishing the training of `tuned-roberta-base-text+latex`:
     - [ ] Add [out-of-domain evaluation][13] to `03-finetune-roberta.ipynb`.
     - [ ] Add [end-task evaluation on NumGLUE][14] for `roberta-base` and `tuned-roberta-base-text+latex` to
@@ -126,3 +64,4 @@ This repository contains our math information retrieval (MIR) system for
  [12]: 07-produce-term-similarity-matrices.ipynb
  [13]: https://opus.nlpl.eu/EUconst.php
  [14]: http://allenai.org/data/numglue
+ [15]: 08-produce-arqmath-runs.ipynb

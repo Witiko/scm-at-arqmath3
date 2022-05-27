@@ -1,15 +1,39 @@
 \ProvidesPackage{markdownthemewitiko_ceurart}[2022/05/27]
+
+% Themes and syntax extensions
 \markdownSetup{
   citations = true,
   definitionLists = true,
   eagerCache = false,
   headerAttributes = true,
+  relativeReferences = true,
   theme = witiko/tilde,
 }
 
 % Links
 \renewcommand\markdownLaTeXRendererDirectOrIndirectLink[4]{%
   #1\footnote{\url{#3}\ifx\empty#4\empty\else\ (#4)\fi}}
+
+% Figures
+\setkeys{Gin}{
+  width = \columnwidth,
+  height = 0.65\paperheight,
+  keepaspectratio,
+}
+\markdownSetup{
+  renderers = {
+    image = {%
+      \begin{figure}%
+        \begin{center}%
+          \includegraphics{#3}%
+        \end{center}%
+        \ifx\empty#4\empty\else
+          \caption{#4}%
+        \fi
+        \label{fig:#1}%
+      \end{figure}},
+  }
+}
 
 % Metadata
 \markdownSetup{

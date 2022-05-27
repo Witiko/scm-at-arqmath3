@@ -139,7 +139,7 @@ In our experiments, we used two different types of language models:
 
 Shallow log-bilinear models
 
-:   We [train the shallow `word2vec` language models][04-train-word2vec]
+:   We [trained the shallow `word2vec` language models][04-train-word2vec]
     [@mikolov2013distributed] on our text + LaTeX, text, LaTeX, and Tangent-L
     datasets.
 
@@ -147,10 +147,29 @@ Shallow log-bilinear models
     has been shown to improve the performance of `word2vec` models on
     analogical reasoning and causal language modeling [@novotny2022when].
     To evaluate the impact of constrained positional weighting on math
-    information retrieval, we train `word2vec` models both with and without
+    information retrieval, we trained `word2vec` models both with and without
     constrained positional weighting for every dataset.
 
+Deep transformer models
+
+:   To model text, we used [the pre-trained roberta-base model][roberta-base].
+
+     ![learning-curves][]
+
+    To model text and math in the LaTeX format, we replaced the tokenizer
+    of `roberta-base` with our text and math tokenizer. Then, we extended the
+    vocabulary of our model with the `[MATH]` and `[/MATH]` special tokens
+    and with the tokens recognized by our LaTeX tokenizer, and we randomly
+    initialized weights for the new tokens. Then, we fine-tuned our model on
+    our text + LaTeX dataset for one epoch using [the masked language modeling
+    objective of RoBERTa][03-finetune-roberta] [@liu2019roberta], see learning
+    curves in Figure~<#fig:learning-curves>. We called our model MathBERTa and
+    [released it to the HuggingFace Model Hub.][mathberta]
+
+ [03-finetune-roberta]: https://github.com/witiko/scm-at-arqmath3 (file 03-finetune-roberta.ipynb)
  [04-train-word2vec]: https://github.com/witiko/scm-at-arqmath3 (file 04-train-word2vec.ipynb)
+ [learning-curves]: learning-curves.pdf "Learning curves of MathBERTa on our text + LaTeX dataset"
+ [mathberta]: https://huggingface.co/witiko/mathberta
 
 ## Token Similarity
 

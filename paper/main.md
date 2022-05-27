@@ -53,6 +53,11 @@ Some text. [@novotny2021interpretable]
 
 # Methods
 
+In this section, we describe the datasets we used to train our tokenizers and
+language models. We also describe how we used our language models to measure
+similarity between text and math tokens, and how we used our similarity
+measures to find answers to math questions.
+
 ## Datasets
 
 ## Tokenization

@@ -88,9 +88,7 @@ Text + LaTeX
     `no-problem` and `warning` subsets of ArXMLiv. The dataset contains text
     and mathematical formulae in the LaTeX format surrounded by the `[MATH]`
     and `[/MATH]` tags. To validate our language models, we used a small part
-    of the `error` subset of ArXMLiv and no data from MSE. To produce global
-    representations of tokens by a process known as *decontextualization*, we
-    used just the `no-problem` subset of ArXMLiv and no data from MSE.
+    of the `error` subset of ArXMLiv and no data from MSE.
 
 Text
 
@@ -125,7 +123,8 @@ In our system, we used several tokenizers:
     - To tokenize LaTeX, we [trained a BPE tokenizer][02-train-tokenizers] with
       a vocabulary of size 50,000 on our LaTeX dataset.
     - To tokenize Tangent-L, we strip leading and training hash signs (`#`) from
-      a formula representation and then split it to tokens using the `#\s+#` regex.
+      a formula representation and then split it to tokens using the `#\s+#`
+      Perl regex.
 - To tokenize text and math in the LaTeX format, we extended the BPE tokenizer
   of `roberta-base` with the `[MATH]` and `[/MATH]` special tokens and with the
   tokens recognized by our LaTeX tokenizer.
@@ -135,6 +134,23 @@ In our system, we used several tokenizers:
  [mathberta]: https://huggingface.co/witiko/mathberta
 
 ## Language Modeling
+
+In our experiments, we used two different types of language models:
+
+Shallow log-bilinear models
+
+:   We [train the shallow `word2vec` language models][04-train-word2vec]
+    [@mikolov2013distributed] on our text + LaTeX, text, LaTeX, and Tangent-L
+    datasets.
+
+    On text documents, a technique known as *constrained positional weighting*
+    has been shown to improve the performance of `word2vec` models on
+    analogical reasoning and causal language modeling [@novotny2022when].
+    To evaluate the impact of constrained positional weighting on math
+    information retrieval, we train `word2vec` models both with and without
+    constrained positional weighting for every dataset.
+
+ [04-train-word2vec]: https://github.com/witiko/scm-at-arqmath3 (file 04-train-word2vec.ipynb)
 
 ## Token Similarity
 

@@ -47,6 +47,7 @@ This repository contains our math information retrieval (MIR) system for
   [`03-finetune-roberta.ipynb`][7].
 - After we have received task 1 annotations:
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
+  - Vizualize the impact of various extensions (axis x) on 2022 nDCG' (axis y) with TikZ.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to `09-evaluate-roberta.ipynb`.
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.

@@ -49,3 +49,21 @@ transformers
 # Introduction
 
 Some text. [@novotny2021interpretable]
+
+# Methods
+
+## Datasets
+
+## Tokenization
+
+## Language Modeling
+
+## Token Similarity
+
+## Soft Vector Space Modeling
+
+## Evaluation Measures
+
+# Results
+
+# Conclusion

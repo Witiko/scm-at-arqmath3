@@ -6,19 +6,19 @@ This repository contains our math information retrieval (MIR) system for
  [1]: https://www.cs.rit.edu/~dprl/ARQMath/
  [2]: https://radimrehurek.com/gensim/auto_examples/tutorials/run_scm.html
 
-## Goals
+## Research goals
 
-- Compare performance of text, text + LaTeX, and text + Tangent-L as math
-  representations
-- Compare performance of non-positional word2vec and positional `word2vec`
-  embeddings
-- Compare performance of word2vec embeddings and decontextualized
-  `roberta-base` embeddings
-- Compare performance of decontextualized embeddings of `roberta-base` and
-  tuned `roberta-base`
-- Compare performance of interpolated and joint SCM models for text and math
+1. Compare performance of text, text + LaTeX, and text + Tangent-L as math
+   representations
+2. Compare performance of non-positional word2vec and positional `word2vec`
+   embeddings
+3. Compare performance of word2vec embeddings and decontextualized
+   `roberta-base` embeddings
+4. Compare performance of decontextualized embeddings of `roberta-base` and
+   tuned `roberta-base`
+5. Compare performance of interpolated and joint SCM models for text and math
 
-## Tasks
+## Jupyter notebooks
 
 1. [Prepare dataset][3]
 2. [Train tokenizer][6]

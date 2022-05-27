@@ -67,9 +67,9 @@ Math StackExchange
 :   The Math StackExchange collection v1.2 (MSE) provided by the organizers of
     the ARQMath-2 shared task evaluation [@behrooz2021overview] contains
     2,466,080 posts from the Math Stack Exchange question answering website in
-    HTML5 with math formulae in LaTeX. Besides the answers~(59%), which are the
-    retrieval unit in task 1 of ARQMath-3, the posts also contain
-    questions~(41%) related to the answers.
+    HTML5 with math formulae in LaTeX. Besides the answers~(60%), which are the
+    retrieval unit in task 1 of ARQMath-3, the posts also contain parent
+    questions~(40%) for answers.
 
 ArXMLiv
 
@@ -77,7 +77,7 @@ ArXMLiv
     preprints from ArXiv in the HTML5 format with math formulae in MathML.
     Documents in the dataset were converted from LaTeX sources and are divided
     into the following subsets according to the severity of errors encountered
-    during conversion: `no-problem`~(11%), `warning`~(60%), and `error`~(29%).
+    during conversion: `no-problem`~(10%), `warning`~(60%), and `error`~(30%).
 
 From the corpora, we [produced a number of datasets][01-prepare-dataset]
 in different formats that we used to train our tokenizers and language models:
@@ -86,7 +86,7 @@ Text + LaTeX
 
 :   To train text & math language models, we combined MSE with the
     `no-problem` and `warning` subsets of ArXMLiv. The dataset contains text
-    and mathematical formulae in the LaTeX format surrounded by the `[MATH]`
+    and mathematical formulae in the LaTeX format surrounded by `[MATH]`
     and `[/MATH]` tags. To validate our language models, we used a small part
     of the `error` subset of ArXMLiv and no data from MSE.
 
@@ -122,8 +122,8 @@ In our system, we used several tokenizers:
   Tangent-L formats:
     - To tokenize LaTeX, we [trained a BPE tokenizer][02-train-tokenizers] with
       a vocabulary of size 50,000 on our LaTeX dataset.
-    - To tokenize Tangent-L, we strip leading and training hash signs (`#`) from
-      a formula representation and then split it to tokens using the `#\s+#`
+    - To tokenize Tangent-L, we strip leading and trailing hash signs (`#`) from
+      a formula representation and then split it into tokens using the `#\s+#`
       Perl regex.
 - To tokenize text and math in the LaTeX format, we extended the BPE tokenizer
   of `roberta-base` with the `[MATH]` and `[/MATH]` special tokens and with the
@@ -172,6 +172,25 @@ Deep transformer models
  [mathberta]: https://huggingface.co/witiko/mathberta
 
 ## Token Similarity
+
+To determine the semantic relatedness of text and math tokens, we first
+extracted their global representations from our language models:
+
+Shallow log-bilinear models
+
+:   We extracted token vectors from the input and output matrices of our
+    `word2vec` models and averaged them to produce global token embeddings.
+
+Deep transformer models
+
+:   Unlike `word2vec`, transformer models do not contain global representations
+    of tokens, but produce representations of tokens in the context of
+    a sentence. To extract global token embeddings from `roberta-base` and
+    MathBERTa, we [decontextualized their contextual token
+    embeddings][05-produce-decontextualized-word-embeddings] [@stefanik2021regemt,
+    Section 3.2] on the sentences from our text + LaTeX dataset.
+
+ [05-produce-decontextualized-word-embeddings]: https://github.com/witiko/scm-at-arqmath3 (file 05-produce-decontextualized-word-embeddings.ipynb)
 
 ## Soft Vector Space Modeling
 

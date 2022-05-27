@@ -11,16 +11,17 @@ conference: |
 title: Combining Sparse and Dense Information Retrieval
 subtitle: Soft Cosine Measure and MathBERTa at ARQMath-3
 author:
-  name: Vít Novotný
+- name: Vít Novotný
   orcid: 0000-0002-3303-4130
   email: witiko@mail.muni.cz
-  url: https://github.com/witiko
+- name: Michal Štefánik
+  orcid: 0000-0003-1766-5538
+  email: stefanik.m@mail.muni.cz
 address: |
-  Natural Language Processing Centre,
   Faculty of Informatics Masaryk University,
   Botanická 68a,
   602 00 Brno,
-  Czechia
+  Czech Republic
 
 ---
 

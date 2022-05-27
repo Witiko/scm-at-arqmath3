@@ -173,8 +173,8 @@ Deep transformer models
 
 ## Token Similarity
 
-To determine the semantic relatedness of text and math tokens, we first
-extracted their global representations from our language models:
+To determine the similarity of text and math tokens, we first extracted their
+global representations from our language models:
 
 Shallow log-bilinear models
 
@@ -193,10 +193,46 @@ Deep transformer models
 Then, we [produced dictionaries of all tokens in our text + LaTeX, text, LaTeX,
 and Tangent-L datasets,][06-produce-dictionaries] removing all tokens that
 occurred less than twice in a dataset and keeping only 100,000 most frequent
-tokens from every dataset.
+tokens from every dataset. For each dictionary, we [produced two types of token
+similarity matrices][07-produce-term-similarity-matrices] that capture the
+surface-level lexical similarity and the semantic similarity between tokens,
+respectively:
+
+Lexical similarity
+
+:   We used the method of @charlet2017simbow [Section 2.2] to produce
+    similarity matrices using the edit distance between the tokens.
+
+Semantic similarity
+
+:   We used the method of @charlet2017simbow [Section 2.1] to produce
+    similarity matrices using the cosine similarity between the global
+    token embeddings.
+
+    For all dictionaries, we produced two matrices using the token embeddings
+    of the `word2vec` models with and without constrained positional weighting.
+    For the text and text + LaTeX dictionaries, we also produced an additional
+    matrix using the token embeddings of the `roberta-base` and MathBERTa
+    models, respectively.
+
+To ensure sparsity and symmetry of the matrices, we considered only the 100
+most similar tokens for each token and we used the greedy algorithm of
+@novotny2018implementation [Section 3] to construct the matrices. For semantic
+similarity matrices, we also enforced strict diagonal dominance, which has
+been shown to improve performance on semantic text similarity
+[@novotny2020text, Table 2].
+
+Finally, to produce token similarity matrices that capture both lexical and
+semantic similarity between tokens, we combined every semantic similarity
+matrix with a corresponding lexical similarity matrix as follows:
+
+ /combine_similarity_matrices.tex
+
+In our system, we only used the combined term similarity matrices.
 
  [05-produce-decontextualized-word-embeddings]: https://github.com/witiko/scm-at-arqmath3 (file 05-produce-decontextualized-word-embeddings.ipynb)
  [06-produce-dictionaries]: https://github.com/witiko/scm-at-arqmath3 (file 06-produce-dictionaries.ipynb)
+ [07-produce-term-similarity-matrices]: https://github.com/witiko/scm-at-arqmath3 (file 07-produce-term-similarity-matrices.ipynb)
 
 ## Soft Vector Space Modeling
 

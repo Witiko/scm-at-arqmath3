@@ -35,6 +35,29 @@
   }
 }
 
+% Content blocks
+\markdownSetup{
+  contentBlocks = true,
+  renderers = {
+    contentBlock = {%
+      \markdownRendererContentBlockPrototype{#1}{#2}{#3}{#4}%
+      \markdownSetup{
+        renderers = {
+          interblockSeparator = {%
+            \markdownSetup{
+              renderers = {
+                interblockSeparator = {%
+                  \markdownRendererInterblockSeparatorPrototype
+                },
+              },
+            }%
+          },
+        },
+      }%
+    },
+  }
+}
+
 % Metadata
 \markdownSetup{
   jekyllData = true,
@@ -94,7 +117,9 @@
     interblockSeparator = {%
       \markdownSetup{
         renderers = {
-          interblockSeparator = {\markdownRendererInterblockSeparatorPrototype},
+          interblockSeparator = {%
+            \markdownRendererInterblockSeparatorPrototype
+          },
         },
       }%
     },

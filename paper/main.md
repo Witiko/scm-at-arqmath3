@@ -190,7 +190,13 @@ Deep transformer models
     embeddings][05-produce-decontextualized-word-embeddings] [@stefanik2021regemt,
     Section 3.2] on the sentences from our text + LaTeX dataset.
 
+Then, we [produced dictionaries of all tokens in our text + LaTeX, text, LaTeX,
+and Tangent-L datasets,][06-produce-dictionaries] removing all tokens that
+occurred less than twice in a dataset and keeping only 100,000 most frequent
+tokens from every dataset.
+
  [05-produce-decontextualized-word-embeddings]: https://github.com/witiko/scm-at-arqmath3 (file 05-produce-decontextualized-word-embeddings.ipynb)
+ [06-produce-dictionaries]: https://github.com/witiko/scm-at-arqmath3 (file 06-produce-dictionaries.ipynb)
 
 ## Soft Vector Space Modeling
 

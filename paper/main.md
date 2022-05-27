@@ -65,8 +65,8 @@ In our experiments, we used the Math StackExchange and ArXMLiv corpora:
 Math StackExchange
 
 :   The Math StackExchange collection v1.2 (MSE) provided by the organizers of
-		the ARQMath-2 shared task evaluation [@behrooz2021overview] contains
-		2,466,080 posts from the Math Stack Exchange question answering website in
+    the ARQMath-2 shared task evaluation [@behrooz2021overview] contains
+    2,466,080 posts from the Math Stack Exchange question answering website in
     HTML5 with math formulae in LaTeX. Besides the answers~(59%), which are the
     retrieval unit in task 1 of ARQMath-3, the posts also contain
     questions~(41%) related to the answers.
@@ -86,11 +86,11 @@ Text + LaTeX
 
 :   To train text & math language models, we combined MSE with the
     `no-problem` and `warning` subsets of ArXMLiv. The dataset contains text
-    and mathematical formulae in the LaTeX format. To validate our language
-    models, we used a small part of the `error` subset of ArXMLiv and no data
-    from MSE. To produce global representations of tokens by a process known
-    as *decontextualization*, we used just the `no-problem` subset of ArXMLiv
-    and no data from MSE.
+    and mathematical formulae in the LaTeX format surrounded by the `[MATH]`
+    and `[/MATH]` tags. To validate our language models, we used a small part
+    of the `error` subset of ArXMLiv and no data from MSE. To produce global
+    representations of tokens by a process known as *decontextualization*, we
+    used just the `no-problem` subset of ArXMLiv and no data from MSE.
 
 Text
 
@@ -108,10 +108,11 @@ Tangent-L
 
 :   To train math language models, we used the same combinations of MSE
     and ArXMLiv subsets as in the previous datasets, but now our dataset
-    only contains formulae in the format used by the state-of-the-art
-    Tangent-L search engine from UWaterloo [@ng2021dowsing].
+    only contains formulae in the format used by [the state-of-the-art
+    Tangent-L search engine from UWaterloo][mathtuples] [@ng2021dowsing].
 
  [01-prepare-dataset]: https://github.com/witiko/scm-at-arqmath3 (file 01-prepare-dataset.ipynb)
+ [mathtuples]: https://github.com/fwtompa/mathtuples
 
 ## Tokenization
 
@@ -119,11 +120,19 @@ In our system, we used several tokenizers:
 
 - To tokenize text, we used the BPE tokenizer of [the `roberta-base` language
   model][roberta-base] [@liu2019roberta].
-- To tokenize math, we used a number of different tokenizers:
-    - To tokenize LaTeX, we [trained a BPE tokenizer][02-train-tokenizers]
+- To tokenize math, we used two different tokenizers for the LaTeX and
+  Tangent-L formats:
+    - To tokenize LaTeX, we [trained a BPE tokenizer][02-train-tokenizers] with
+      a vocabulary of size 50,000 on our LaTeX dataset.
+    - To tokenize Tangent-L, we strip leading and training hash signs (`#`) from
+      a formula representation and then split it to tokens using the `#\s+#` regex.
+- To tokenize text and math in the LaTeX format, we extended the BPE tokenizer
+  of `roberta-base` with the `[MATH]` and `[/MATH]` special tokens and with the
+  tokens recognized by our LaTeX tokenizer.
 
  [roberta-base]: https://huggingface.co/roberta-base
  [02-train-tokenizers]: https://github.com/witiko/scm-at-arqmath3 (file 02-train-tokenizers.ipynb)
+ [mathberta]: https://huggingface.co/witiko/mathberta
 
 ## Language Modeling
 

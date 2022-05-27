@@ -2872,10 +2872,10 @@
 %%
 
 % \RequirePackage[numbers,sort&compress]{natbib}
-\RequirePackage[numbers]{natbib}
-\AtBeginDocument{\bibsep=0pt}
+%\RequirePackage[numbers]{natbib}
+%\AtBeginDocument{\bibsep=0pt}
 
-\bibliographystyle{elsarticle-num-names}
+%\bibliographystyle{elsarticle-num-names}
 % \bibliographystyle{elsarticle-num}
 
 %%

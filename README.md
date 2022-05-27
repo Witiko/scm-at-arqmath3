@@ -49,12 +49,13 @@ The repository also contains the paper that describes our system.
 - After we have received task 1 annotations:
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
   - Vizualize the impact of various extensions (axis x) on 2022 nDCG' (axis y)
-    with TikZ.
+    with TikZ in `paper/`.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
     `09-evaluate-roberta.ipynb`.
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
+- Render `LaTeX` as `\LaTeX` in `paper/`.
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

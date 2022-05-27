@@ -1,12 +1,9 @@
 \documentclass{ceurart}
-\usepackage[
-  eagerCache = false,
-  citations = true,
-  headerAttributes = true,
-  theme = witiko/ceurart,
-]{markdown}
+\usepackage[theme = witiko/ceurart]{markdown}
 \markdownSetupSnippet{abstract}{snippet = witiko/ceurart/abstract}
 \markdownSetupSnippet{keywords}{snippet = witiko/ceurart/keywords}
+\usepackage[style = numeric]{biblatex}
+\addbibresource{main.bib}
 \begin{document}
 \markdownInput[slice = ^ ^abstract]{main.md}  % Metadata
 \begin{abstract}  % Abstract
@@ -17,5 +14,5 @@
 \end{keywords}
 \maketitle
 \markdownInput[slice = $keywords $]{main.md}  % Body text
-\bibliography{main}  % Bibliography
+\printbibliography  % Bibliography
 \end{document}

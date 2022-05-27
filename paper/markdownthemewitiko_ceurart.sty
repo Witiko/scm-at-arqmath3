@@ -1,4 +1,15 @@
 \ProvidesPackage{markdownthemewitiko_ceurart}[2022/05/27]
+\markdownSetup{
+  citations = true,
+  definitionLists = true,
+  eagerCache = false,
+  headerAttributes = true,
+  theme = witiko/tilde,
+}
+
+% Links
+\renewcommand\markdownLaTeXRendererDirectOrIndirectLink[4]{%
+  #1\footnote{\url{#3}\ifx\empty#4\empty\else\ (#4)\fi}}
 
 % Metadata
 \markdownSetup{

@@ -8,6 +8,14 @@
   },
 }
 \ExplSyntaxOn
+\cs_new:Nn
+  \__witiko_ceurart_subtitle:n
+  {
+    \title [mode = sub] { #1 }
+  }
+\cs_generate_variant:Nn
+  \__witiko_ceurart_subtitle:n
+  { V }
 \keys_define:nn
   { markdown / jekyllData }
   {
@@ -16,8 +24,8 @@
     conference      .code:n    = { \conference                 { #1 } },
     subtitle        .tl_set:N  = \l_witiko_ceurart_subtitle_tl ,
     title           .code:n    = {
-      \title              { #1 }
-      \title [mode = sub] { \l_witiko_ceurart_subtitle_tl }
+      \title { #1 }
+      \__witiko_ceurart_subtitle:V \l_witiko_ceurart_subtitle_tl
     },
     address         .code:n    = { \address [1]                { #1 } },
     /author/email   .tl_set:N  = \l_witiko_ceurart_email_tl ,

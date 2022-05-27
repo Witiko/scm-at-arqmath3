@@ -19,7 +19,7 @@ author:
   email: stefanik.m@mail.muni.cz
 address: |
   Faculty of Informatics Masaryk University,
-  Botanická 68a,
+  Botanická 554/68a,
   602 00 Brno,
   Czech Republic
 

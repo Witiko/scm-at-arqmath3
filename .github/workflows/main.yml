@@ -24,6 +24,7 @@ jobs:
         uses: nosborn/github-action-markdown-cli@v2.0.0
         with:
           files: .
+          config_file: .markdownlint.yaml
   style-check:
     name: Style check
     runs-on: ubuntu-latest
@@ -64,3 +65,19 @@ jobs:
           pip install .[test,all,word2vec]
       - name: Type check
         run: pytype system
+  typeset-paper:
+    name: Typeset paper
+    runs-on: ubuntu-latest
+    container:
+      image: witiko/markdown:latest-with-cache
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Typeset paper
+        run: latexmk -cd -pdf -shell-escape paper/main.tex
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: paper
+          path: |
+            paper/main.pdf

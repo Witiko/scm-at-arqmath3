@@ -1,0 +1,67 @@
+\ProvidesPackage{markdownthemewitiko_ceurart}[2022/05/27]
+
+% Metadata
+\markdownSetup{
+  jekyllData = true,
+  renderers = {
+    jekyllDataEnd = {},
+  },
+}
+\ExplSyntaxOn
+\keys_define:nn
+  { markdown / jekyllData }
+  {
+    copyrightyear   .code:n    = { \copyrightyear              { #1 } },
+    copyrightclause .code:n    = { \copyrightclause            { #1 } },
+    conference      .code:n    = { \conference                 { #1 } },
+    subtitle        .tl_set:N  = \l_witiko_ceurart_subtitle_tl ,
+    title           .code:n    = {
+      \title              { #1 }
+      \title [mode = sub] { \l_witiko_ceurart_subtitle_tl }
+    },
+    address         .code:n    = { \address [1]                { #1 } },
+    /author/email   .tl_set:N  = \l_witiko_ceurart_email_tl ,
+    /author/name    .tl_gset:N = \l_witiko_ceurart_name_tl ,
+    /author/orcid   .tl_set:N  = \l_witiko_ceurart_orcid_tl ,
+    /author/url     .code:n    = {
+      \author [1] \l_witiko_ceurart_name_tl [
+        orcid = \l_witiko_ceurart_orcid_tl ,
+        email = \l_witiko_ceurart_email_tl ,
+        url = { #1 },
+      ]
+    },
+  }
+\keys_define:nn
+  { ceur / author }
+  {
+    orcid           .tl_set_x:N = \l_ceur_au_orcid_tl ,
+    email           .tl_set_x:N = \l_ceur_au_email_tl ,
+  }
+\ExplSyntaxOff
+
+% Abstract
+\markdownSetupSnippet{abstract}{
+  renderers = {
+    headerAttributeContextBegin = {},
+    headingOne = {},
+    headerAttributeContextEnd = {},
+    interblockSeparator = {%
+      \markdownSetup{
+        renderers = {
+          interblockSeparator = {\par},
+	},
+      }%
+    },
+  }
+}
+
+% Keywords
+\markdownSetupSnippet{keywords}{
+  hardLineBreaks = true,
+  renderers = {
+    headerAttributeContextBegin = {},
+    headingOne = {},
+    headerAttributeContextEnd = {},
+    lineBreak = {\sep},
+  }
+}

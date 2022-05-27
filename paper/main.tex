@@ -1,0 +1,21 @@
+\documentclass{ceurart}
+\usepackage[
+  eagerCache = false,
+  citations = true,
+  headerAttributes = true,
+  theme = witiko/ceurart,
+]{markdown}
+\markdownSetupSnippet{abstract}{snippet = witiko/ceurart/abstract}
+\markdownSetupSnippet{keywords}{snippet = witiko/ceurart/keywords}
+\begin{document}
+\markdownInput[slice = ^ ^abstract]{main.md}  % Metadata
+\begin{abstract}  % Abstract
+\protect\markdownInput[slice = abstract, snippet = abstract]{main.md}
+\end{abstract}
+\begin{keywords}  % Keywords
+\markdownInput[slice = keywords, snippet = keywords]{main.md}
+\end{keywords}
+\maketitle
+\markdownInput[slice = $keywords $]{main.md}  % Body text
+\bibliography{main}  % Bibliography
+\end{document}

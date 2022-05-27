@@ -2,6 +2,7 @@
 
 This repository contains our math information retrieval (MIR) system for
 [the ARQMath3 competition][1] that is based on [the soft cosine measure][2].
+The repository also contains the paper that describes our system.
 
  [1]: https://www.cs.rit.edu/~dprl/ARQMath/
  [2]: https://radimrehurek.com/gensim/auto_examples/tutorials/run_scm.html

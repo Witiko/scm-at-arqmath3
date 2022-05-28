@@ -9,7 +9,7 @@ conference: |
   September 5--8, 2022, Bologna, Italy
 
 title: Combining Sparse and Dense Information Retrieval
-subtitle: Soft Cosine Measure and MathBERTa at ARQMath-3
+subtitle: Soft Vector Space Model and MathBERTa at ARQMath-3
 author:
 - name: Vít Novotný
   orcid: 0000-0002-3303-4130
@@ -228,7 +228,7 @@ matrix with a corresponding lexical similarity matrix as follows:
 
  /combine_similarity_matrices.tex
 
-In our system, we only used the combined term similarity matrices.
+In our system, we only used the combined token similarity matrices.
 
  [05-produce-decontextualized-word-embeddings]: https://github.com/witiko/scm-at-arqmath3 (file 05-produce-decontextualized-word-embeddings.ipynb)
  [06-produce-dictionaries]: https://github.com/witiko/scm-at-arqmath3 (file 06-produce-dictionaries.ipynb)
@@ -236,7 +236,63 @@ In our system, we only used the combined term similarity matrices.
 
 ## Soft Vector Space Modeling
 
-## Evaluation Measures
+To find answers to math questions in task 1 of ARQMath-3, we used sparse
+retrieval with the soft vector space model of @sidorov2014soft, using Lucene
+BM25 [@kamphuis2020bm25, Table 1] as the vector space and our combined
+similarity matrices as the token similarity measure. To address the bimodal
+nature of math questions and answers, we [used the following two
+approaches:][08-produce-arqmath-runs]
+
+Joint models
+
+:   To allow users to query math information using natural language and
+    vise versa, we used single soft vector space models to jointly represent
+    both text and math.
+
+    As our baseline, we used Lucene BM25 with the text + LaTeX dictionary
+    and no token similarities.
+    
+    We also used four soft vector space models with the text + LaTeX dictionary
+    and the token similarity matrices from the positional and non-positional
+    `word2vec` models, the `roberta-base` model, and the MathBERTa model.
+
+Interpolated models
+
+:   To properly represent the different frequency distributions of text and
+    math tokens, we used separate soft vector space models for text and math.
+    The final score of an answer is determined by linear interpolation of the
+    scores assigned by the two vector space models:
+
+     /interpolate_similarity_scores.tex
+
+    As our baselines, we used Lucene BM25 with the text dictionary and no token
+    similarities interpolated with 1) Lucene BM25 with the LaTeX dictionary
+    and no token similarities and with 2) Lucene BM25 with the Tangent-L
+    dictionary and no token similarities.
+
+    We also used four pairs of soft vector space models: two pairs with the
+    text and LaTeX dictionaries and two pairs with the text and Tangent-L
+    dictionaries. In each of the two pairs, one used the token similarity
+    matrices from the positional `word2vec` model and the other used the
+    token similarity matrices from non-positional `word2vec` model.
+
+We used the interpolated text and Tangent-L models using the token similarity
+matrices from the non-positional `word2vec` model as our primary submission
+in task 1 of ARQMath-3.
+
+ [08-produce-arqmath-runs]: https://github.com/witiko/scm-at-arqmath3 (file 08-produce-arqmath-runs.ipynb)
+
+## Evaluation
+
+To determine how well the answers retrieved by our system satisfy the
+information needs of users, we used the normalized discounted cumulative gain
+prime (NDCG') evaluation measure [@sakai2008information] and relevance
+judgements from tasks 1 of ARQMath-1 and 2. NDCG' is the official evaluation
+measure used in tasks 1 and 2 of ARQMath-3, has been specifically designed for
+ranked retrieval with graded and incomplete relevance judgements and is defined
+as follows:
+
+ /ndcg.tex
 
 # Results
 

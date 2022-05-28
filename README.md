@@ -56,6 +56,8 @@ The repository also contains the paper that describes our system.
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
 - Render `LaTeX` as `\LaTeX` in `paper/`.
+- Prevent `interblockSeparator` before `contentBlock` from inserting `\par`
+  in `paper/`.
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

@@ -42,7 +42,7 @@ sparse retrieval
 dense retrieval
 math representations
 word embeddings
-positional weighting
+constrained positional weighting
 decontextualization
 word2vec
 transformers
@@ -148,7 +148,10 @@ Shallow log-bilinear models
     analogical reasoning and causal language modeling [@novotny2022when].
     To evaluate the impact of constrained positional weighting on math
     information retrieval, we trained `word2vec` models both with and without
-    constrained positional weighting for every dataset.
+    constrained positional weighting for every dataset. In the rest of the
+    text, we refer to `word2vec` with and without constrained positional
+    weighting as *positional `word2vec`* and *non-positional `word2vec`* for
+    brevity.
 
 Deep transformer models
 
@@ -210,10 +213,9 @@ Semantic similarity
     token embeddings.
 
     For all dictionaries, we produced two matrices using the token embeddings
-    of the `word2vec` models with and without constrained positional weighting.
-    For the text and text + LaTeX dictionaries, we also produced an additional
-    matrix using the token embeddings of the `roberta-base` and MathBERTa
-    models, respectively.
+    of the positional and non-positional `word2vec` models.  For the text and
+    text + LaTeX dictionaries, we also produced an additional matrix using the
+    token embeddings of the `roberta-base` and MathBERTa models, respectively.
 
 To ensure sparsity and symmetry of the matrices, we considered only the 100
 most similar tokens for each token and we used the greedy algorithm of

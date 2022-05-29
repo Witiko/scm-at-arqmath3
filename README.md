@@ -42,11 +42,11 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Before submitting the paper for review:
-  - [ ] Introduce the shorthands *positional word2vec* and *non-positional
+  - [x] Introduce the shorthands *positional word2vec* and *non-positional
     word2vec* already in section *Language Modeling*.
   - [ ] Describe weighted zone scoring in section *Soft Vector Space Modeling*.
   - [ ] Create section *Experiments* after section *Methods*.
-  - [ ] Add subsections *Collection*, *Topics*, *Relevance judgements*
+  - [ ] Add subsections *Collection*, *Topics*, and *Relevance Judgements*
         to section *Experiments*.
   - [ ] Move subsection *Evaluation* to section *Experiments*.
   - [ ] Add subsection *Parameter optimization* at the end of section

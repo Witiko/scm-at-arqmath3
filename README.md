@@ -39,25 +39,45 @@ The repository also contains the paper that describes our system.
 
 - [The `witiko/mathberta` model][7] at [the 🤗 Model Hub][17].
 
-## Future work
+## Tasks
 
+- Before submitting the paper for review:
+  - [ ] Introduce the shorthands *positional word2vec* and *non-positional
+    word2vec* already in section *Language Modeling*.
+  - [ ] Describe weighted zone scoring in section *Soft Vector Space Modeling*.
+  - [ ] Create section *Experiments* after section *Methods*.
+  - [ ] Add subsections *Collection*, *Topics*, *Relevance judgements*
+        to section *Experiments*.
+  - [ ] Move subsection *Evaluation* to section *Experiments*.
+  - [ ] Add subsection *Parameter optimization* at the end of section
+    *Experiments*.
+  - [ ] Write section *Results*.
+  - [ ] Write abstract.
+  - [ ] Write section *Introduction*.
+  - [ ] Write section *Conclusion*.
+  - [ ] Switch from pdfTeX to LuaTeX and prevent `interblockSeparator` before
+    `contentBlock` from inserting a new paragraph.
+  - [ ] Render `LaTeX` as `\LaTeX`.
 - After gaussalgo/adaptor#21 has been closed, cherry-pick branch
   `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
   evaluation][13] to `03-finetune-roberta.ipynb`.
+- Add `%ls -lh submission*/run.tsv` for every run to
+  [`08-produce-arqmath-runs.ipynb`][15].
+- Plot learning rate in [`03-finetune-roberta.ipynb`][7].
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].
 - After we have received task 1 annotations:
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
-  - Vizualize the impact of various extensions (axis x) on 2022 nDCG' (axis y)
-    with TikZ in `paper/`.
+  - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
+    with TikZ in section *Results* in the paper.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
     `09-evaluate-roberta.ipynb`.
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
-- Render `LaTeX` as `\LaTeX` in `paper/`.
-- Prevent `interblockSeparator` before `contentBlock` from inserting `\par`
-  in `paper/`.
+  - Add `10-optimize-hyperparameters`, where we optimize the hyperparameters
+    $\alpha$ and $\beta$ for all runs. Describe the optimization in subsection
+    *Parameter optimization* of the paper.
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

@@ -48,6 +48,7 @@ The repository also contains the paper that describes our system.
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].
 - After we have received task 1 annotations:
+  - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
   - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
     with TikZ in section *Results* in the paper.
@@ -79,3 +80,5 @@ The repository also contains the paper that describes our system.
  [19]: https://huggingface.co/roberta-base#roberta-base-model
  [20]: https://huggingface.co/roberta-base#bibtex-entry-and-citation-info
  [21]: https://huggingface.co/roberta-base#how-to-use
+ [22]: https://github.com/MIR-MU/ARQMath-eval
+ [23]: https://github.com/MIR-MU/pv211-utils

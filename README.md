@@ -51,7 +51,7 @@ The repository also contains the paper that describes our system.
   - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
   - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
-    with TikZ in section *Results* in the paper.
+    in section *Results* of the paper.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
     `09-evaluate-roberta.ipynb`.
 - After the ARQMath-3 paper has been published:

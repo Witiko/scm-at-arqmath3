@@ -42,9 +42,6 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Before submitting the paper for review:
-  - [x] Introduce the shorthands *positional word2vec* and *non-positional
-    word2vec* already in section *Language Modeling*.
-  - [x] Describe weighted zone scoring in section *Soft Vector Space Modeling*.
   - [ ] Create section *Experiments* after section *Methods*.
   - [ ] Add subsections *Collection*, *Topics*, and *Relevance Judgements*
         to section *Experiments*.
@@ -55,9 +52,6 @@ The repository also contains the paper that describes our system.
   - [ ] Write abstract.
   - [ ] Write section *Introduction*.
   - [ ] Write section *Conclusion*.
-  - [ ] Switch from pdfTeX to LuaTeX and prevent `interblockSeparator` before
-    `contentBlock` from inserting a new paragraph.
-  - [ ] Render `LaTeX` as `\LaTeX`.
 - After gaussalgo/adaptor#21 has been closed, cherry-pick branch
   `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
   evaluation][13] to `03-finetune-roberta.ipynb`.

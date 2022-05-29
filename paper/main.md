@@ -260,7 +260,7 @@ Interpolated models
 :   To properly represent the different frequency distributions of text and
     math tokens, we used separate soft vector space models for text and math.
     The final score of an answer is determined by linear interpolation of the
-    scores assigned by the two vector space models:
+    scores assigned by the two soft vector space models:
 
      /interpolate_similarity_scores.tex
 
@@ -279,8 +279,8 @@ To represent a question in the soft vector space model, we used the tokens in
 the title and in the body text. To represent an answer in the soft vector space
 model, we used the tokens in the title of its parent question and in the body
 text of the answer. To give greater weight to tokens in the title, we repeated
-them γ times, which has proven to be useful in task 1 of ARQMath-2
-[@novotny2021ensembling, Section 3.2].
+them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
+3.2].
 
  [08-produce-arqmath-runs]: https://github.com/witiko/scm-at-arqmath3 (file 08-produce-arqmath-runs.ipynb)
 

@@ -27,13 +27,7 @@ address: |
 
 # Abstract {#abstract}
 
-Background
-
-Aims
-
-Methods
-
-Conclusion
+To be added in the camera-ready.
 
 # Keywords {#keywords}
 
@@ -49,7 +43,7 @@ transformers
 
 # Introduction
 
-Some text. [@novotny2021interpretable]
+To be added in the camera-ready.
 
 # Methods
 
@@ -248,7 +242,8 @@ Joint models
     vise versa, we used single soft vector space models to jointly represent
     both text and math.
 
-    As our baseline, we used Lucene BM25 with the text + LaTeX dictionary
+    As our baselines, we used 1) Lucene BM25 with the text dictionary and no
+    token similarities and 2) Lucene BM25 with the text + LaTeX dictionary
     and no token similarities.
     
     We also used four soft vector space models with the text + LaTeX dictionary
@@ -288,9 +283,9 @@ them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
 
 We searched for answers to sets of topics provided by the ARQMath organizers.
 To select the optimal values for parameters α, β, and γ,[^optimization] we used
-177 topics from ARQMath-1 and 2. To estimate the performance of our system, we
-used 100 topics from ARQMath-3. As our retrieval units, we used answers from
-the MSE dataset.
+the 177 topics from ARQMath-1 and 2. To estimate the performance of our system,
+we used the 100 topics from ARQMath-3. As our retrieval units, we used answers
+from the MSE dataset.
 
 To determine how well the answers retrieved by our system satisfied the
 information needs of users, we used the relevance judgements provided
@@ -304,4 +299,33 @@ answers retrieved by our system for each topic.
 
 # Results
 
+In tables 1 and 2, we list preliminary results for our system. We postpone
+detailed discussion until the camera-ready, where we will have both the optimal
+values for parameters α, β, and γ as well as the NDCG' scores on ARQMath-3
+topics available.
+
+| Model | α | γ | NDCG' (ARQMath-1, | and 2) |
+|-------|---|---|-------------------|--------|
+| Text (no token similarities)             |     | 5 | 0.137 | 0.103 |
+| Text (`roberta-base`)                    | 0.1 | 5 | 0.129 | 0.097 |
+| Text + LaTeX (no token similarities)     |     | 5 | 0.222 | 0.168 |
+| Text + LaTeX (non-positional `word2vec`) | 0.1 | 5 | 0.247 | 0.183 |
+| Text + LaTeX (positional `word2vec`)     | 0.1 | 5 | 0.247 | **0.184** |
+| Text + LaTeX (MathBERTa)                 | 0.1 | 5 | **0.248** | **0.184** |
+
+: Evaluation results for joint soft vector space models
+
+| Model | α | β | γ | NDCG' (ARQMath-1, | and 2) |
+|-------|---|---|---|-------------------|--------|
+| Text + LaTeX (no token similarities)         |     | 0.5 | 5 | 0.208 | 0.169 |
+| Text + LaTeX (non-positional `word2vec`)     | 0.1 | 0.5 | 5 | 0.224 | 0.186 |
+| Text + LaTeX (positional `word2vec`)         | 0.1 | 0.5 | 5 | 0.223 | 0.186 |
+| Text + Tangent-L (no token similarities)     |     | 0.5 | 5 | **0.293** | **0.237** |
+| Text + Tangent-L (non-positional `word2vec`) | 0.1 | 0.5 | 5 | 0.257 | 0.199 |
+| Text + Tangent-L (positional `word2vec`)     | 0.1 | 0.5 | 5 | 0.254 | 0.197 |
+
+: Evaluation results for interpolated soft vector space models
+
 # Conclusion
+
+To be added in the camera-ready.

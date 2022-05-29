@@ -41,17 +41,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Before submitting the paper for review:
-  - [ ] Create section *Experiments* after section *Methods*.
-  - [ ] Add subsections *Collection*, *Topics*, and *Relevance Judgements*
-        to section *Experiments*.
-  - [ ] Move subsection *Evaluation* to section *Experiments*.
-  - [ ] Add subsection *Parameter optimization* at the end of section
-    *Experiments*.
-  - [ ] Write section *Results*.
-  - [ ] Write abstract.
-  - [ ] Write section *Introduction*.
-  - [ ] Write section *Conclusion*.
 - After gaussalgo/adaptor#21 has been closed, cherry-pick branch
   `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
   evaluation][13] to `03-finetune-roberta.ipynb`.

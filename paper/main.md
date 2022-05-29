@@ -55,8 +55,8 @@ Some text. [@novotny2021interpretable]
 
 In this section, we describe the datasets we used to train our tokenizers and
 language models. We also describe how we used our language models to measure
-similarity between text and math tokens, and how we used our similarity
-measures to find answers to math questions.
+similarity between text and math tokens, how we used our similarity measures to
+find answers to math questions, and how we evaluated our system.
 
 ## Datasets
 
@@ -286,15 +286,21 @@ them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
 
 ## Evaluation
 
-To determine how well the answers retrieved by our system satisfy the
-information needs of users, we used the normalized discounted cumulative gain
-prime (NDCG') evaluation measure [@sakai2008information] and relevance
-judgements from tasks 1 of ARQMath-1 and 2. NDCG' is the official evaluation
-measure used in tasks 1 and 2 of ARQMath-3, has been specifically designed for
-ranked retrieval with graded and incomplete relevance judgements and is defined
-as follows:
+We searched for answers to sets of topics provided by the ARQMath organizers.
+To select the optimal values for parameters α, β, and γ,[^optimization] we used
+177 topics from ARQMath-1 and 2. To estimate the performance of our system, we
+used 100 topics from ARQMath-3. As our retrieval units, we used answers from
+the MSE dataset.
 
- /ndcg.tex
+To determine how well the answers retrieved by our system satisfied the
+information needs of users, we used the relevance judgements provided
+by the ARQMath organizers and the normalized discounted cumulative gain
+prime (NDCG') evaluation measure [@sakai2008information] on the top 1,000
+answers retrieved by our system for each topic.
+
+ [^optimization]: Due to time constraints, we hand-picked the values α = 0.1,
+ β = 0.5, and γ = 5 for our ARQMath-3 submissions. In the camera-ready, we will
+ report the optimal parameter values and their NDCG' scores on ARQMath-3 topics.
 
 # Results
 

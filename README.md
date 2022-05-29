@@ -44,7 +44,7 @@ The repository also contains the paper that describes our system.
 - Before submitting the paper for review:
   - [x] Introduce the shorthands *positional word2vec* and *non-positional
     word2vec* already in section *Language Modeling*.
-  - [ ] Describe weighted zone scoring in section *Soft Vector Space Modeling*.
+  - [x] Describe weighted zone scoring in section *Soft Vector Space Modeling*.
   - [ ] Create section *Experiments* after section *Methods*.
   - [ ] Add subsections *Collection*, *Topics*, and *Relevance Judgements*
         to section *Experiments*.
@@ -76,8 +76,8 @@ The repository also contains the paper that describes our system.
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
   - Add `10-optimize-hyperparameters`, where we optimize the hyperparameters
-    $\alpha$ and $\beta$ for all runs. Describe the optimization in subsection
-    *Parameter optimization* of the paper.
+    $\alpha$, $\beta$, and $\gamma$ for all runs. Describe the optimization in
+    subsection *Parameter optimization* of the paper.
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

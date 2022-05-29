@@ -56,7 +56,7 @@ Some text. [@novotny2021interpretable]
 In this section, we describe the datasets we used to train our tokenizers and
 language models. We also describe how we used our language models to measure
 similarity between text and math tokens, and how we used our similarity
-measures to find answers to math questions in task 1 of ARQMath-3.
+measures to find answers to math questions.
 
 ## Datasets
 
@@ -67,9 +67,7 @@ Math StackExchange
 :   The Math StackExchange collection v1.2 (MSE) provided by the organizers of
     the ARQMath-2 shared task evaluation [@behrooz2021overview] contains
     2,466,080 posts from the Math Stack Exchange question answering website in
-    HTML5 with math formulae in LaTeX. Besides the answers~(60%), which are the
-    retrieval unit in task 1 of ARQMath-3, the posts also contain parent
-    questions~(40%) for answers.
+    HTML5 with math formulae in LaTeX.
 
 ArXMLiv
 
@@ -238,12 +236,11 @@ In our system, we only used the combined token similarity matrices.
 
 ## Soft Vector Space Modeling
 
-To find answers to math questions in task 1 of ARQMath-3, we used sparse
-retrieval with the soft vector space model of @sidorov2014soft, using Lucene
-BM25 [@kamphuis2020bm25, Table 1] as the vector space and our combined
-similarity matrices as the token similarity measure. To address the bimodal
-nature of math questions and answers, we [used the following two
-approaches:][08-produce-arqmath-runs]
+To find answers to math questions, we used sparse retrieval with the soft
+vector space model of @sidorov2014soft, using Lucene BM25 [@kamphuis2020bm25,
+Table 1] as the vector space and our combined similarity matrices as the token
+similarity measure. To address the bimodal nature of math questions and
+answers, we [used the following two approaches:][08-produce-arqmath-runs]
 
 Joint models
 
@@ -278,9 +275,12 @@ Interpolated models
     matrices from the positional `word2vec` model and the other used the
     token similarity matrices from non-positional `word2vec` model.
 
-We used the interpolated text and Tangent-L models using the token similarity
-matrices from the non-positional `word2vec` model as our primary submission
-in task 1 of ARQMath-3.
+To represent a question in the soft vector space model, we used the tokens in
+the title and in the body text. To represent an answer in the soft vector space
+model, we used the tokens in the title of its parent question and in the body
+text of the answer. To give greater weight to tokens in the title, we repeated
+them γ times, which has proven to be useful in task 1 of ARQMath-2
+[@novotny2021ensembling, Section 3.2].
 
  [08-produce-arqmath-runs]: https://github.com/witiko/scm-at-arqmath3 (file 08-produce-arqmath-runs.ipynb)
 

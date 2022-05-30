@@ -336,13 +336,11 @@ def result_sort_key(args: Tuple[Answer, Similarity]):
 
 
 class LuceneBM25System(JointBM25System):
-    def __init__(self, dictionary: Dictionary, preprocessor: Preprocessor, answers: Iterable[Answer],
-                 silent: bool):
+    def __init__(self, dictionary: Dictionary, preprocessor: Preprocessor, answers: Iterable[Answer]):
         answers = list(answers)
         super().__init__(dictionary, preprocessor, list(answers))
         vectors = self._documents_to_vectors(answers)
-        if not silent:
-            vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to BM25')
+        vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to BM25')
         self.bm25_index = SparseMatrixSimilarity(
             vectors,
             num_docs=len(answers),
@@ -357,12 +355,11 @@ class LuceneBM25System(JointBM25System):
 
 class SCMSystem(JointBM25System):
     def __init__(self, dictionary: Dictionary, similarity_matrix: SparseTermSimilarityMatrix,
-                 preprocessor: Preprocessor, answers: Iterable[Answer], silent: bool):
+                 preprocessor: Preprocessor, answers: Iterable[Answer]):
         answers = list(answers)
         super().__init__(dictionary, preprocessor, list(answers))
         vectors = self._documents_to_vectors(answers)
-        if not silent:
-            vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to SCM')
+        vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to SCM')
         self.scm_index = SoftCosineSimilarity(
             vectors,
             similarity_matrix,
@@ -375,13 +372,13 @@ class SCMSystem(JointBM25System):
 
 def get_system(text_format: TextFormat, questions: Iterable[Question], answers: Iterable[Answer],
                dictionary: Dictionary, parameters: Parameters,
-               similarity_matrix: Optional[SparseTermSimilarityMatrix], silent: bool) -> BulkSearchSystem:
+               similarity_matrix: Optional[SparseTermSimilarityMatrix]) -> BulkSearchSystem:
     _, gamma = parameters
     preprocessor = get_preprocessor(text_format, questions, gamma)
     if similarity_matrix is None:
-        system = LuceneBM25System(dictionary, preprocessor, answers, silent)
+        system = LuceneBM25System(dictionary, preprocessor, answers)
     else:
-        system = SCMSystem(dictionary, similarity_matrix, preprocessor, answers, silent)
+        system = SCMSystem(dictionary, similarity_matrix, preprocessor, answers)
     return system
 
 
@@ -521,13 +518,13 @@ def evaluate_serp_with_ndcg(input_run_file: Path, run_type: RunType, output_ndcg
 def produce_system(msm_input_directory: Path,
                    output_text_format: TextFormat, input_dictionary_file: Path,
                    input_similarity_matrix_file: Optional[Path],
-                   parameters: Parameters, silent: bool) -> BulkSearchSystem:
+                   parameters: Parameters) -> BulkSearchSystem:
     dictionary = get_dictionary(input_dictionary_file)
     similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file, parameters)
     questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
     questions, answers = list(questions), list(answers)
     system = get_system(output_text_format, questions, answers, dictionary, parameters,
-                        similarity_matrix, silent)
+                        similarity_matrix)
     return system
 
 
@@ -572,7 +569,7 @@ def get_optimal_parameters(msm_input_directory: Path,
     for parameters in all_parameters:
         system = produce_system(
             msm_input_directory, output_text_format, input_dictionary_file,
-            input_similarity_matrix_file, parameters, silent=True)
+            input_similarity_matrix_file, parameters)
 
         produce_serp(system, queries_2020, output_run_file, run_name)
         ndcg_2020 = get_ndcg(output_run_file, run_type_2020)
@@ -617,7 +614,7 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
 
     system = produce_system(
         msm_input_directory, output_text_format, input_dictionary_file,
-        input_similarity_matrix_file, optimal_parameters, silent=False)
+        input_similarity_matrix_file, optimal_parameters)
 
     run_type = RunType.ARQMATH_2022
     queries = list(get_queries(run_type, output_text_format))

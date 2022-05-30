@@ -187,7 +187,7 @@ def main(msm_input_directory: Path,
     first_system = produce_system(
         msm_input_directory, first_output_text_format,
         first_input_dictionary_file, first_input_similarity_matrix_file,
-        first_optimal_parameters, silent=False)
+        first_optimal_parameters)
 
     second_optimal_parameters = get_optimal_parameters(
         msm_input_directory, second_output_text_format,
@@ -197,7 +197,7 @@ def main(msm_input_directory: Path,
     second_system = produce_system(
         msm_input_directory, second_output_text_format,
         second_input_dictionary_file, second_input_similarity_matrix_file,
-        second_optimal_parameters, silent=False)
+        second_optimal_parameters)
 
     optimal_beta = get_optimal_beta(
         first_system, second_system, first_output_text_format,

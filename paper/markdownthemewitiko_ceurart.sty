@@ -137,15 +137,22 @@
 }
 
 % Keywords
+\ExplSyntaxOn
 \markdownSetupSnippet{keywords}{
   hardLineBreaks = true,
   renderers = {
+    interblockSeparator = {
+      \expandafter
+      \text_uppercase:n
+      \@gobble
+    },
     headerAttributeContextBegin = {},
     headingOne = {},
     headerAttributeContextEnd = {},
     lineBreak = {\sep},
   }
 }
+\ExplSyntaxOff
 
 %% Definitions of various Unicode characters
 \RequirePackage{newunicodechar}

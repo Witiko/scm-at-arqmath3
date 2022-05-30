@@ -31,7 +31,7 @@ To be added in the camera-ready.
 
 # Keywords {#keywords}
 
-Information retrieval
+information retrieval
 sparse retrieval
 dense retrieval
 math representations

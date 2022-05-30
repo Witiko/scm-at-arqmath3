@@ -1,4 +1,4 @@
-# Soft Cosine Measure at ARQMath3
+# Soft Cosine Measure at ARQMath-3
 
 This repository contains our math information retrieval (MIR) system for
 [the ARQMath3 competition][1] that is based on [the soft cosine measure][2].

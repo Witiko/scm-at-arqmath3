@@ -1,5 +1,5 @@
 .SECONDARY:
-.PHONY: all
+.PHONY: all symlinks-for-parameter-optimization
 
 ARXIV_INPUT_DIRECTORY = /mnt/storage/arxiv-dataset-arXMLiv-2020
 # MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
@@ -33,6 +33,13 @@ RUN_BASENAMES = $(RUN_BASENAMES_BASELINES) $(RUN_BASENAMES_PRIMARY) $(RUN_BASENA
 RUNS = $(addprefix submission/,$(addsuffix .tsv,$(RUN_BASENAMES)))
 
 all: $(RUNS)
+
+
+symlinks-for-faster-parameter-optimization:
+	ln -s SCM-task1-baseline_joint_text-text-auto-X.alpha_and_gamma submission/SCM-task1-baseline_interpolated_text+latex-both-auto-X.first_alpha_and_gamma
+	ln -s SCM-task1-baseline_joint_text-text-auto-X.alpha_and_gamma submission/SCM-task1-baseline_interpolated_text+tangentl-both-auto-X.first_alpha_and_gamma
+	ln -s SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P.first_alpha_and_gamma submission/SCM-task1-interpolated_positional_word2vec_text+latex-both-auto-A.first_alpha_and_gamma
+	ln -s SCM-task1-interpolated_word2vec_text+latex-both-auto-A.first_alpha_and_gamma submission/SCM-task1-interpolated_word2vec_text+tangentl-both-auto-A.first_alpha_and_gamma
 
 
 arxiv-text.txt:

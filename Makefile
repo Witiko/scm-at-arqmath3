@@ -8,6 +8,12 @@ MSM_INPUT_DIRECTORY = /var/tmp/xnovot32/introduction-to-information-retrieval
 NUM_CPUS = $(shell nproc)
 
 
+RUN_BASENAMES_BASELINES = \
+	SCM-task1-baseline_joint_text-text-auto-X \
+	SCM-task1-baseline_joint_text+latex-both-auto-X \
+	SCM-task1-baseline_interpolated_text+latex-both-auto-X \
+	SCM-task1-baseline_interpolated_text+langentl-both-auto-X
+
 RUN_BASENAMES_PRIMARY = \
 	SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P \
 	SCM-task1-joint_tuned_roberta_base-both-auto-A
@@ -20,14 +26,8 @@ RUN_BASENAMES_SECONDARY = \
 	SCM-task1-interpolated_positional_word2vec_text+latex-both-auto-A \
 	SCM-task1-interpolated_word2vec_text+tangentl-both-auto-A
 
-RUN_BASENAMES_TERNARY = \
-	SCM-task1-baseline_joint_text-text-auto-X \
-	SCM-task1-baseline_joint_text+latex-both-auto-X \
-	SCM-task1-baseline_interpolated_text+latex-both-auto-X \
-	SCM-task1-baseline_interpolated_text+langentl-both-auto-X
 
-
-RUN_BASENAMES = $(RUN_BASENAMES_PRIMARY) $(RUN_BASENAMES_SECONDARY) $(RUN_BASENAMES_TERNARY)
+RUN_BASENAMES = $(RUN_BASENAMES_BASELINES) $(RUN_BASENAMES_PRIMARY) $(RUN_BASENAMES_SECONDARY)
 
 
 RUNS = $(addprefix submission/,$(addsuffix .tsv,$(RUN_BASENAMES)))

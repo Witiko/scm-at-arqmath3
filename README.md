@@ -9,15 +9,17 @@ The repository also contains the paper that describes our system.
 
 ## Research goals
 
-1. Compare performance of text, text + LaTeX, and text + Tangent-L as math
+1. Compare the soft vector space model against sparse information retrieval
+   baselines.
+2. Compare performance of text, text + LaTeX, and text + Tangent-L as math
    representations
-2. Compare performance of non-positional word2vec and positional `word2vec`
+3. Compare performance of non-positional word2vec and positional `word2vec`
    embeddings
-3. Compare performance of word2vec embeddings and decontextualized
+4. Compare performance of word2vec embeddings and decontextualized
    `roberta-base` embeddings
-4. Compare performance of decontextualized embeddings of `roberta-base` and
+5. Compare performance of decontextualized embeddings of `roberta-base` and
    tuned `roberta-base`
-5. Compare performance of interpolated and joint SCM models for text and math
+6. Compare performance of interpolated and joint SCM models for text and math
 
 ## Jupyter notebooks
 

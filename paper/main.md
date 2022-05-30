@@ -27,13 +27,12 @@ address: |
 
 # Abstract {#abstract}
 
-To be added in the camera-ready.
-
 # Keywords {#keywords}
 
 information retrieval
 sparse retrieval
 dense retrieval
+soft vector space model
 math representations
 word embeddings
 constrained positional weighting
@@ -43,9 +42,43 @@ transformers
 
 # Introduction
 
-To be added in the camera-ready.
+State-of-the-art math information retrieval systems use sparse retrieval
+techniques that can detect exact key word matches with high precision, but
+fail to retrieve texts that are semantically similar but use different
+terminology. This shortcoming is all the more apparent with mathematical
+texts, where the same information can be expressed in two completely different
+systems of writing and thought: ihe natural language and the language of
+mathematics.
 
-# Methods
+Recently, the soft vector space model of @sidorov2014soft made it possible to
+retrieve documents according to both exact and fuzzy key word matches and has
+outperformed standard sparse retrieval techniques on semantic text similarity
+[@charlet2017simbow], text classification [@novotny2020text], and machine
+translation evaluation [@stefanik2021regemt] tasks. The soft vector space has
+been used for math information retrieval in the ARQMath-1 and 2 shared task
+evaluations [@novotny2020three; @novotny2021ensembling]. However, it has not
+been properly compared to sparse retrieval baselines. Furthermore, the soft
+vector space model makes it possible to use different representations of math,
+different notions of similarity between key words and symbols, and different
+ways to combine text and math. However, neither of these possibilities has been
+previously explored.
+
+In our work, we aim to answer the following four research questions:
+
+1. Does the soft vector space model outperform sparse information retrieval
+   baselines on the math information retrieval task?
+2. Which math representation works best with the soft vector space model?
+3. Which notion of similarity between key words and symbols works best?
+4. Is it better to use a single soft vector space model to represent both
+   text and math or to use two separate models?
+
+The rest of our paper is structured as follows: In Section~<#methods>, we
+describe our system and our experimental setup. In Section~<#results>, we
+report and discuss our experimental results. We conclude in
+Section~<#conclusion> by answering our research questions and summarizing our
+contributions.
+
+# Methods {#methods}
 
 In this section, we describe the datasets we used to train our tokenizers and
 language models. We also describe how we used our language models to measure
@@ -297,7 +330,7 @@ answers retrieved by our system for each topic.
  β = 0.5, and γ = 5 for our ARQMath-3 submissions. In the camera-ready, we will
  report the optimal parameter values and their NDCG' scores on ARQMath-3 topics.
 
-# Results
+# Results {#results}
 
 In tables 1 and 2, we list preliminary results for our system on the topics
 from ARQMath-1 and 2. We postpone detailed discussion until the camera-ready,
@@ -326,6 +359,6 @@ as the NDCG' scores on ARQMath-3 topics available.
 
 : Preliminary results for interpolated soft vector space models on ARQMath-1 and 2 topics
 
-# Conclusion
+# Conclusion {#conclusion}
 
 To be added in the camera-ready.

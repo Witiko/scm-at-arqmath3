@@ -17,6 +17,9 @@
 \renewcommand\markdownLaTeXRendererDirectOrIndirectLink[4]{%
   #1\footnote{See \url{#3}\ifx\empty#4\empty\else, #4\fi.}}
 
+% Tables
+\renewcommand\fps@table{!t}
+
 % Figures
 \setkeys{Gin}{
   width = \columnwidth,

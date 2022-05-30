@@ -27,6 +27,23 @@ address: |
 
 # Abstract {#abstract}
 
+Sparse retrieval techniques can detect exact matches, but are inadequate for
+mathematical texts, where the same information can be expressed as either text
+or math. The soft vector space model has been shown to improve on sparse
+retrieval on semantic text similarity, text classification, and machine
+translation evaluation tasks, but it has not yet been properly evaluated on
+math information retrieval.
+
+In our work, we compare the soft vector space model against standard sparse
+retrieval baselines and state-of-the-art math information retrieval systems.
+We evaluate the impact of different math representations, different notions
+of similarity between key words and math symbols ranging from Levenshtein
+distances to deep neural language models, and different ways of combining text
+and math.
+
+(A paragraph summarizing the results and our contribution will be added
+in the camera-ready.)
+
 # Keywords {#keywords}
 
 information retrieval
@@ -47,7 +64,7 @@ techniques that can detect exact key word matches with high precision, but
 fail to retrieve texts that are semantically similar but use different
 terminology. This shortcoming is all the more apparent with mathematical
 texts, where the same information can be expressed in two completely different
-systems of writing and thought: ihe natural language and the language of
+systems of writing and thought: the natural language and the language of
 mathematics.
 
 Recently, the soft vector space model of @sidorov2014soft made it possible to

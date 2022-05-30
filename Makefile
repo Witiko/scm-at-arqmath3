@@ -9,16 +9,16 @@ NUM_CPUS = $(shell nproc)
 
 
 RUN_BASENAMES_PRIMARY = \
-	SCM-task1-interpolated_text+positional_word2vec_tangentl-both-auto-P \
+	SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P \
 	SCM-task1-joint_tuned_roberta_base-both-auto-A
 
 RUN_BASENAMES_SECONDARY = \
 	SCM-task1-joint_word2vec-both-auto-A \
 	SCM-task1-joint_positional_word2vec-both-auto-A \
 	SCM-task1-joint_roberta_base-text-auto-A \
-	SCM-task1-interpolated_text+word2vec_latex-both-auto-A \
-	SCM-task1-interpolated_text+positional_word2vec_latex-both-auto-A \
-	SCM-task1-interpolated_text+word2vec_tangentl-both-auto-A
+	SCM-task1-interpolated_word2vec_text+latex-both-auto-A \
+	SCM-task1-interpolated_positional_word2vec_text+latex-both-auto-A \
+	SCM-task1-interpolated_word2vec_text+tangentl-both-auto-A
 
 RUN_BASENAMES_TERNARY = \
 	SCM-task1-baseline_joint_text-text-auto-X \
@@ -220,14 +220,14 @@ submission/SCM-task1-baseline_interpolated_text+latex-both-auto-X.tsv: dictionar
 submission/SCM-task1-baseline_interpolated_text+langentl-both-auto-X.tsv: dictionary-text dictionary-tangentl
 	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),none,0,$@)
 
-submission/SCM-task1-interpolated_text+word2vec_latex-both-auto-A.tsv: dictionary-text dictionary-latex similarity-matrix-latex tokenizer-latex.json
-	$(call produce_interpolated_run,text,$<,none,latex,$(word 2,$^),$(word 3,$^),0,$@)
+submission/SCM-task1-interpolated_word2vec_text+latex-both-auto-A.tsv: dictionary-text similarity-matrix-text dictionary-latex similarity-matrix-latex tokenizer-latex.json
+	$(call produce_interpolated_run,text,$<,$(word 2,$^),latex,$(word 3,$^),$(word 4,$^),0,$@)
 
-submission/SCM-task1-interpolated_text+positional_word2vec_latex-both-auto-A.tsv: dictionary-text dictionary-latex similarity-matrix-latex-positional tokenizer-latex.json
-	$(call produce_interpolated_run,text,$<,none,latex,$(word 2,$^),$(word 3,$^),0,$@)
+submission/SCM-task1-interpolated_positional_word2vec_text+latex-both-auto-A.tsv: dictionary-text similarity-matrix-text-positional dictionary-latex similarity-matrix-latex-positional tokenizer-latex.json
+	$(call produce_interpolated_run,text,$<,$(word 2,$^),latex,$(word 3,$^),$(word 4,$^),0,$@)
 
-submission/SCM-task1-interpolated_text+word2vec_tangentl-both-auto-A.tsv: dictionary-text dictionary-tangentl similarity-matrix-tangentl
-	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),$(word 3,$^),0,$@)
+submission/SCM-task1-interpolated_word2vec_text+tangentl-both-auto-A.tsv: dictionary-text similarity-matrix-text dictionary-tangentl similarity-matrix-tangentl
+	$(call produce_interpolated_run,text,$<,$(word 2,$^),tangentl,$(word 3,$^),$(word 4,$^),0,$@)
 
-submission/SCM-task1-interpolated_text+positional_word2vec_tangentl-both-auto-P.tsv: dictionary-text dictionary-tangentl similarity-matrix-tangentl-positional
-	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),$(word 3,$^),0,$@)
+submission/SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P.tsv: dictionary-text similarity-matrix-text-positional dictionary-tangentl similarity-matrix-tangentl-positional
+	$(call produce_interpolated_run,text,$<,$(word 2,$^),tangentl,$(word 3,$^),$(word 4,$^),0,$@)

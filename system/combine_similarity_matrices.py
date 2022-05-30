@@ -8,7 +8,7 @@ from gensim.similarities import SparseTermSimilarityMatrix  # type: ignore
 Alpha = float
 
 
-def get_term_similarity_matrix(input_file: Path) -> SparseTermSimilarityMatrix:
+def get_single_term_similarity_matrix(input_file: Path) -> SparseTermSimilarityMatrix:
     term_similarity_matrix = SparseTermSimilarityMatrix.load(str(input_file))
     return term_similarity_matrix
 
@@ -32,15 +32,15 @@ def get_alphas() -> Iterable[Alpha]:
     return alphas
 
 
-def get_combined_term_similarity_matrix_file(alpha: Alpha, output_directory: Path) -> Path:
+def get_combined_term_similarity_matrix_file(output_directory: Path, alpha: Alpha) -> Path:
     combined_term_similarity_matrix_filename = f'alpha={alpha}'
     combined_term_similarity_matrix_file = output_directory / combined_term_similarity_matrix_filename
     return combined_term_similarity_matrix_file
 
 
-def get_combined_term_similarity_matrix(alpha: Alpha, output_directory: Path) -> SparseTermSimilarityMatrix:
+def get_combined_term_similarity_matrix(output_directory: Path, alpha: Alpha) -> SparseTermSimilarityMatrix:
     combined_term_similarity_matrix_file = get_combined_term_similarity_matrix_file(
-        alpha, output_directory)
+        output_directory, alpha)
     combined_term_similarity_matrix = SparseTermSimilarityMatrix.load(
         str(combined_term_similarity_matrix_file))
     return combined_term_similarity_matrix
@@ -57,15 +57,15 @@ def combine_all_term_similarity_matrices(
         combined_term_similarity_matrix = combine_term_similarity_matrices(
             alpha, levenshtein_term_similarity_matrix, word_embedding_term_similarity_matrix)
         combined_term_similarity_matrix_file = get_combined_term_similarity_matrix_file(
-            alpha, output_directory)
+            output_directory, alpha)
         combined_term_similarity_matrix.save(str(combined_term_similarity_matrix_file))
 
 
 def main(input_levenshtein_term_similarity_matrix_file: Path,
          input_word_embedding_term_similarity_matrix_file: Path, output_directory: Path) -> None:
-    levenshtein_term_similarity_matrix = get_term_similarity_matrix(
+    levenshtein_term_similarity_matrix = get_single_term_similarity_matrix(
         input_levenshtein_term_similarity_matrix_file)
-    word_embedding_term_similarity_matrix = get_term_similarity_matrix(
+    word_embedding_term_similarity_matrix = get_single_term_similarity_matrix(
         input_word_embedding_term_similarity_matrix_file)
     combine_all_term_similarity_matrices(
         levenshtein_term_similarity_matrix, word_embedding_term_similarity_matrix, output_directory)

@@ -1,14 +1,16 @@
 from abc import ABC, ABCMeta, abstractmethod
 from collections import defaultdict, OrderedDict
 import csv
-from itertools import chain
+from enum import Enum, auto
+from itertools import chain, product
+import json
 import logging
 from multiprocessing import get_context
 from pathlib import Path
 from sys import argv, setrecursionlimit
 from typing import Optional, Iterable, List, Dict, Tuple, Union
 
-from arqmath_eval import get_ndcg
+from arqmath_eval import get_ndcg as _get_ndcg
 from gensim.corpora import Dictionary  # type: ignore
 from gensim.models import LuceneBM25Model  # type: ignore
 from gensim.similarities import (
@@ -32,15 +34,15 @@ from transformers import AutoTokenizer
 
 from .prepare_msm_dataset import (
     Document,
-    TextFormat,
-    get_questions_and_answers,
     get_input_text_format,
-    read_document_text,
-    read_document_text_latex,
+    get_questions_and_answers as _get_questions_and_answers,
     read_document_latex,
     read_document_tangentl,
+    read_document_text,
+    read_document_text_latex,
+    TextFormat,
 )
-from .combine_similarity_matrices import get_term_similarity_matrix
+from .combine_similarity_matrices import get_combined_term_similarity_matrix, get_alphas, Alpha
 from .prepare_levenshtein_similarity_matrix import get_dictionary
 
 
@@ -54,17 +56,77 @@ Weight = float
 TermWeight = Tuple[TermId, Weight]
 Vector = List[TermWeight]
 
+Gamma = int
+Parameters = Tuple[Alpha, Gamma]
+
+Ndcg = float
+Interval = Tuple[float, float]
+NdcgAndInterval = Tuple[Ndcg, Interval]
+
 Similarity = float
 
 SimilarityIndex = Union[SparseMatrixSimilarity, SoftCosineSimilarity]
-
-RunType = str
 
 Task = str
 
 Token = str
 Text = List[Token]
 Line = str
+
+Year = int
+
+
+class RunType(Enum):
+    ARQMATH_2020 = auto()
+    ARQMATH_2021 = auto()
+    ARQMATH_2022 = auto()
+
+    def get_year(self) -> Year:
+        if self == RunType.ARQMATH_2020:
+            return 2020
+        elif self == RunType.ARQMATH_2021:
+            return 2021
+        elif self == RunType.ARQMATH_2022:
+            return 2022
+        else:
+            raise ValueError(f'Unknown run type {self}')
+
+    def get_number_of_queries(self) -> int:
+        if self == RunType.ARQMATH_2020:
+            return 77
+        elif self == RunType.ARQMATH_2021:
+            return 100
+        elif self == RunType.ARQMATH_2022:
+            return 100
+        else:
+            raise ValueError(f'Unknown run type {self}')
+
+    def __len__(self) -> int:
+        number_of_queries = self.get_number_of_queries()
+        return number_of_queries
+
+    def maybe_get_judgements(self, queries: Iterable[Query],
+                             answers: Iterable[Answer]) -> Optional[Judgements]:
+        year = self.get_year()
+        if year < 2022:
+            queries_dict = OrderedDict()
+            for query in queries:
+                queries_dict[query.query_id] = query
+            answers_dict = OrderedDict()
+            for answer in answers:
+                answers_dict[answer.document_id] = answer
+            judgements = load_judgements(queries_dict, answers_dict, year=year)
+        else:
+            judgements = None
+        return judgements
+
+    def maybe_get_task(self) -> Optional[Task]:
+        year = self.get_year()
+        if year < 2022:
+            task = f'task1-{year}'
+        else:
+            task = None
+        return task
 
 
 class Tokenizer(ABC):
@@ -121,11 +183,23 @@ def get_tokenizer(text_format: TextFormat) -> Tokenizer:
     return tokenizer
 
 
+def get_gammas() -> Iterable[Gamma]:
+    gammas = [1, 2, 3, 4, 5]
+    return gammas
+
+
+def get_parameters(input_similarity_matrix_file: Optional[Path]) -> Iterable[Parameters]:
+    alphas = get_alphas() if input_similarity_matrix_file is not None else [0.0]
+    gammas = get_gammas()
+    parameters = product(alphas, gammas)
+    return parameters
+
+
 class Preprocessor:
     BODY_WEIGHT = 1
-    TITLE_WEIGHT = 5
 
-    def __init__(self, text_format: TextFormat, tokenizer: Tokenizer, questions: Iterable[Question]):
+    def __init__(self, text_format: TextFormat, tokenizer: Tokenizer, questions: Iterable[Question],
+                 gamma: Gamma):
         self.text_format = text_format
         self.tokenizer = tokenizer
         self.answer_to_question = {
@@ -133,6 +207,7 @@ class Preprocessor:
             for question in questions
             for answer in question.answers
         }
+        self.gamma = gamma
 
     def _preprocess_part(self, document_part: str) -> Text:
         tree = fromstring(document_part)
@@ -159,17 +234,17 @@ class Preprocessor:
             texts += [self._preprocess_part(document.body)] * self.BODY_WEIGHT
             if document in self.answer_to_question:
                 question = self.answer_to_question[document]
-                texts += [self._preprocess_part(question.title)] * self.TITLE_WEIGHT
+                texts += [self._preprocess_part(question.title)] * self.gamma
         else:
             texts += [self._preprocess_part(document.body)] * self.BODY_WEIGHT
-            texts += [self._preprocess_part(document.title)] * self.TITLE_WEIGHT
+            texts += [self._preprocess_part(document.title)] * self.gamma
         text = list(chain(*texts))
         return text
 
 
-def get_preprocessor(text_format: TextFormat, questions: Iterable[Question]) -> Preprocessor:
+def get_preprocessor(text_format: TextFormat, questions: Iterable[Question], gamma: Gamma) -> Preprocessor:
     tokenizer = get_tokenizer(text_format)
-    preprocessor = Preprocessor(text_format, tokenizer, questions)
+    preprocessor = Preprocessor(text_format, tokenizer, questions, gamma)
     return preprocessor
 
 
@@ -261,11 +336,13 @@ def result_sort_key(args: Tuple[Answer, Similarity]):
 
 
 class LuceneBM25System(JointBM25System):
-    def __init__(self, dictionary: Dictionary, preprocessor: Preprocessor, answers: Iterable[Answer]):
+    def __init__(self, dictionary: Dictionary, preprocessor: Preprocessor, answers: Iterable[Answer],
+                 silent: bool):
         answers = list(answers)
         super().__init__(dictionary, preprocessor, list(answers))
         vectors = self._documents_to_vectors(answers)
-        vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to BM25')
+        if not silent:
+            vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to BM25')
         self.bm25_index = SparseMatrixSimilarity(
             vectors,
             num_docs=len(answers),
@@ -280,11 +357,12 @@ class LuceneBM25System(JointBM25System):
 
 class SCMSystem(JointBM25System):
     def __init__(self, dictionary: Dictionary, similarity_matrix: SparseTermSimilarityMatrix,
-                 preprocessor: Preprocessor, answers: Iterable[Answer]):
+                 preprocessor: Preprocessor, answers: Iterable[Answer], silent: bool):
         answers = list(answers)
         super().__init__(dictionary, preprocessor, list(answers))
         vectors = self._documents_to_vectors(answers)
-        vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to SCM')
+        if not silent:
+            vectors = tqdm(vectors, total=len(answers), desc='Indexing answers to SCM')
         self.scm_index = SoftCosineSimilarity(
             vectors,
             similarity_matrix,
@@ -296,63 +374,37 @@ class SCMSystem(JointBM25System):
 
 
 def get_system(text_format: TextFormat, questions: Iterable[Question], answers: Iterable[Answer],
-               dictionary: Dictionary,
-               similarity_matrix: Optional[SparseTermSimilarityMatrix]) -> BulkSearchSystem:
-    preprocessor = get_preprocessor(text_format, questions)
+               dictionary: Dictionary, parameters: Parameters,
+               similarity_matrix: Optional[SparseTermSimilarityMatrix], silent: bool) -> BulkSearchSystem:
+    _, gamma = parameters
+    preprocessor = get_preprocessor(text_format, questions, gamma)
     if similarity_matrix is None:
-        system = LuceneBM25System(dictionary, preprocessor, answers)
+        system = LuceneBM25System(dictionary, preprocessor, answers, silent)
     else:
-        system = SCMSystem(dictionary, similarity_matrix, preprocessor, answers)
+        system = SCMSystem(dictionary, similarity_matrix, preprocessor, answers, silent)
     return system
 
 
-def get_queries(run_type: RunType, text_format: TextFormat) -> Iterable[Query]:
-    if run_type == 'submission2020':
-        queries = load_queries(text_format, year=2020)
-    elif run_type == 'submission2021':
-        queries = load_queries(text_format, year=2021)
-    elif run_type == 'submission2022':
-        queries = load_queries(text_format, year=2022)
-    else:
-        raise ValueError(f'Unknown run type {run_type}')
-    return queries.values()
+def get_queries(run_type: RunType, output_text_format: TextFormat) -> Iterable[Query]:
+    input_text_format = get_input_text_format(output_text_format)
+    year = run_type.get_year()
+    queries_dict = load_queries(input_text_format, year=year)
+    queries = queries_dict.values()
+    assert len(queries) == len(run_type)
+    return queries
 
 
-def maybe_get_judgements(run_type: RunType, queries: Iterable[Query],
-                         answers: Iterable[Answer]) -> Optional[Judgements]:
-    if run_type == 'submission2020' or run_type == 'submission2021':
-        queries_dict = OrderedDict()
-        for query in queries:
-            queries_dict[query.query_id] = query
-        answers_dict = OrderedDict()
-        for answer in answers:
-            answers_dict[answer.document_id] = answer
-        if run_type == 'submission2020':
-            judgements = load_judgements(queries_dict, answers_dict, year=2020)
-        elif run_type == 'submission2021':
-            judgements = load_judgements(queries_dict, answers_dict, year=2021)
-    elif run_type == 'submission2022':
-        judgements = None
-    else:
-        raise ValueError(f'Unknown run type {run_type}')
-    return judgements
+def get_questions_and_answers(msm_input_directory: Path, output_text_format: str, *args, **kwargs):
+    input_text_format = get_input_text_format(output_text_format)
+    questions_and_answers = _get_questions_and_answers(msm_input_directory, input_text_format, *args, **kwargs)
+    return questions_and_answers
 
 
-def maybe_get_task(run_type: RunType) -> Optional[Task]:
-    if run_type == 'submission2020':
-        task = 'task1-2020'
-    elif run_type == 'submission2021':
-        task = 'task1-2021'
-    elif run_type == 'submission2022':
-        task = None
-    else:
-        raise ValueError(f'Unknown run type {run_type}')
-    return task
-
-
-def maybe_get_term_similarity_matrix(input_file: Optional[Path]) -> Optional[SparseTermSimilarityMatrix]:
+def maybe_get_term_similarity_matrix(input_file: Optional[Path],
+                                     parameters: Parameters) -> Optional[SparseTermSimilarityMatrix]:
+    alpha, _ = parameters
     if input_file is not None:
-        term_similarity_matrix = get_term_similarity_matrix(input_file)
+        term_similarity_matrix = get_combined_term_similarity_matrix(input_file, alpha)
     else:
         term_similarity_matrix = None
     return term_similarity_matrix
@@ -408,7 +460,9 @@ class TSVFileReader(System):
 
 
 def evaluate_serp_with_map(input_run_file: Path, queries: Iterable[Query], answers: Iterable[Answer],
-                           judgements: Optional[Judgements], output_map_file: Path) -> None:
+                           run_type: RunType, output_map_file: Path) -> None:
+    queries, answers = list(queries), list(answers)
+    judgements = run_type.maybe_get_judgements(queries, answers)
     if judgements is None:
         return
 
@@ -428,17 +482,35 @@ def get_confidence() -> float:
     return confidence
 
 
-def evaluate_serp_with_ndcg(input_run_file: Path, run_type: RunType, output_ndcg_file: Path) -> None:
-    task = maybe_get_task(run_type)
+def maybe_get_ndcg_and_interval(input_run_file: Path, run_type: RunType) -> Optional[NdcgAndInterval]:
+    task = run_type.maybe_get_task()
     if task is None:
+        ndcg_and_interval = None
+    else:
+        parsed_result = defaultdict(lambda: dict())
+        for query_id, answer_id, rank, *_ in read_tsv_file(input_run_file):
+            score = 1.0 / rank
+            parsed_result[query_id][answer_id] = score
+        confidence = get_confidence()
+        ndcg_score, interval = _get_ndcg(parsed_result, task, 'all', confidence=confidence)
+        ndcg_and_interval = (ndcg_score, interval)
+    return ndcg_and_interval
+
+
+def get_ndcg(input_run_file: Path, run_type: RunType) -> Ndcg:
+    ndcg_and_interval = maybe_get_ndcg_and_interval(input_run_file, run_type)
+    assert ndcg_and_interval is not None
+    ndcg, _ = ndcg_and_interval
+    return ndcg
+
+
+def evaluate_serp_with_ndcg(input_run_file: Path, run_type: RunType, output_ndcg_file: Path) -> None:
+    ndcg_and_interval = maybe_get_ndcg_and_interval(input_run_file, run_type)
+    if ndcg_and_interval is None:
         return
 
-    parsed_result = defaultdict(lambda: dict())
-    for query_id, answer_id, rank, *_ in read_tsv_file(input_run_file):
-        score = 1.0 / rank
-        parsed_result[query_id][answer_id] = score
     confidence = get_confidence()
-    ndcg_score, interval = get_ndcg(parsed_result, task, 'all', confidence=confidence)
+    ndcg_score, interval = ndcg_and_interval
     lower_bound, upper_bound = interval
 
     output_ndcg_file.parent.mkdir(exist_ok=True)
@@ -446,22 +518,114 @@ def evaluate_serp_with_ndcg(input_run_file: Path, run_type: RunType, output_ndcg
         print(f'{ndcg_score:.3f}, {confidence:g}% CI: [{lower_bound:.3f}; {upper_bound:.3f}]', file=f)
 
 
-def main(run_type: RunType, msm_input_directory: Path, output_text_format: TextFormat,
-         input_dictionary_file: Path, input_similarity_matrix_file: Optional[Path], run_name: str,
-         output_run_file: Path, output_map_file: Path, output_ndcg_file: Path) -> None:
-
-    input_text_format = get_input_text_format(output_text_format)
+def produce_system(msm_input_directory: Path,
+                   output_text_format: TextFormat, input_dictionary_file: Path,
+                   input_similarity_matrix_file: Optional[Path],
+                   parameters: Parameters, silent: bool) -> BulkSearchSystem:
     dictionary = get_dictionary(input_dictionary_file)
-    similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file)
-    questions, answers = get_questions_and_answers(msm_input_directory, input_text_format)
+    similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file, parameters)
+    questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
     questions, answers = list(questions), list(answers)
-    system = get_system(output_text_format, questions, answers, dictionary, similarity_matrix)
+    system = get_system(output_text_format, questions, answers, dictionary, parameters,
+                        similarity_matrix, silent)
+    return system
 
-    queries = list(get_queries(run_type, input_text_format))
+
+def get_optimal_parameters(msm_input_directory: Path,
+                           output_text_format: TextFormat, input_dictionary_file: Path,
+                           input_similarity_matrix_file: Optional[Path], run_name: str,
+                           output_run_file: Path, temporary_output_parameter_file: Path,
+                           output_parameter_file: Path) -> Parameters:
+    all_parameters = get_parameters(input_similarity_matrix_file)
+    all_parameters = sorted(all_parameters)
+
+    try:
+        with output_parameter_file.open('rt') as f:
+            obj = json.load(f)
+        best_alpha, best_gamma = obj['best_alpha'], obj['best_gamma']
+        best_parameters = (best_alpha, best_gamma)
+        LOGGER.info(f'Loaded optimal alpha and gamma from {output_parameter_file}')
+        return best_parameters
+    except IOError:
+        try:
+            with temporary_output_parameter_file.open('rt') as f:
+                obj = json.load(f)
+            best_ndcg, best_alpha, best_gamma = obj['best_ndcg'], obj['best_alpha'], obj['best_gamma']
+            alpha, gamma = obj['alpha'], obj['gamma']
+            best_parameters = (best_alpha, best_gamma)
+            parameters = (alpha, gamma)
+            assert parameters in all_parameters
+            all_parameters = all_parameters[all_parameters.index(parameters) + 1:]
+            LOGGER.info('Fast-forwarded optimization of alpha and gamma to last tested values '
+                        f'from {temporary_output_parameter_file}')
+        except IOError:
+            best_ndcg, best_parameters = float('-inf'), None
+
+    all_parameters = tqdm(all_parameters, desc='Optimizing alpha and gamma')
+
+    run_type_2020 = RunType.ARQMATH_2020
+    run_type_2021 = RunType.ARQMATH_2021
+
+    queries_2020 = list(get_queries(run_type_2020, output_text_format))
+    queries_2021 = list(get_queries(run_type_2021, output_text_format))
+
+    for parameters in all_parameters:
+        system = produce_system(
+            msm_input_directory, output_text_format, input_dictionary_file,
+            input_similarity_matrix_file, parameters, silent=True)
+
+        produce_serp(system, queries_2020, output_run_file, run_name)
+        ndcg_2020 = get_ndcg(output_run_file, run_type_2020)
+        produce_serp(system, queries_2021, output_run_file, run_name)
+        ndcg_2021 = get_ndcg(output_run_file, run_type_2021)
+
+        ndcg = ndcg_2020 * len(run_type_2020) + ndcg_2021 * len(run_type_2021)
+        ndcg /= len(run_type_2020) + len(run_type_2021)
+
+        if ndcg > best_ndcg:
+            best_ndcg = ndcg
+            best_parameters = parameters
+
+        alpha, gamma = parameters
+        best_alpha, best_gamma = best_parameters
+        with temporary_output_parameter_file.open('wt') as f:
+            json.dump({'alpha': alpha, 'gamma': gamma,
+                       'best_alpha': best_alpha, 'best_gamma': best_gamma,
+                       'best_ndcg': best_ndcg}, f)
+
+    assert best_parameters is not None
+
+    best_alpha, best_gamma = best_parameters
+    with output_parameter_file.open('wt') as f:
+        json.dump({'best_alpha': best_alpha, 'best_gamma': best_gamma, 'best_ndcg': best_ndcg}, f)
+
+    temporary_output_parameter_file.unlink()
+
+    return best_parameters
+
+
+def main(msm_input_directory: Path, output_text_format: TextFormat,
+         input_dictionary_file: Path, input_similarity_matrix_file: Optional[Path],
+         run_name: str, temporary_output_run_file: Path,
+         output_run_file: Path, output_map_file: Path, output_ndcg_file: Path,
+         temporary_output_parameter_file: Path, output_parameter_file: Path) -> None:
+    optimal_parameters = get_optimal_parameters(
+        msm_input_directory, output_text_format, input_dictionary_file, input_similarity_matrix_file,
+        run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file)
+
+    temporary_output_run_file.unlink()
+
+    system = produce_system(
+        msm_input_directory, output_text_format, input_dictionary_file,
+        input_similarity_matrix_file, optimal_parameters, silent=False)
+
+    run_type = RunType.ARQMATH_2022
+    queries = list(get_queries(run_type, output_text_format))
     produce_serp(system, queries, output_run_file, run_name)
 
-    judgements = maybe_get_judgements(run_type, queries, answers)
-    evaluate_serp_with_map(output_run_file, queries, answers, judgements, output_map_file)
+    questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
+    questions, answers = list(questions), list(answers)
+    evaluate_serp_with_map(output_run_file, queries, answers, run_type, output_map_file)
     evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
 
 
@@ -469,15 +633,20 @@ if __name__ == '__main__':
     setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
-    run_type = argv[1]
-    msm_input_directory = Path(argv[2])
-    text_format = argv[3]
-    input_dictionary_file = Path(argv[4])
-    input_similarity_matrix_file = Path(argv[5]) if argv[5] != 'none' else None
-    run_name = argv[6]
+    assert len(argv) == 12
+
+    msm_input_directory = Path(argv[1])
+    text_format = argv[2]
+    input_dictionary_file = Path(argv[3])
+    input_similarity_matrix_file = Path(argv[4]) if argv[4] != 'none' else None
+    run_name = argv[5]
+    temporary_output_run_file = Path(argv[6])
     output_run_file = Path(argv[7])
     output_map_file = Path(argv[8])
     output_ndcg_file = Path(argv[9])
+    temporary_output_parameter_file = Path(argv[10])
+    output_parameter_file = Path(argv[11])
 
-    main(run_type, msm_input_directory, text_format, input_dictionary_file,
-         input_similarity_matrix_file, run_name, output_run_file, output_map_file, output_ndcg_file)
+    main(msm_input_directory, text_format, input_dictionary_file, input_similarity_matrix_file,
+         run_name, temporary_output_run_file, output_run_file, output_map_file, output_ndcg_file,
+         temporary_output_parameter_file, output_parameter_file)

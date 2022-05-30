@@ -299,32 +299,32 @@ answers retrieved by our system for each topic.
 
 # Results
 
-In tables 1 and 2, we list preliminary results for our system. We postpone
-detailed discussion until the camera-ready, where we will have both the optimal
-values for parameters α, β, and γ as well as the NDCG' scores on ARQMath-3
-topics available.
+In tables 1 and 2, we list preliminary results for our system on the topics
+from ARQMath-1 and 2. We postpone detailed discussion until the camera-ready,
+where we will have both the optimal values for parameters α, β, and γ as well
+as the NDCG' scores on ARQMath-3 topics available.
 
-| Model | α | γ | NDCG' (ARQMath-1, | and 2) |
-|-------|---|---|-------------------|--------|
-| Text (no token similarities)             |     | 5 | 0.137 | 0.103 |
-| Text (`roberta-base`)                    | 0.1 | 5 | 0.129 | 0.097 |
-| Text + LaTeX (no token similarities)     |     | 5 | 0.222 | 0.168 |
-| Text + LaTeX (non-positional `word2vec`) | 0.1 | 5 | 0.247 | 0.183 |
-| Text + LaTeX (positional `word2vec`) | 0.1 | 5 | 0.247 | **0.184** |
-| Text + LaTeX (MathBERTa)         | 0.1 | 5 | **0.248** | **0.184** |
+| Model | α | γ | NDCG' |  |
+|-------|---|---|-------|--|
+| Text (no token similarities)             |     | 5 |   0.137   |   0.103   |
+| Text (`roberta-base`)                    | 0.1 | 5 |   0.129   |   0.097   |
+| Text + LaTeX (no token similarities)     |     | 5 |   0.222   |   0.168   |
+| Text + LaTeX (non-positional `word2vec`) | 0.1 | 5 |   0.247   |   0.183   |
+| Text + LaTeX (positional `word2vec`)     | 0.1 | 5 |   0.247   | **0.184** |
+| Text + LaTeX (MathBERTa)                 | 0.1 | 5 | **0.248** | **0.184** |
 
-: Evaluation results for joint soft vector space models
+: Preliminary results for joint soft vector space models on ARQMath-1 and 2 topics
 
-| Model | α | β | γ | NDCG' (ARQMath-1, | and 2) |
-|-------|---|---|---|-------------------|--------|
-| Text + LaTeX (no token similarities)         |     | 0.5 | 5 | 0.208 | 0.169 |
-| Text + LaTeX (non-positional `word2vec`)     | 0.1 | 0.5 | 5 | 0.224 | 0.186 |
-| Text + LaTeX (positional `word2vec`)         | 0.1 | 0.5 | 5 | 0.223 | 0.186 |
-| Text + Tangent-L (no token similarities) | | 0.5 | 5 | **0.293** | **0.237** |
-| Text + Tangent-L (non-positional `word2vec`) | 0.1 | 0.5 | 5 | 0.257 | 0.199 |
-| Text + Tangent-L (positional `word2vec`)     | 0.1 | 0.5 | 5 | 0.254 | 0.197 |
+| Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |  |
+|-------|----|----|----|----|---|-------|--|
+| Text + LaTeX (no token similarities)         |     | 5 |     | 5 | 0.5 |   0.208   |   0.169   |
+| Text + LaTeX (non-positional `word2vec`)     | 0.1 | 5 | 0.1 | 5 | 0.5 |   0.224   |   0.186   |
+| Text + LaTeX (positional `word2vec`)         | 0.1 | 5 | 0.1 | 5 | 0.5 |   0.223   |   0.186   |
+| Text + Tangent-L (no token similarities)     |     | 5 | 0.1 | 5 | 0.5 | **0.293** | **0.237** |
+| Text + Tangent-L (non-positional `word2vec`) | 0.1 | 5 | 0.1 | 5 | 0.5 |   0.257   |   0.199   |
+| Text + Tangent-L (positional `word2vec`)     | 0.1 | 5 | 0.1 | 5 | 0.5 |   0.254   |   0.197   |
 
-: Evaluation results for interpolated soft vector space models
+: Preliminary results for interpolated soft vector space models on ARQMath-1 and 2 topics
 
 # Conclusion
 

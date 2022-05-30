@@ -41,6 +41,7 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
+- Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
 - After gaussalgo/adaptor#21 has been closed, cherry-pick branch
   `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
   evaluation][13] to `03-finetune-roberta.ipynb`.
@@ -57,9 +58,6 @@ The repository also contains the paper that describes our system.
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
-  - Add `10-optimize-hyperparameters`, where we optimize the hyperparameters
-    $\alpha$, $\beta$, and $\gamma$ for all runs. Describe the optimization in
-    subsection *Parameter optimization* of the paper.
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

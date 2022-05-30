@@ -14,4 +14,4 @@ RUN groupadd -g $GID -o $UNAME
 RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 USER $UNAME
 ENV PATH="/home/$UNAME/.local/bin:${PATH}"
-RUN pip install .[all,notebook]
+RUN pip install .[all,notebook,scm]

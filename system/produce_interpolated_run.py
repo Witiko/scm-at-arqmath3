@@ -179,43 +179,48 @@ def main(msm_input_directory: Path,
          second_temporary_output_parameter_file: Path, second_output_parameter_file: Path,
          run_name: str, temporary_output_run_file: Path, output_run_file: Path, output_map_file: Path,
          output_ndcg_file: Path, temporary_output_beta_file: Path, output_beta_file: Path) -> None:
-    first_optimal_parameters = get_optimal_parameters(
-        msm_input_directory, first_output_text_format,
-        first_input_dictionary_file, first_input_similarity_matrix_file,
-        run_name, temporary_output_run_file,
-        first_temporary_output_parameter_file, first_output_parameter_file)
-    first_system = produce_system(
-        msm_input_directory, first_output_text_format,
-        first_input_dictionary_file, first_input_similarity_matrix_file,
-        first_optimal_parameters)
-
-    second_optimal_parameters = get_optimal_parameters(
-        msm_input_directory, second_output_text_format,
-        second_input_dictionary_file, second_input_similarity_matrix_file,
-        run_name, temporary_output_run_file,
-        second_temporary_output_parameter_file, second_output_parameter_file)
-    second_system = produce_system(
-        msm_input_directory, second_output_text_format,
-        second_input_dictionary_file, second_input_similarity_matrix_file,
-        second_optimal_parameters)
-
-    optimal_beta = get_optimal_beta(
-        first_system, second_system, first_output_text_format,
-        second_output_text_format, run_name, temporary_output_run_file,
-        temporary_output_beta_file, output_beta_file)
-
-    temporary_output_run_file.unlink()
-
     run_type = RunType.ARQMATH_2022
-    first_queries = list(get_queries(run_type, first_output_text_format))
-    second_queries = list(get_queries(run_type, second_output_text_format))
-    system = get_interpolated_system(first_system, second_system, first_queries, second_queries, optimal_beta)
-    produce_serp(system, first_queries, output_run_file, run_name)
 
-    first_questions, first_answers = get_questions_and_answers(msm_input_directory, first_output_text_format)
-    first_questions, first_answers = list(first_questions), list(first_answers)
-    evaluate_serp_with_map(output_run_file, first_queries, first_answers, run_type, output_map_file)
-    evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
+    if not output_run_file.exists():
+        first_optimal_parameters = get_optimal_parameters(
+            msm_input_directory, first_output_text_format,
+            first_input_dictionary_file, first_input_similarity_matrix_file,
+            run_name, temporary_output_run_file,
+            first_temporary_output_parameter_file, first_output_parameter_file)
+        first_system = produce_system(
+            msm_input_directory, first_output_text_format,
+            first_input_dictionary_file, first_input_similarity_matrix_file,
+            first_optimal_parameters)
+
+        second_optimal_parameters = get_optimal_parameters(
+            msm_input_directory, second_output_text_format,
+            second_input_dictionary_file, second_input_similarity_matrix_file,
+            run_name, temporary_output_run_file,
+            second_temporary_output_parameter_file, second_output_parameter_file)
+        second_system = produce_system(
+            msm_input_directory, second_output_text_format,
+            second_input_dictionary_file, second_input_similarity_matrix_file,
+            second_optimal_parameters)
+
+        optimal_beta = get_optimal_beta(
+            first_system, second_system, first_output_text_format,
+            second_output_text_format, run_name, temporary_output_run_file,
+            temporary_output_beta_file, output_beta_file)
+
+        temporary_output_run_file.unlink()
+
+        first_queries = list(get_queries(run_type, first_output_text_format))
+        second_queries = list(get_queries(run_type, second_output_text_format))
+        system = get_interpolated_system(first_system, second_system, first_queries, second_queries, optimal_beta)
+        produce_serp(system, first_queries, output_run_file, run_name)
+
+    if not output_map_file.exists():
+        first_questions, first_answers = get_questions_and_answers(msm_input_directory, first_output_text_format)
+        first_questions, first_answers = list(first_questions), list(first_answers)
+        evaluate_serp_with_map(output_run_file, first_queries, first_answers, run_type, output_map_file)
+
+    if not output_ndcg_file.exists():
+        evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
 
 
 if __name__ == '__main__':

@@ -606,24 +606,29 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
          run_name: str, temporary_output_run_file: Path,
          output_run_file: Path, output_map_file: Path, output_ndcg_file: Path,
          temporary_output_parameter_file: Path, output_parameter_file: Path) -> None:
-    optimal_parameters = get_optimal_parameters(
-        msm_input_directory, output_text_format, input_dictionary_file, input_similarity_matrix_file,
-        run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file)
-
-    temporary_output_run_file.unlink()
-
-    system = produce_system(
-        msm_input_directory, output_text_format, input_dictionary_file,
-        input_similarity_matrix_file, optimal_parameters)
-
     run_type = RunType.ARQMATH_2022
-    queries = list(get_queries(run_type, output_text_format))
-    produce_serp(system, queries, output_run_file, run_name)
 
-    questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
-    questions, answers = list(questions), list(answers)
-    evaluate_serp_with_map(output_run_file, queries, answers, run_type, output_map_file)
-    evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
+    if not output_run_file.exists():
+        optimal_parameters = get_optimal_parameters(
+            msm_input_directory, output_text_format, input_dictionary_file, input_similarity_matrix_file,
+            run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file)
+
+        temporary_output_run_file.unlink()
+
+        system = produce_system(
+            msm_input_directory, output_text_format, input_dictionary_file,
+            input_similarity_matrix_file, optimal_parameters)
+
+        queries = list(get_queries(run_type, output_text_format))
+        produce_serp(system, queries, output_run_file, run_name)
+
+    if not output_map_file.exists():
+        questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
+        questions, answers = list(questions), list(answers)
+        evaluate_serp_with_map(output_run_file, queries, answers, run_type, output_map_file)
+
+    if not output_ndcg_file.exists():
+        evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
 
 
 if __name__ == '__main__':

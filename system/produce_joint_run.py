@@ -1,7 +1,7 @@
 from abc import ABC, ABCMeta, abstractmethod
 from collections import defaultdict, OrderedDict
 import csv
-from enum import Enum, auto
+from enum import Enum
 from itertools import chain, product
 import json
 import logging
@@ -76,30 +76,36 @@ Line = str
 Year = int
 
 
-class RunType(Enum):
-    ARQMATH_2020 = auto()
-    ARQMATH_2021 = auto()
-    ARQMATH_2022 = auto()
+class Year(Enum):
+    ARQMATH_2020 = 2020
+    ARQMATH_2021 = 2021
+    ARQMATH_2022 = 2022
 
-    def get_year(self) -> Year:
-        if self == RunType.ARQMATH_2020:
-            return 2020
-        elif self == RunType.ARQMATH_2021:
-            return 2021
-        elif self == RunType.ARQMATH_2022:
-            return 2022
+    @classmethod
+    def from_int(cls, year: int) -> Year:
+        if year == 2020:
+            return cls.ARQMATH_2020
+        elif year == 2021:
+            return cls.ARQMATH_2021
+        elif year == 2022:
+            return cls.ARQMATH_2022
         else:
-            raise ValueError(f'Unknown run type {self}')
+            raise ValueError(f'Unknown year {year}')
+
+    def __int__(self) -> int:
+        year = self.value
+        return year
 
     def get_number_of_queries(self) -> int:
-        if self == RunType.ARQMATH_2020:
+        year = int(self)
+        if year == 2020:
             return 77
-        elif self == RunType.ARQMATH_2021:
+        elif year == 2021:
             return 100
-        elif self == RunType.ARQMATH_2022:
+        elif year == 2022:
             return 100
         else:
-            raise ValueError(f'Unknown run type {self}')
+            raise ValueError(f'Unknown year {year}')
 
     def __len__(self) -> int:
         number_of_queries = self.get_number_of_queries()
@@ -107,7 +113,7 @@ class RunType(Enum):
 
     def maybe_get_judgements(self, queries: Iterable[Query],
                              answers: Iterable[Answer]) -> Optional[Judgements]:
-        year = self.get_year()
+        year = int(self)
         if year < 2022:
             queries_dict = OrderedDict()
             for query in queries:
@@ -121,7 +127,7 @@ class RunType(Enum):
         return judgements
 
     def maybe_get_task(self) -> Optional[Task]:
-        year = self.get_year()
+        year = int(self)
         if year < 2022:
             task = f'task1-{year}'
         else:
@@ -382,12 +388,11 @@ def get_system(text_format: TextFormat, questions: Iterable[Question], answers: 
     return system
 
 
-def get_queries(run_type: RunType, output_text_format: TextFormat) -> Iterable[Query]:
+def get_queries(year: Year, output_text_format: TextFormat) -> Iterable[Query]:
     input_text_format = get_input_text_format(output_text_format)
-    year = run_type.get_year()
-    queries_dict = load_queries(input_text_format, year=year)
+    queries_dict = load_queries(input_text_format, year=int(year))
     queries = queries_dict.values()
-    assert len(queries) == len(run_type)
+    assert len(queries) == len(year)
     return queries
 
 
@@ -457,9 +462,9 @@ class TSVFileReader(System):
 
 
 def evaluate_serp_with_map(input_run_file: Path, queries: Iterable[Query], answers: Iterable[Answer],
-                           run_type: RunType, output_map_file: Path) -> None:
+                           year: Year, output_map_file: Path) -> None:
     queries, answers = list(queries), list(answers)
-    judgements = run_type.maybe_get_judgements(queries, answers)
+    judgements = year.maybe_get_judgements(queries, answers)
     if judgements is None:
         return
 
@@ -479,8 +484,8 @@ def get_confidence() -> float:
     return confidence
 
 
-def maybe_get_ndcg_and_interval(input_run_file: Path, run_type: RunType) -> Optional[NdcgAndInterval]:
-    task = run_type.maybe_get_task()
+def maybe_get_ndcg_and_interval(input_run_file: Path, year: Year) -> Optional[NdcgAndInterval]:
+    task = year.maybe_get_task()
     if task is None:
         ndcg_and_interval = None
     else:
@@ -494,15 +499,15 @@ def maybe_get_ndcg_and_interval(input_run_file: Path, run_type: RunType) -> Opti
     return ndcg_and_interval
 
 
-def get_ndcg(input_run_file: Path, run_type: RunType) -> Ndcg:
-    ndcg_and_interval = maybe_get_ndcg_and_interval(input_run_file, run_type)
+def get_ndcg(input_run_file: Path, year: Year) -> Ndcg:
+    ndcg_and_interval = maybe_get_ndcg_and_interval(input_run_file, year)
     assert ndcg_and_interval is not None
     ndcg, _ = ndcg_and_interval
     return ndcg
 
 
-def evaluate_serp_with_ndcg(input_run_file: Path, run_type: RunType, output_ndcg_file: Path) -> None:
-    ndcg_and_interval = maybe_get_ndcg_and_interval(input_run_file, run_type)
+def evaluate_serp_with_ndcg(input_run_file: Path, year: Year, output_ndcg_file: Path) -> None:
+    ndcg_and_interval = maybe_get_ndcg_and_interval(input_run_file, year)
     if ndcg_and_interval is None:
         return
 
@@ -560,11 +565,11 @@ def get_optimal_parameters(msm_input_directory: Path,
 
     all_parameters = tqdm(all_parameters, desc='Optimizing alpha and gamma')
 
-    run_type_2020 = RunType.ARQMATH_2020
-    run_type_2021 = RunType.ARQMATH_2021
+    year_2020 = Year.from_int(2020)
+    year_2021 = Year.from_int(2021)
 
-    queries_2020 = list(get_queries(run_type_2020, output_text_format))
-    queries_2021 = list(get_queries(run_type_2021, output_text_format))
+    queries_2020 = list(get_queries(year_2020, output_text_format))
+    queries_2021 = list(get_queries(year_2021, output_text_format))
 
     for parameters in all_parameters:
         system = produce_system(
@@ -572,12 +577,12 @@ def get_optimal_parameters(msm_input_directory: Path,
             input_similarity_matrix_file, parameters)
 
         produce_serp(system, queries_2020, output_run_file, run_name)
-        ndcg_2020 = get_ndcg(output_run_file, run_type_2020)
+        ndcg_2020 = get_ndcg(output_run_file, year_2020)
         produce_serp(system, queries_2021, output_run_file, run_name)
-        ndcg_2021 = get_ndcg(output_run_file, run_type_2021)
+        ndcg_2021 = get_ndcg(output_run_file, year_2021)
 
-        ndcg = ndcg_2020 * len(run_type_2020) + ndcg_2021 * len(run_type_2021)
-        ndcg /= len(run_type_2020) + len(run_type_2021)
+        ndcg = ndcg_2020 * len(year_2020) + ndcg_2021 * len(year_2021)
+        ndcg /= len(year_2020) + len(year_2021)
 
         if ndcg > best_ndcg:
             best_ndcg = ndcg
@@ -606,7 +611,7 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
          run_name: str, temporary_output_run_file: Path,
          output_run_file: Path, output_map_file: Path, output_ndcg_file: Path,
          temporary_output_parameter_file: Path, output_parameter_file: Path) -> None:
-    run_type = RunType.ARQMATH_2022
+    year = Year.from_int(2022)
 
     if not output_run_file.exists():
         optimal_parameters = get_optimal_parameters(
@@ -619,16 +624,16 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
             msm_input_directory, output_text_format, input_dictionary_file,
             input_similarity_matrix_file, optimal_parameters)
 
-        queries = list(get_queries(run_type, output_text_format))
+        queries = list(get_queries(year, output_text_format))
         produce_serp(system, queries, output_run_file, run_name)
 
     if not output_map_file.exists():
         questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
         questions, answers = list(questions), list(answers)
-        evaluate_serp_with_map(output_run_file, queries, answers, run_type, output_map_file)
+        evaluate_serp_with_map(output_run_file, queries, answers, year, output_map_file)
 
     if not output_ndcg_file.exists():
-        evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
+        evaluate_serp_with_ndcg(output_run_file, year, output_ndcg_file)
 
 
 if __name__ == '__main__':

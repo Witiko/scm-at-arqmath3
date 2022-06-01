@@ -23,7 +23,7 @@ from .produce_joint_run import (
     produce_serp,
     produce_system,
     result_sort_key,
-    RunType,
+    Year,
 )
 from .prepare_msm_dataset import TextFormat
 
@@ -130,28 +130,28 @@ def get_optimal_beta(first_system: JointBM25System, second_system: JointBM25Syst
 
     betas = tqdm(betas, desc='Optimizing beta')
 
-    run_type_2020 = RunType.ARQMATH_2020
-    run_type_2021 = RunType.ARQMATH_2021
+    year_2020 = Year.from_int(2020)
+    year_2021 = Year.from_int(2021)
 
-    first_queries_2020 = list(get_queries(run_type_2020, first_output_text_format))
-    first_queries_2021 = list(get_queries(run_type_2021, first_output_text_format))
+    first_queries_2020 = list(get_queries(year_2020, first_output_text_format))
+    first_queries_2021 = list(get_queries(year_2021, first_output_text_format))
 
-    second_queries_2020 = list(get_queries(run_type_2020, second_output_text_format))
-    second_queries_2021 = list(get_queries(run_type_2021, second_output_text_format))
+    second_queries_2020 = list(get_queries(year_2020, second_output_text_format))
+    second_queries_2021 = list(get_queries(year_2021, second_output_text_format))
 
     for beta in betas:
         system_2020 = get_interpolated_system(
             first_system, second_system, first_queries_2020, second_queries_2020, beta)
         produce_serp(system_2020, first_queries_2020, output_run_file, run_name)
-        ndcg_2020 = get_ndcg(output_run_file, run_type_2020)
+        ndcg_2020 = get_ndcg(output_run_file, year_2020)
 
         system_2021 = get_interpolated_system(
             first_system, second_system, first_queries_2021, second_queries_2021, beta)
         produce_serp(system_2021, first_queries_2021, output_run_file, run_name)
-        ndcg_2021 = get_ndcg(output_run_file, run_type_2021)
+        ndcg_2021 = get_ndcg(output_run_file, year_2021)
 
-        ndcg = ndcg_2020 * len(run_type_2020) + ndcg_2021 * len(run_type_2021)
-        ndcg /= len(run_type_2020) + len(run_type_2021)
+        ndcg = ndcg_2020 * len(year_2020) + ndcg_2021 * len(year_2021)
+        ndcg /= len(year_2020) + len(year_2021)
 
         if ndcg > best_ndcg:
             best_ndcg = ndcg
@@ -179,7 +179,7 @@ def main(msm_input_directory: Path,
          second_temporary_output_parameter_file: Path, second_output_parameter_file: Path,
          run_name: str, temporary_output_run_file: Path, output_run_file: Path, output_map_file: Path,
          output_ndcg_file: Path, temporary_output_beta_file: Path, output_beta_file: Path) -> None:
-    run_type = RunType.ARQMATH_2022
+    year = Year.from_int(2022)
 
     if not output_run_file.exists():
         first_optimal_parameters = get_optimal_parameters(
@@ -209,18 +209,18 @@ def main(msm_input_directory: Path,
 
         temporary_output_run_file.unlink()
 
-        first_queries = list(get_queries(run_type, first_output_text_format))
-        second_queries = list(get_queries(run_type, second_output_text_format))
+        first_queries = list(get_queries(year, first_output_text_format))
+        second_queries = list(get_queries(year, second_output_text_format))
         system = get_interpolated_system(first_system, second_system, first_queries, second_queries, optimal_beta)
         produce_serp(system, first_queries, output_run_file, run_name)
 
     if not output_map_file.exists():
         first_questions, first_answers = get_questions_and_answers(msm_input_directory, first_output_text_format)
         first_questions, first_answers = list(first_questions), list(first_answers)
-        evaluate_serp_with_map(output_run_file, first_queries, first_answers, run_type, output_map_file)
+        evaluate_serp_with_map(output_run_file, first_queries, first_answers, year, output_map_file)
 
     if not output_ndcg_file.exists():
-        evaluate_serp_with_ndcg(output_run_file, run_type, output_ndcg_file)
+        evaluate_serp_with_ndcg(output_run_file, year, output_ndcg_file)
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ RUN_BASENAMES_BASELINES = \
 	SCM-task1-baseline_joint_text-text-auto-X \
 	SCM-task1-baseline_joint_text+latex-both-auto-X \
 	SCM-task1-baseline_interpolated_text+latex-both-auto-X \
-	SCM-task1-baseline_interpolated_text+langentl-both-auto-X
+	SCM-task1-baseline_interpolated_text+tangentl-both-auto-X
 
 RUN_BASENAMES_PRIMARY = \
 	SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P \
@@ -224,7 +224,7 @@ endef
 submission/SCM-task1-baseline_interpolated_text+latex-both-auto-X.tsv: dictionary-text dictionary-latex tokenizer-latex.json
 	$(call produce_interpolated_run,text,$<,none,latex,$(word 2,$^),none,0,$@)
 
-submission/SCM-task1-baseline_interpolated_text+langentl-both-auto-X.tsv: dictionary-text dictionary-tangentl
+submission/SCM-task1-baseline_interpolated_text+tangentl-both-auto-X.tsv: dictionary-text dictionary-tangentl
 	$(call produce_interpolated_run,text,$<,none,tangentl,$(word 2,$^),none,0,$@)
 
 submission/SCM-task1-interpolated_word2vec_text+latex-both-auto-A.tsv: dictionary-text similarity-matrix-text dictionary-latex similarity-matrix-latex tokenizer-latex.json

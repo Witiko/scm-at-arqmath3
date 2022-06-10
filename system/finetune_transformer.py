@@ -10,7 +10,7 @@ from adaptor.schedules import SequentialSchedule
 from adaptor.adapter import Adapter
 from adaptor.utils import AdaptationArguments, StoppingStrategy
 
-from .extract_decontextualized_word_embeddings import PathOrIdentifier, get_tokenizer
+from .extract_decontextualized_word_embeddings import PathOrIdentifier, get_tokenizer, get_device
 
 
 def get_batch_size() -> int:
@@ -46,7 +46,6 @@ def get_adaptation_arguments(objective_directory: Optional[Path] = None) -> Adap
         do_train=True, do_eval=True,
         gradient_accumulation_steps=gradient_accumulation_steps,
         num_train_epochs=1000,
-        remove_unused_columns=False,
         fp16=True, fp16_full_eval=True,
     )
     return adaptation_arguments
@@ -59,7 +58,9 @@ class LangModuleWithSpacePrefixingTokenizer(LangModule):
 
 
 def get_language_module(input_model_directory: PathOrIdentifier) -> LangModule:
+    device = get_device()
     language_module = LangModuleWithSpacePrefixingTokenizer(input_model_directory)
+    language_module = language_module.to(device)
     return language_module
 
 

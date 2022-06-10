@@ -102,6 +102,9 @@ dataset-tangentl.txt: arxiv-tangentl.txt msm-tangentl.txt
 out-of-domain-dataset-text-validation.txt:
 	wget 'https://opus.nlpl.eu/download.php?f=EUconst/v1/mono/EUconst.raw.en.gz' -O - | gzip -d > $@
 
+out-of-domain-dataset-text-validation.json: out-of-domain-dataset-text-validation.txt tuned-roberta-base-text+latex
+	python -m system.evaluate_transformer_masked_language_modeling $< ./$(word 2,$^).MLM-objective/ $@
+
 
 tokenizer-latex.json: dataset-latex.txt
 	python -m system.train_math_tokenizer $< $@

@@ -43,6 +43,7 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
+- Implement [feedback from the reviews][24] to the paper.
 - Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
 - After gaussalgo/adaptor#21 has been closed, cherry-pick branch
   `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
@@ -82,3 +83,4 @@ The repository also contains the paper that describes our system.
  [21]: https://huggingface.co/roberta-base#how-to-use
  [22]: https://github.com/MIR-MU/ARQMath-eval
  [23]: https://github.com/MIR-MU/pv211-utils
+ [24]: https://easychair.org/conferences/submission?a=28850142;submission=6037102

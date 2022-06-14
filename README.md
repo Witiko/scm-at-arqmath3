@@ -43,11 +43,23 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Implement [feedback from the reviews][24] to the paper.
-- Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
-- Plot learning rate in [`03-finetune-roberta.ipynb`][7].
+- Implement [reviewer feedback][24] to the paper.
+- Replace *cross-entropy loss* with *masked language modeling loss*
+  in [`03-finetune-roberta.ipynb`][7].
+- Draw conclusions from Figure 1:
+
+    > the model improves but has not reached convergence
+
+- Explain the purpose of out-of-domain evaluation in Figure 1:
+
+    > this graph shows that improvements on math do not come at the price on
+    > other domains outside math
+
+- Plot learning rate in [`03-finetune-roberta.ipynb`][7], possibly with
+  [a single plot using two different $y$ axes][25].
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].
+- Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
 - After we have received task 1 annotations:
   - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
@@ -81,3 +93,4 @@ The repository also contains the paper that describes our system.
  [22]: https://github.com/MIR-MU/ARQMath-eval
  [23]: https://github.com/MIR-MU/pv211-utils
  [24]: https://easychair.org/conferences/submission?a=28850142;submission=6037102
+ [25]: https://stackoverflow.com/a/64333567/657401

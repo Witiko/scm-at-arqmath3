@@ -213,7 +213,7 @@ Deep transformer models
 
  [03-finetune-roberta]: https://github.com/witiko/scm-at-arqmath3 (file 03-finetune-roberta.ipynb)
  [04-train-word2vec]: https://github.com/witiko/scm-at-arqmath3 (file 04-train-word2vec.ipynb)
- [learning-curves]: learning-curves.pdf "Learning curves of MathBERTa on our text + LaTeX dataset"
+ [learning-curves]: learning-curves.pdf "Learning curves of MathBERTa on our text + LaTeX dataset (in-domain) and the European Constitution (out-of-domain)"
  [mathberta]: https://huggingface.co/witiko/mathberta
 
 ## Token Similarity

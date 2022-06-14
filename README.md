@@ -45,9 +45,6 @@ The repository also contains the paper that describes our system.
 
 - Implement [feedback from the reviews][24] to the paper.
 - Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
-- After gaussalgo/adaptor#21 has been closed, cherry-pick branch
-  `feature/evaluate-tuned-romerta-base-ood` and add [out-of-domain
-  evaluation][13] to [`03-finetune-roberta.ipynb`][7].
 - Plot learning rate in [`03-finetune-roberta.ipynb`][7].
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].

@@ -44,8 +44,6 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Implement [reviewer feedback][24] to the paper.
-- Replace *cross-entropy loss* with *masked language modeling loss*
-  in [`03-finetune-roberta.ipynb`][7].
 - Draw conclusions from Figure 1:
 
     > the model improves but has not reached convergence
@@ -55,8 +53,6 @@ The repository also contains the paper that describes our system.
     > this graph shows that improvements on math do not come at the price on
     > other domains outside math
 
-- Plot learning rate in [`03-finetune-roberta.ipynb`][7], possibly with
-  [a single plot using two different $y$ axes][25].
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].
 - Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].

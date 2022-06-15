@@ -207,8 +207,9 @@ Deep transformer models
     and with the tokens recognized by our LaTeX tokenizer, and we randomly
     initialized weights for the new tokens. Then, we fine-tuned our model on
     our text + LaTeX dataset for one epoch using [the masked language modeling
-    objective of RoBERTa][03-finetune-roberta] [@liu2019roberta], see learning
-    curves in Figure~<#fig:learning-curves>. We called our model MathBERTa and
+    objective of RoBERTa][03-finetune-roberta] [@liu2019roberta] and a learning
+    rate of 10⁻⁵ with a linear decay to zero, see the learning curves in
+    Figure~<#fig:learning-curves>. We called our model MathBERTa and
     [released it to the HuggingFace Model Hub.][mathberta]
 
  [03-finetune-roberta]: https://github.com/witiko/scm-at-arqmath3 (file 03-finetune-roberta.ipynb)

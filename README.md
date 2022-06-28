@@ -43,15 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Draw conclusions from Figure 1:
-
-    > the model improves but has not reached convergence
-
-- Explain the purpose of out-of-domain evaluation in Figure 1:
-
-    > this graph shows that improvements on math do not come at the price on
-    > other domains outside math
-
 - Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
 - After we have received task 1 annotations:
   - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.

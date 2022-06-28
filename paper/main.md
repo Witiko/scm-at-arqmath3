@@ -230,7 +230,7 @@ Deep transformer models
 
  [03-finetune-roberta]: https://github.com/witiko/scm-at-arqmath3 (file 03-finetune-roberta.ipynb)
  [04-train-word2vec]: https://github.com/witiko/scm-at-arqmath3 (file 04-train-word2vec.ipynb)
- [learning-curves]: learning-curves.pdf "Learning curves of MathBERTa on our text + LaTeX dataset (in-domain) and the European Constitution (out-of-domain)"
+ [learning-curves]: learning-curves.pdf "Learning curves of MathBERTa on our text + LaTeX dataset (in-domain) and the European Constitution (out-of-domain). The ongoing descent of in-domain validation loss indicates that the performance of the model improved over time, but has not converged and would benefit from further training. The ongoing descent of out-of-domain validation loss shows that improvements on scientific texts do not come at the price of other non-scientific domains."
  [mathberta]: https://huggingface.co/witiko/mathberta
 
 ## Token Similarity

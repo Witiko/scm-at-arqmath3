@@ -43,8 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Implement [reviewer feedback][24] to the paper.
-    - It will be better if this paper contains related work section.
 - Draw conclusions from Figure 1:
 
     > the model improves but has not reached convergence

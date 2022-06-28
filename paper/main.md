@@ -212,7 +212,8 @@ Shallow log-bilinear models
 
 Deep transformer models
 
-:   To model text, we used [the pre-trained roberta-base model][roberta-base].
+:   To model text, we used [the pre-trained roberta-base model][roberta-base]
+    [@liu2019roberta].
 
      ![learning-curves][]
 

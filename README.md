@@ -43,6 +43,8 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
+- Add [a preliminary *Citing* section][18] to `README.md`.
+- Add a preliminary BibTeX entry to [the 🤗 Model Hub][17].
 - Implement [reviewer feedback][24] to the paper.
 - Draw conclusions from Figure 1:
 

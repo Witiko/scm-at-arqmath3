@@ -43,7 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
 - After we have received task 1 annotations:
   - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
   - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].

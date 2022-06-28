@@ -109,13 +109,13 @@ In our experiments, we used the Math StackExchange and ArXMLiv corpora:
 Math StackExchange
 
 :   The Math StackExchange collection v1.2 (MSE)[^mse1.3] provided by the
-    organizers of the ARQMath-2 lab [@behrooz2021overview] contains 2,466,080
-    posts from the Math StackExchange question answering website in HTML5 with
-    math formulae in LaTeX.
+    organizers of the ARQMath-2 lab [@behrooz2021overview, Section 3] contains
+    2,466,080 posts from the Math StackExchange question answering website in
+    HTML5 with math formulae in LaTeX.
 
  [^mse1.3]: An improved Math Stack Exchange collection v1.3 was made available by
- the organizers of the ARQMath-3 lab, which we did not use due to time
- constraints.
+ the organizers of the ARQMath-3 lab [@behrooz2022overview, Section 3], which
+ we did not use due to time constraints.
 
 ArXMLiv
 
@@ -348,11 +348,10 @@ them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
 
 ## Evaluation
 
-We searched for answers to sets of topics provided by the ARQMath organizers.
-To select the optimal values for parameters α, β, and γ,[^optimization] we used
-the 148 topics from ARQMath-1 and 2, Task 1. To estimate the performance of our
-system, we used the 78 topics from ARQMath-3, Task 1. As our retrieval units,
-we used answers from the MSE dataset.
+To evaluate our system, we searched for answers to sets of topics provided by
+the ARQMath organizers [@zanibbi2020overview; @behrooz2021overview;
+@behrooz2022overview, Section 4.1]. As our retrieval units, we used answers
+from the MSE dataset.
 
 Effectiveness
 
@@ -360,7 +359,13 @@ Effectiveness
     information needs of users, we used the normalized discounted cumulative
     gain prime (NDCG') evaluation measure [@sakai2008information] on the top
     1,000 answers retrieved by our system for each topic. As our ground truth,
-    we used the relevance judgements provided by the ARQMath organizers.
+    we used the relevance judgements provided by the ARQMath organizers
+    [@zanibbi2020overview; @behrooz2021overview; @behrooz2022overview, Section
+    4.3].
+
+    To select the optimal values for parameters α, β, and γ,[^optimization] we used
+    the 148 topics from ARQMath-1 and 2, Task 1. To estimate the effectiveness
+    of our system, we used the 78 topics from ARQMath-3 Task 1.
 
 Efficiency
 

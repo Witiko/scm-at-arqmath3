@@ -132,8 +132,8 @@ Text + LaTeX
 
 :   To train text & math language models, we combined MSE with the
     `no-problem` and `warning` subsets of ArXMLiv. The dataset contains text
-    and mathematical formulae in the LaTeX format surrounded by `[MATH]`
-    and `[/MATH]` tags. To validate our language models, we used a small part
+    and mathematical formulae in the LaTeX format surrounded by *[MATH]*
+    and *[/MATH]* tags. To validate our language models, we used a small part
     of the `error` subset of ArXMLiv and no data from MSE.
 
     Example: *We denote the set of branches with [MATH] B\_{0},B\_{1},\ldots,B{n}
@@ -183,7 +183,7 @@ In our system, we used several tokenizers:
       a formula representation and then split it into tokens using the `#\s+#`
       Perl regex.
 - To tokenize text and math in the LaTeX format, we extended the BPE tokenizer
-  of `roberta-base` with the `[MATH]` and `[/MATH]` special tokens and with the
+  of `roberta-base` with the *[MATH]* and *[/MATH]* special tokens and with the
   tokens recognized by our LaTeX tokenizer.
 
  [roberta-base]: https://huggingface.co/roberta-base
@@ -219,7 +219,7 @@ Deep transformer models
 
     To model text and math in the LaTeX format, we replaced the tokenizer
     of `roberta-base` with our text and math tokenizer. Then, we extended the
-    vocabulary of our model with the `[MATH]` and `[/MATH]` special tokens
+    vocabulary of our model with the *[MATH]* and *[/MATH]* special tokens
     and with the tokens recognized by our LaTeX tokenizer, and we randomly
     initialized weights for the new tokens. Then, we fine-tuned our model on
     our text + LaTeX dataset for one epoch using [the masked language modeling

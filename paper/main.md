@@ -363,9 +363,11 @@ Effectiveness
     [@zanibbi2020overview; @behrooz2021overview; @behrooz2022overview, Section
     4.3].
 
-    To select the optimal values for parameters α, β, and γ,[^optimization] we used
-    the 148 topics from ARQMath-1 and 2, Task 1. To estimate the effectiveness
-    of our system, we used the 78 topics from ARQMath-3 Task 1.
+    To select the optimal values for parameters α, β, and γ, we used the 148
+    topics from ARQMath-1 and 2, Task 1 and performed a grid search over values
+    α ∈ {0.0, 0.1, ..., 1.0}, β ∈ {0.0, 0.1, ..., 1.0}, and γ ∈ {1, 2, 3, 4,
+    5}.[^optimization] To estimate the effectiveness of our system, we used the
+    78 topics from ARQMath-3 Task 1.
 
 Efficiency
 
@@ -375,9 +377,10 @@ Efficiency
     which made it difficult to meaningfully measure the efficiency of our system.
     Therefore, we have not measured and do not report the efficiency of our system.
 
- [^optimization]: Due to time constraints, we hand-picked the values α = 0.1,
- β = 0.5, and γ = 5 for our ARQMath-3 submissions. In the camera-ready, we will
- report the optimal parameter values and their NDCG' scores on ARQMath-3 topics.
+ [^optimization]: Due to time constraints, we hand-picked the parameter values
+ α = 0.1, β = 0.5, and γ = 5 for our submissions to the ARQMath-3 lab. We
+ report effectiveness for both hand-picked and optimal parameter values, and
+ discuss the robustness of our system to parameter variations.
 
 # Results {#results}
 

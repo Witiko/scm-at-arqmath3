@@ -44,11 +44,7 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Implement [reviewer feedback][24] to the paper.
-    - (pg 7) final column in tables not defined, is this MAP' or P'@10? the final version should probably have all three metrics
-    - (pg 7) what is the base comparison similar run in ARQMath-2? the results are not starting from MathDowsers Tangent-L base of nDCG'=0.434 last year
-    - (pg 7) how does "Text + Tangent-L (no token similarities)" in Table 2 compare to MathDowsers Tangent-L which uses different data construction and something like Beta=0.27 (approximately) while you are using Beta=0.5
     - It will be better if this paper contains related work section.
-    - Similarly sample of the dataset can be described in dataset section.
 - Draw conclusions from Figure 1:
 
     > the model improves but has not reached convergence
@@ -66,6 +62,7 @@ The repository also contains the paper that describes our system.
     in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
     `09-evaluate-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
+  - Add the best systems from other teams to tables 1 and 2.
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].
 - After the ARQMath-3 paper has been published:

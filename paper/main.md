@@ -136,11 +136,18 @@ Text + LaTeX
     and `[/MATH]` tags. To validate our language models, we used a small part
     of the `error` subset of ArXMLiv and no data from MSE.
 
+    Example: *We denote the set of branches with [MATH] B\_{0},B\_{1},\ldots,B{n}
+    [/MATH] where [MATH] n [/MATH] are the number of branches.*
+
 Text
 
 :   To train text language models, we used the same combinations of MSE
     and ArXMLiv as in the previous dataset, but now our dataset only contains
     text with math formulae removed.
+
+    Example: *(Graphs of residually finite groups) Assume that and are
+    satisfied. Let be a graph of groups. If is infinite then assume that is
+    continuous.*
 
 LaTeX
 
@@ -148,12 +155,16 @@ LaTeX
     and ArXMLiv subsets as in the previous datasets, but now our dataset
     only contains formulae in the LaTeX format.
 
+    Example: *\begin{pmatrix}1&n\\0&1\end{pmatrix}\begin{pmatrix}1&p\\0&1\end{pmatrix}*
+
 Tangent-L
 
 :   To train math language models, we used the same combinations of MSE
     and ArXMLiv subsets as in the previous datasets, but now our dataset
     only contains formulae in the format used by [the state-of-the-art
     Tangent-L search engine from UWaterloo][mathtuples] [@ng2021dowsing].
+
+    Example: *#(start)# #(v!△,/,n,-)# #(v!△,/,n)# #(/,v!l,n,n)# #(/,v!l,n)# #(v!l,!0,nn)# #(v!l,!0)# #(end)#*
 
  [01-prepare-dataset]: https://github.com/witiko/scm-at-arqmath3 (file 01-prepare-dataset.ipynb)
  [mathtuples]: https://github.com/fwtompa/mathtuples (git commit 888b3d5 from October 25, 2021)

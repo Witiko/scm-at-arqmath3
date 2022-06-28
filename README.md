@@ -43,24 +43,33 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- After we have received task 1 annotations:
-  - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
-  - Add MAP and nDCG' scores for 2022 to [`08-produce-arqmath-runs.ipynb`][15].
-  - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
-    in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
-  - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
-    `09-evaluate-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
-  - Add the best systems from other teams to tables 1 and 2.
-- Write a related work section before conclusion about:
+- Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
+- Add nDCG' scores for optimal parameter values to
+  [`08-produce-arqmath-runs.ipynb`][15] and to tables 1 and 2 in the paper.
+- Add nDCG' scores for hand-picked parameter values to tables 3 and 4 in
+  the paper. Possibly swap the tables, so that the hand-picked ones go first.
+- Add the best systems from other teams to tables 1 and 2 in the paper.
+- Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
+  in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
+  Plot α, γ, and NDCG' (axis y) over checkpoints (axis x).
+- Write a related work section before conclusion to the paper discussing:
+  - The ARQMath labs
   - The soft vector space model (see @witiko's [dissertation][26])
   - Log-bilinear language models (see @witiko's [dissertation][26])
   - Deep transformer models with a paragraph on math-aware models (see branch
     `related_work` by @stefanik12)
-- Add [extrinsic end-task evaluation on NumGLUE][14] to
-  [`03-finetune-roberta.ipynb`][7].
+- In the results sections of the paper, discuss the following:
+  - The robustness of our system to parameter variations
+  - The optimal parameter values of different models
 - After the ARQMath-3 paper has been published:
-  - Add [a *Citing* section][18] to `README.md`.
-  - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
+  - Update [the *Citing* section][18] in `README.md` and on [the 🤗 Model Hub][17].
+  - Add [a link][19] to [the 🤗 Model Hub][17].
+  - Update [the evaluation results][27] on [the 🤗 Model Hub][17].
+  - Add [extrinsic end-task evaluation on NumGLUE][14] to
+    [`03-finetune-roberta.ipynb`][7]. Plot performance on the five different
+    NumGLUE tasks (axis y) over checkpoints (axis x).
+  - Add end-task evaluation on ARQMath-3 topics to
+    `09-evaluate-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
 
 ## Citing
 
@@ -109,3 +118,4 @@ CEUR-WS, 2022.
  [24]: https://easychair.org/conferences/submission?a=28850142;submission=6037102
  [25]: https://stackoverflow.com/a/64333567/657401
  [26]: https://github.com/witiko/doctoral-thesis
+ [27]: https://huggingface.co/witiko/mathberta#intrinsic-evaluation-results

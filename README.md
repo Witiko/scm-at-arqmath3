@@ -43,8 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Add [a preliminary *Citing* section][18] to `README.md`.
-- Add a preliminary BibTeX entry to [the 🤗 Model Hub][17].
 - Implement [reviewer feedback][24] to the paper.
 - Draw conclusions from Figure 1:
 
@@ -68,6 +66,29 @@ The repository also contains the paper that describes our system.
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].
+
+## Citing
+
+### Text
+
+Vít Novotný and Michal Štefánik. “Combining Sparse and Dense Information
+Retrieval. Soft Vector Space Model and MathBERTa at ARQMath-3”.
+In: *Proceedings of the Working Notes of CLEF 2022*. To Appear.
+CEUR-WS, 2022.
+
+### Bib(La)TeX
+
+``` bib
+@inproceedings{novotny2022combining,
+  booktitle = {Proceedings of the Working Notes of {CLEF} 2022},
+  title = {Combining Sparse and Dense Information Retrieval},
+  subtitle = {Soft Vector Space Model and MathBERTa at ARQMath-3},
+  author = {Novotný, Vít and Štefánik, Michal},
+  publisher = {{CEUR-WS}},
+  year = {2022},
+  note = {To Appear},
+}
+```
 
  [3]: 01-prepare-dataset.ipynb
  [4]: https://notmatthancock.github.io/2017/03/23/simple-batch-stat-updates.html

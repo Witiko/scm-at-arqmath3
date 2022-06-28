@@ -44,7 +44,6 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Implement [reviewer feedback][24] to the paper.
-    - Specify that you are doing Task 1 only (in description and each result table).
     - Italicize dataset names and maybe capitalize 'Text' in them for clarity
     - dataset naming confusion: is the dataset Tangent-L or Text+Tangent-L?
     - (pg 2) have you updated to the ARQMath-3 dataset?
@@ -86,8 +85,8 @@ The repository also contains the paper that describes our system.
 ### Text
 
 Vít Novotný and Michal Štefánik. “Combining Sparse and Dense Information
-Retrieval. Soft Vector Space Model and MathBERTa at ARQMath-3”.
-In: *Proceedings of the Working Notes of CLEF 2022*. To Appear.
+Retrieval. Soft Vector Space Model and MathBERTa at ARQMath-3 Task 1 (Answer
+Retrieval)”. In: *Proceedings of the Working Notes of CLEF 2022*. To Appear.
 CEUR-WS, 2022.
 
 ### Bib(La)TeX
@@ -96,7 +95,7 @@ CEUR-WS, 2022.
 @inproceedings{novotny2022combining,
   booktitle = {Proceedings of the Working Notes of {CLEF} 2022},
   title = {Combining Sparse and Dense Information Retrieval},
-  subtitle = {Soft Vector Space Model and MathBERTa at ARQMath-3},
+  subtitle = {Soft Vector Space Model and MathBERTa at ARQMath-3 Task 1 (Answer Retrieval)},
   author = {Novotný, Vít and Štefánik, Michal},
   publisher = {{CEUR-WS}},
   year = {2022},

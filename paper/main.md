@@ -9,7 +9,7 @@ conference: |
   September 5--8, 2022, Bologna, Italy
 
 title: Combining Sparse and Dense Information Retrieval
-subtitle: Soft Vector Space Model and MathBERTa at ARQMath-3
+subtitle: Soft Vector Space Model and MathBERTa at ARQMath-3 Task 1 (Answer Retrieval)
 author:
 - name: Vít Novotný
   orcid: 0000-0002-3303-4130
@@ -334,9 +334,9 @@ them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
 
 We searched for answers to sets of topics provided by the ARQMath organizers.
 To select the optimal values for parameters α, β, and γ,[^optimization] we used
-the 177 topics from ARQMath-1 and 2. To estimate the performance of our system,
-we used the 100 topics from ARQMath-3. As our retrieval units, we used answers
-from the MSE dataset.
+the 177 topics from ARQMath-1 and 2, Task 1. To estimate the performance of our
+system, we used the 100 topics from ARQMath-3 Task 1. As our retrieval units,
+we used answers from the MSE dataset.
 
 To determine how well the answers retrieved by our system satisfied the
 information needs of users, we used the relevance judgements provided
@@ -364,7 +364,7 @@ as the NDCG' scores on ARQMath-3 topics available.
 | Text + LaTeX (positional `word2vec`)     | 0.1 | 5 |   0.247   | **0.184** |
 | Text + LaTeX (MathBERTa)                 | 0.1 | 5 | **0.248** | **0.184** |
 
-: Preliminary results for joint soft vector space models on ARQMath-1 and 2 topics
+: Preliminary results for joint soft vector space models on ARQMath-1 and 2 Task 1 topics
 
 | Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |  |
 |-------|----|----|----|----|---|-------|--|
@@ -375,7 +375,7 @@ as the NDCG' scores on ARQMath-3 topics available.
 | Text + Tangent-L (non-positional `word2vec`) | 0.1 | 5 | 0.1 | 5 | 0.5 |   0.257   |   0.199   |
 | Text + Tangent-L (positional `word2vec`)     | 0.1 | 5 | 0.1 | 5 | 0.5 |   0.254   |   0.197   |
 
-: Preliminary results for interpolated soft vector space models on ARQMath-1 and 2 topics
+: Preliminary results for interpolated soft vector space models on ARQMath-1 and 2 Task 1 topics
 
 # Conclusion {#conclusion}
 

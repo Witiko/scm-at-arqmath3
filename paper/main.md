@@ -342,11 +342,21 @@ the 148 topics from ARQMath-1 and 2, Task 1. To estimate the performance of our
 system, we used the 78 topics from ARQMath-3, Task 1. As our retrieval units,
 we used answers from the MSE dataset.
 
-To determine how well the answers retrieved by our system satisfied the
-information needs of users, we used the relevance judgements provided
-by the ARQMath organizers and the normalized discounted cumulative gain
-prime (NDCG') evaluation measure [@sakai2008information] on the top 1,000
-answers retrieved by our system for each topic.
+Effectiveness
+
+:   To determine how well the answers retrieved by our system satisfied the
+    information needs of users, we used the normalized discounted cumulative
+    gain prime (NDCG') evaluation measure [@sakai2008information] on the top
+    1,000 answers retrieved by our system for each topic. As our ground truth,
+    we used the relevance judgements provided by the ARQMath organizers.
+
+Efficiency
+
+:   Our system is a prototype written in a high-level programming language with
+    emphasis on correctness over efficiency. Furthermore, we computed our
+    evaluation on a non-dedicated computer cluster with heterogeneous hardware,
+    which made it difficult to meaningfully measure the efficiency of our system.
+    Therefore, we have not measured and do not report the efficiency of our system.
 
  [^optimization]: Due to time constraints, we hand-picked the values α = 0.1,
  β = 0.5, and γ = 5 for our ARQMath-3 submissions. In the camera-ready, we will

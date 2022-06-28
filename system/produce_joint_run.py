@@ -101,9 +101,9 @@ class Year(Enum):
         if year == 2020:
             return 77
         elif year == 2021:
-            return 100
+            return 71
         elif year == 2022:
-            return 100
+            return 78
         else:
             raise ValueError(f'Unknown year {year}')
 
@@ -392,7 +392,7 @@ def get_queries(year: Year, output_text_format: TextFormat) -> Iterable[Query]:
     input_text_format = get_input_text_format(output_text_format)
     queries_dict = load_queries(input_text_format, year=int(year))
     queries = queries_dict.values()
-    assert len(queries) == len(year)
+    assert len(queries) >= len(year)
     return queries
 
 

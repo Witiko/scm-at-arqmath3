@@ -338,8 +338,8 @@ them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
 
 We searched for answers to sets of topics provided by the ARQMath organizers.
 To select the optimal values for parameters α, β, and γ,[^optimization] we used
-the 177 topics from ARQMath-1 and 2, Task 1. To estimate the performance of our
-system, we used the 100 topics from ARQMath-3 Task 1. As our retrieval units,
+the 148 topics from ARQMath-1 and 2, Task 1. To estimate the performance of our
+system, we used the 78 topics from ARQMath-3, Task 1. As our retrieval units,
 we used answers from the MSE dataset.
 
 To determine how well the answers retrieved by our system satisfied the

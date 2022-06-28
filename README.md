@@ -44,8 +44,6 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Implement [reviewer feedback][24] to the paper.
-    - (pg 4) should specify how many epochs you used for your system and maybe final loss value
-    - (pg 6) says 177 topics for ARQMath-1 and 2, but was 77+71=148 evaluated Task 1 topics
     - (pg 6) should say that nDCG' is restricted to judged results
     - (pg 7) final column in tables not defined, is this MAP' or P'@10? the final version should probably have all three metrics
     - (pg 7) what is the base comparison similar run in ARQMath-2? the results are not starting from MathDowsers Tangent-L base of nDCG'=0.434 last year

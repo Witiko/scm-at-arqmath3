@@ -53,8 +53,6 @@ The repository also contains the paper that describes our system.
     > this graph shows that improvements on math do not come at the price on
     > other domains outside math
 
-- Add [extrinsic end-task evaluation on NumGLUE][14] to
-  [`03-finetune-roberta.ipynb`][7].
 - Optimize hyperparameters and update [`08-produce-arqmath-runs.ipynb`][15].
 - After we have received task 1 annotations:
   - Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
@@ -63,6 +61,8 @@ The repository also contains the paper that describes our system.
     in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
     `09-evaluate-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
+- Add [extrinsic end-task evaluation on NumGLUE][14] to
+  [`03-finetune-roberta.ipynb`][7].
 - After the ARQMath-3 paper has been published:
   - Add [a *Citing* section][18] to `README.md`.
   - Add [a link][19] and a BibTeX entry to [the 🤗 Model Hub][17].

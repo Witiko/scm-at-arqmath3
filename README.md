@@ -44,6 +44,20 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Implement [reviewer feedback][24] to the paper.
+    - Specify that you are doing Task 1 only (in description and each result table).
+    - Italicize dataset names and maybe capitalize 'Text' in them for clarity
+    - dataset naming confusion: is the dataset Tangent-L or Text+Tangent-L?
+    - (pg 2) have you updated to the ARQMath-3 dataset?
+    - (pg 3) version/date of mathtuple code (new version likely with different defaults and bug fixes was just released)
+    - (pg 4) should specify how many epochs you used for your system and maybe final loss value
+    - (pg 6) says 177 topics for ARQMath-1 and 2, but was 77+71=148 evaluated Task 1 topics
+    - (pg 6) should say that nDCG' is restricted to judged results
+    - (pg 7) final column in tables not defined, is this MAP' or P'@10? the final version should probably have all three metrics
+    - (pg 7) what is the base comparison similar run in ARQMath-2? the results are not starting from MathDowsers Tangent-L base of nDCG'=0.434 last year
+    - (pg 7) how does "Text + Tangent-L (no token similarities)" in Table 2 compare to MathDowsers Tangent-L which uses different data construction and something like Beta=0.27 (approximately) while you are using Beta=0.5
+    - efficiency: list runtime performance and the hardware used
+    - It will be better if this paper contains related work section.
+    - Similarly sample of the dataset can be described in dataset section.
 - Draw conclusions from Figure 1:
 
     > the model improves but has not reached convergence

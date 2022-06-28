@@ -51,6 +51,11 @@ The repository also contains the paper that describes our system.
   - Add end-task evaluation on ARQMath-1, 2, and 3 topics to
     `09-evaluate-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
   - Add the best systems from other teams to tables 1 and 2.
+- Write a related work section before conclusion about:
+  - The soft vector space model (see @witiko's [dissertation][26])
+  - Log-bilinear language models (see @witiko's [dissertation][26])
+  - Deep transformer models with a paragraph on math-aware models (see branch
+    `related_work` by @stefanik12)
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7].
 - After the ARQMath-3 paper has been published:
@@ -103,3 +108,4 @@ CEUR-WS, 2022.
  [23]: https://github.com/MIR-MU/pv211-utils
  [24]: https://easychair.org/conferences/submission?a=28850142;submission=6037102
  [25]: https://stackoverflow.com/a/64333567/657401
+ [26]: https://github.com/witiko/doctoral-thesis

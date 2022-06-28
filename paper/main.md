@@ -156,7 +156,7 @@ Tangent-L
     Tangent-L search engine from UWaterloo][mathtuples] [@ng2021dowsing].
 
  [01-prepare-dataset]: https://github.com/witiko/scm-at-arqmath3 (file 01-prepare-dataset.ipynb)
- [mathtuples]: https://github.com/fwtompa/mathtuples
+ [mathtuples]: https://github.com/fwtompa/mathtuples (git commit 888b3d5 from October 25, 2021)
 
 ## Tokenization
 

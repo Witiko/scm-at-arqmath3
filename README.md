@@ -44,7 +44,6 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - Implement [reviewer feedback][24] to the paper.
-    - (pg 3) version/date of mathtuple code (new version likely with different defaults and bug fixes was just released)
     - (pg 4) should specify how many epochs you used for your system and maybe final loss value
     - (pg 6) says 177 topics for ARQMath-1 and 2, but was 77+71=148 evaluated Task 1 topics
     - (pg 6) should say that nDCG' is restricted to judged results

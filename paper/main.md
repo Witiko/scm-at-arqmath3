@@ -108,10 +108,14 @@ In our experiments, we used the Math StackExchange and ArXMLiv corpora:
 
 Math StackExchange
 
-:   The Math StackExchange collection v1.2 (MSE) provided by the organizers of
-    the ARQMath-2 shared task evaluation [@behrooz2021overview] contains
-    2,466,080 posts from the Math Stack Exchange question answering website in
-    HTML5 with math formulae in LaTeX.
+:   The Math StackExchange collection v1.2 (MSE)[^mse1.3] provided by the
+    organizers of the ARQMath-2 lab [@behrooz2021overview] contains 2,466,080
+    posts from the Math StackExchange question answering website in HTML5 with
+    math formulae in LaTeX.
+
+ [^mse1.3]: An improved Math Stack Exchange collection v1.3 was made available by
+ the organizers of the ARQMath-3 lab, which we did not use due to time
+ constraints.
 
 ArXMLiv
 

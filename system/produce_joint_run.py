@@ -128,7 +128,7 @@ class Year(Enum):
 
     def maybe_get_task(self) -> Optional[Task]:
         year = int(self)
-        if year < 2022:
+        if year <= 2022:
             task = f'task1-{year}'
         else:
             task = None

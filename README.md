@@ -43,7 +43,7 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Add annotations to [pv211-utils][22] and [arqmath-eval][23] libraries.
+- Add annotations to [arqmath-eval][23] library.
 - Add nDCG' scores for optimal parameter values to
   [`08-produce-arqmath-runs.ipynb`][15] and to tables 1 and 2 in the paper.
 - Add nDCG' scores for hand-picked parameter values to tables 3 and 4 in
@@ -52,15 +52,16 @@ The repository also contains the paper that describes our system.
 - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
   in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
   Plot α, γ, and NDCG' (axis y) over checkpoints (axis x).
+- In the results sections of the paper, discuss the following:
+  - The robustness of our system to parameter variations
+  - The optimal parameter values of different models
 - Write a related work section before conclusion to the paper discussing:
   - The ARQMath labs
   - The soft vector space model (see @witiko's [dissertation][26])
   - Log-bilinear language models (see @witiko's [dissertation][26])
   - Deep transformer models with a paragraph on math-aware models (see branch
     `related_work` by @stefanik12)
-- In the results sections of the paper, discuss the following:
-  - The robustness of our system to parameter variations
-  - The optimal parameter values of different models
+- Proofread the paper.
 - After the ARQMath-3 paper has been published:
   - Update [the *Citing* section][18] in `README.md` and on [the 🤗 Model Hub][17].
   - Add [a link][19] to [the 🤗 Model Hub][17].

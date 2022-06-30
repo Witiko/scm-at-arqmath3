@@ -43,7 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Add annotations to [arqmath-eval][23] library.
 - Add nDCG' scores for optimal parameter values to
   [`08-produce-arqmath-runs.ipynb`][15] and to tables 1 and 2 in the paper.
 - Add nDCG' scores for hand-picked parameter values to tables 3 and 4 in

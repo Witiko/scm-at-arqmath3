@@ -1,6 +1,6 @@
 \begin{figure}
 \centering
-\begin{tikzpicture}[xscale=1.00, yscale=3.0, scale=3.0]
+\begin{tikzpicture}[xscale=1.00, yscale=1.5, scale=3.0]
 
 \draw[->] (0.15, 2.10) -- (4.5, 2.10);
 \draw[color=white!50!gray] (0.5, 2.20) node [left, color=white!20!gray] { 0.220 } -- (4.5, 2.20);
@@ -20,26 +20,26 @@
 \node (joint_text_latex_mathberta_and_positional_word2vec) at (3, 2.49) { $\times$ };
 \node (joint_text_latex_word2vec) at (4, 2.51) { $\times$ };
 
-\path [draw, ->] (joint_text) edge [bend right=10] node [midway, below, xshift=-0.5cm] { \footnotesize +LaTeX } (joint_text_latex);
-\path [draw, ->] (joint_text) edge [bend right=7] node [midway, below, xshift=0.8cm, yshift=0.1cm] { \footnotesize +RoBERTa } (joint_text_roberta);
-\path [draw, ->] (joint_text_latex) edge [bend right=10] node [midway, below, xshift=1.25cm, yshift=0.5cm, align=center] { \footnotesize +positional\\[-0.3em] \footnotesize word2vec \\[-0.3em] \footnotesize or MathBERTa } (joint_text_latex_mathberta_and_positional_word2vec);
+\path [draw, ->] (joint_text) edge [bend right=10] node [midway, below, xshift=-0.5cm] { \footnotesize $+$LaTeX } (joint_text_latex);
+\path [draw, ->] (joint_text) edge [bend right=7] node [midway, below, xshift=0.8cm, yshift=0.1cm] { \footnotesize $+$RoBERTa } (joint_text_roberta);
+\path [draw, ->] (joint_text_latex) edge [bend right=10] node [midway, below, xshift=1.25cm, yshift=0.3cm, align=center] { \footnotesize $+$positional\\[-0.3em] \footnotesize word2vec \\[-0.3em] \footnotesize or MathBERTa } (joint_text_latex_mathberta_and_positional_word2vec);
 \path [draw, ->] (joint_text_latex_mathberta_and_positional_word2vec) edge [bend left=10] node [midway, above] { \footnotesize $-$positional } (joint_text_latex_word2vec);
 
 \node (interpolated_text_latex) at (2, 2.57) { \newmoon };
-\node [left=0 of interpolated_text_latex, align=center] { Interpolated\\ Text${}+{}$LaTeX };
+\node [left=0 of interpolated_text_latex, yshift=0.6cm, xshift=0.48cm, align=center] { Interpolated\\ Text${}+{}$LaTeX };
 \node (interpolated_text_latex_word2vec) at (3, 2.88) { $\times$ };
 \node (interpolated_text_latex_positional_word2vec) at (4, 2.88) { $\times$ };
 
-\path [draw, ->] (interpolated_text_latex) edge [bend right=10] node [midway, above, xshift=-0.2cm, yshift=0.8cm] { \footnotesize +word2vec } (interpolated_text_latex_word2vec);
-\path [draw, ->] (interpolated_text_latex_word2vec) edge [bend left=10] node [midway, above] { \footnotesize +positional } (interpolated_text_latex_positional_word2vec);
+\path [draw, ->] (interpolated_text_latex) edge [bend right=10] node [midway, above, xshift=-0.2cm, yshift=0.5cm] { \footnotesize $+$word2vec } (interpolated_text_latex_word2vec);
+\path [draw, ->] (interpolated_text_latex_word2vec) edge [bend left=10] node [midway, above] { \footnotesize $+$positional } (interpolated_text_latex_positional_word2vec);
 
 \node (interpolated_text_tangentl) at (2, 3.49) { \newmoon };
-\node [below=-0.1cm of interpolated_text_tangentl, align=center] { Interpolated\\ Text${}+{}$Tangent-L };
+\node [below=-0.1cm of interpolated_text_tangentl, xshift=-0.5cm, align=center] { Interpolated\\ Text${}+{}$Tangent-L };
 \node (interpolated_text_tangentl_word2vec) at (3, 3.51) { $\times$ };
 \node (interpolated_text_tangentl_positional_word2vec) at (4, 3.55) { $\times$ };
 
-\path [draw, ->] (interpolated_text_tangentl) edge [bend left=10] node [midway, above] { \footnotesize +word2vec } (interpolated_text_tangentl_word2vec);
-\path [draw, ->] (interpolated_text_tangentl_word2vec) edge [bend left=10] node [midway, above] { \footnotesize +positional } (interpolated_text_tangentl_positional_word2vec);
+\path [draw, ->] (interpolated_text_tangentl) edge [bend right=10] node [midway, above, yshift=0.2cm] { \footnotesize $+$word2vec } (interpolated_text_tangentl_word2vec);
+\path [draw, ->] (interpolated_text_tangentl_word2vec) edge [bend left=10] node [midway, above] { \footnotesize $+$positional } (interpolated_text_tangentl_positional_word2vec);
 
 \end{tikzpicture}
 \caption{The extensions of the baseline soft vector space models and their impact on the effectiveness}

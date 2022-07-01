@@ -20,7 +20,18 @@
   #1\footnote{See \url{#3}\ifx\empty#4\empty\else, #4\fi.}}
 
 % Tables
-\renewcommand\fps@table{!t}
+\ExplSyntaxOn
+\cs_set:Npn \__reset_tbl: {
+  \tl_set:Nx \l_tbl_pos_tl { tp }
+  \tl_set:Nx \l_tbl_cols_tl { 1 }
+  \tl_set:Nn \l_tbl_align_tl { \centering }
+  \skip_set:Nn \l_tbl_abovecap_skip { 6pt }
+  \skip_set:Nn \l_tbl_belowcap_skip { 0pt }
+  \skip_set:Nn \l_tbl_abovetbl_skip { 6pt }
+  \skip_set:Nn \l_tbl_belowtbl_skip { 6pt }
+}
+\ExplSyntaxOff
+\renewcommand{\topfraction}{0.5}
 
 % Figures
 \setkeys{Gin}{

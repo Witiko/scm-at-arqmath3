@@ -4,6 +4,7 @@
 \markdownSetupSnippet{keywords}{snippet = witiko/ceurart/keywords}
 \usepackage{wasysym}
 \usepackage{tikz}
+\usepackage{placeins}
 \usetikzlibrary{positioning}
 \usepackage[style = numeric]{biblatex}
 \addbibresource{main.bib}
@@ -18,5 +19,6 @@
 \end{keywords}
 \maketitle
 \markdownInput[slice = $keywords $]{main.md}  % Body text
+\FloatBarrier
 \printbibliography  % Bibliography
 \end{document}

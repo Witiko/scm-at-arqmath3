@@ -29,7 +29,7 @@ address: |
 
 Sparse retrieval techniques can detect exact matches, but are inadequate for
 mathematical texts, where the same information can be expressed as either text
-or math. The soft vector space model has been shown to improve on sparse
+or math. The soft vector space model has been shown to improve sparse
 retrieval on semantic text similarity, text classification, and machine
 translation evaluation tasks, but it has not yet been properly evaluated on
 math information retrieval.
@@ -211,10 +211,10 @@ Shallow log-bilinear models
     analogical reasoning and causal language modeling [@novotny2022when].
     To evaluate the impact of constrained positional weighting on math
     information retrieval, we trained `word2vec` models both with and without
-    constrained positional weighting for every dataset. In the rest of the
-    text, we refer to `word2vec` with and without constrained positional
-    weighting as *positional `word2vec`* and *non-positional `word2vec`* for
-    brevity.
+    constrained positional weighting for every dataset. For brevity, we refer
+    to `word2vec` with and without constrained positional weighting as
+    *positional `word2vec`* and *non-positional `word2vec`* in the rest of the
+    paper.
 
 Deep transformer models
 
@@ -286,7 +286,7 @@ To ensure sparsity and symmetry of the matrices, we considered only the 100
 most similar tokens for each token and we used the greedy algorithm of
 @novotny2018implementation [Section 3] to construct the matrices. For semantic
 similarity matrices, we also enforced strict diagonal dominance, which has
-been shown to improve performance on semantic text similarity
+been shown to improve performance on the semantic text similarity task
 [@novotny2020text, Table 2].
 
 Finally, to produce token similarity matrices that capture both lexical and
@@ -303,7 +303,7 @@ In our system, we only used the combined token similarity matrices.
 
 ## Soft Vector Space Modeling
 
-To find answers to math questions, we used sparse retrieval with the soft
+In order to find answers to math questions, we used sparse retrieval with the soft
 vector space model of @sidorov2014soft, using Lucene BM25 [@kamphuis2020bm25,
 Table 1] as the vector space and our combined similarity matrices as the token
 similarity measure. To address the bimodal nature of math questions and
@@ -343,12 +343,12 @@ Interpolated models
     matrices from the positional `word2vec` model and the other used the
     token similarity matrices from non-positional `word2vec` model.
 
-To represent a question in the soft vector space model, we used the tokens in
-the title and in the body text. To represent an answer in the soft vector space
-model, we used the tokens in the title of its parent question and in the body
-text of the answer. To give greater weight to tokens in the title, we repeated
-them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
-3.2].
+For our representation of questions in the soft vector space model, we used the
+tokens in the title and in the body text. To represent an answer in the soft
+vector space model, we used the tokens in the title of its parent question and
+in the body text of the answer. To give greater weight to tokens in the title,
+we repeated them γ times, which proved useful in ARQMath-2
+[@novotny2021ensembling, Section 3.2].
 
  [08-produce-arqmath-runs]: https://github.com/witiko/scm-at-arqmath3 (file 08-produce-arqmath-runs.ipynb)
 

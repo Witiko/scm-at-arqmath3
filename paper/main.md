@@ -369,6 +369,11 @@ Effectiveness
     5}.[^optimization] To estimate the effectiveness of our system, we used the
     78 topics from ARQMath-3 Task 1.
 
+    Due to time constraints, we hand-picked the parameter values
+    α = 0.1, β = 0.5, and γ = 5 for our submissions to the ARQMath-3 lab. We
+    report effectiveness for both hand-picked and optimal parameter values, and
+    discuss the robustness of our system to parameter variations.
+
 Efficiency
 
 :   Our system is a prototype written in a high-level programming language with
@@ -376,11 +381,6 @@ Efficiency
     evaluation on a non-dedicated computer cluster with heterogeneous hardware,
     which made it difficult to meaningfully measure the efficiency of our system.
     Therefore, we have not measured and do not report the efficiency of our system.
-
-    Due to time constraints, we hand-picked the parameter values
-    α = 0.1, β = 0.5, and γ = 5 for our submissions to the ARQMath-3 lab. We
-    report effectiveness for both hand-picked and optimal parameter values, and
-    discuss the robustness of our system to parameter variations.
 
 # Results {#results}
 

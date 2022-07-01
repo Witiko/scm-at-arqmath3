@@ -377,10 +377,10 @@ Efficiency
     which made it difficult to meaningfully measure the efficiency of our system.
     Therefore, we have not measured and do not report the efficiency of our system.
 
- [^optimization]: Due to time constraints, we hand-picked the parameter values
- α = 0.1, β = 0.5, and γ = 5 for our submissions to the ARQMath-3 lab. We
- report effectiveness for both hand-picked and optimal parameter values, and
- discuss the robustness of our system to parameter variations.
+    Due to time constraints, we hand-picked the parameter values
+    α = 0.1, β = 0.5, and γ = 5 for our submissions to the ARQMath-3 lab. We
+    report effectiveness for both hand-picked and optimal parameter values, and
+    discuss the robustness of our system to parameter variations.
 
 # Results {#results}
 

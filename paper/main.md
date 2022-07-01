@@ -428,19 +428,19 @@ as the NDCG' scores on ARQMath-3 topics available.
 
 | Model | NDCG' |
 |-------|-------|
-| *fusion_alpha05 from approach0* [@zhong2022applying]             | 0.508 |
-| *Ensemble_RRF from MSM* [@geletka2022diverse]                    | 0.504 |
+| *fusion\_alpha05 from approach0* [@zhong2022applying]            | 0.508 |
+| *Ensemble\_RRF from MSM* [@geletka2022diverse]                   | 0.504 |
 | *MiniLM+RoBERTa from MIRMU* [@geletka2022diverse]                | 0.498 |
-| *L8_a018 from MathDowsers* [@kane2022dowsing]                    | 0.474 |
-| *math_10 from TU_DBS* [@reusch2022transformer]                   | 0.436 |
-| Int'd Text + Tangent-L (positional `word2vec`)                   | 0.355 |
-| Int'd Text + Tangent-L (non-positional `word2vec`)               | 0.351 |
-| Int'd Text + Tangent-L (no token similarities)                   | 0.349 |
-| Int'd Text + LaTeX (positional `word2vec`)                       | 0.288 |
-| Int'd Text + LaTeX (non-positional `word2vec`)                   | 0.288 |
+| *L8\_a018 from MathDowsers* [@kane2022dowsing]                   | 0.474 |
+| *math\_10  from TU\_DBS* [@reusch2022transformer]                | 0.436 |
+| Interpolated Text + Tangent-L (positional `word2vec`)            | 0.355 |
+| Interpolated Text + Tangent-L (non-positional `word2vec`)        | 0.351 |
+| Interpolated Text + Tangent-L (no token similarities)            | 0.349 |
+| Interpolated Text + LaTeX (positional `word2vec`)                | 0.288 |
+| Interpolated Text + LaTeX (non-positional `word2vec`)            | 0.288 |
 | *SVM-Rank from DPRL* [@mansouri2022introducing]                  | 0.283 |
 | *TF-IDF (Terrier) baseline* [@mansouri2022overview]              | 0.272 |
-| Int'd Text + LaTeX (no token similarities)                       | 0.257 |
+| Interpolated Text + LaTeX (no token similarities)                | 0.257 |
 | Joint Text + LaTeX (non-positional `word2vec`)                   | 0.251 |
 | Joint Text + LaTeX (positional `word2vec`)                       | 0.249 |
 | Joint Text + LaTeX (MathBERTa)                                   | 0.249 |

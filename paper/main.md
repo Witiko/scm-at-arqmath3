@@ -35,14 +35,20 @@ translation evaluation tasks, but it has not yet been properly evaluated on
 math information retrieval.
 
 In our work, we compare the soft vector space model against standard sparse
-retrieval baselines and state-of-the-art math information retrieval systems.
-We evaluate the impact of different math representations, different notions
-of similarity between key words and math symbols ranging from Levenshtein
-distances to deep neural language models, and different ways of combining text
-and math.
+retrieval baselines and state-of-the-art math information retrieval systems
+from Task 1 (Answer Retrieval) of the ARQMath-3 lab. We evaluate the impact of
+different math representations, different notions of similarity between key
+words and math symbols ranging from Levenshtein distances to deep neural
+language models, and different ways of combining text and math.
 
-(A paragraph summarizing the results and our contribution will be added
-in the camera-ready.)
+We show that using the soft vector space model consistently improves
+effectiveness compared to using standard sparse retrieval techniques. We also
+show that the Tangent-L math representation achieves better effectiveness than
+LaTeX, and that modeling text and math separately using two models improves
+effectiveness compared to jointly modeling text and math using a single model.
+Lastly, we show that different math representations and different ways of
+combining text and math benefit from different notions of similarity. Our best
+system achieves NDCG' of 0.251 on Task 1 of the ARQMath-3 lab.
 
 # Keywords {#keywords}
 
@@ -72,12 +78,12 @@ retrieve documents according to both exact and fuzzy key word matches and has
 outperformed standard sparse retrieval techniques on semantic text similarity
 [@charlet2017simbow], text classification [@novotny2020text], and machine
 translation evaluation [@stefanik2021regemt] tasks. The soft vector space has
-been used for math information retrieval in the ARQMath-1 and 2 shared task
-evaluations [@novotny2020three; @novotny2021ensembling]. However, it has not
-been properly compared to sparse retrieval baselines. Furthermore, the soft
-vector space model makes it possible to use different representations of math,
-different notions of similarity between key words and symbols, and different
-ways to combine text and math. However, neither of these possibilities has been
+been used for math information retrieval in the ARQMath-1 and 2 labs
+[@novotny2020three; @novotny2021ensembling]. However, it has not been properly
+compared to sparse retrieval baselines. Furthermore, the soft vector space
+model makes it possible to use different representations of math, different
+notions of similarity between key words and symbols, and different ways to
+combine text and math. However, neither of these possibilities has been
 previously explored.
 
 In our work, we aim to answer the following four research questions:
@@ -412,7 +418,6 @@ use only semantic similarity for math tokens (α₂: 0.1→0.0), place less weig
 on the text in question titles (γ₁: 5→2), and place more weight on math over
 text (β: 0.5→0.7).
 
-
 | Model | α | γ | NDCG' |
 |-------|---|---|-------|
 | Joint text + LaTeX (MathBERTa)                 | 0.1 | 5 | 0.249 |
@@ -422,13 +427,11 @@ text (β: 0.5→0.7).
 
 : Results with hand-picked parameter values submitted to the ARQMath-3 lab for joint soft vector space models on ARQMath-3 Task 1 topics
 
-
 | Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |
 |-------|----|----|----|----|---|-------|
 | Interpolated text + Tangent-L (positional `word2vec`)     | 0.1 | 5 | 0.1 | 5 | 0.5 | 0.257 |
 
 : Results with hand-picked parameter values submitted to the ARQMath-3 lab for interpolated soft vector space models on ARQMath-3 Task 1 topics
-
 
 ## Effectiveness of Baselines and Their Extensions
 
@@ -476,16 +479,6 @@ Tangent-L math only used the semantic similarity of tokens (α₂: 0.0).  All
 interpolated models place more weight on text over math (β of either 0.6 or 
 0.7).
 
-## Comparison to Results from Other Teams
-
-Our submission the ARQMath-3 lab with hand-picked parameter values
-placed last in effectiveness among the teams that participated in Task 1.
-However Table 5 shows that our *Interpolated text + Tangent-L (positional
-`word2vec`)* model with optimized parameter values achieved better
-effectiveness than the best system from the DPRL team
-[@mansouri2022introducing] by 0.011 NDCG'.
-
-
 | Model | α | γ | NDCG' |
 |-------|---|---|-------|
 | Joint text + LaTeX (non-positional `word2vec`) | 0.6 | 5 | 0.251 |
@@ -496,7 +489,6 @@ effectiveness than the best system from the DPRL team
 | Joint text + LaTeX (no token similarities)     |     | 3 | 0.224 |
 
 : Post-competition results with optimized parameter values for joint soft vector space models on ARQMath-3 Task 1 topics
-
 
 | Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |
 |-------|----|----|----|----|---|-------|
@@ -509,9 +501,7 @@ effectiveness than the best system from the DPRL team
 
 : Post-competition results with optimized parameter values for interpolated soft vector space models on ARQMath-3 Task 1 topics
 
-
  /visualization-of-extensions.tex (The extensions of the baseline soft vector space models and their impact on the effectiveness with optimized parameter values)
-
 
 | Model | NDCG' |
 |-------|-------|
@@ -541,6 +531,14 @@ effectiveness than the best system from the DPRL team
 
 : Comparison of our post-competition effectiveness results to the baselines and the best results from other teams on ARQMath-3 Task 1
 
+## Comparison to Results from Other Teams
+
+Our submission the ARQMath-3 lab with hand-picked parameter values
+placed last in effectiveness among the teams that participated in Task 1.
+However Table 5 shows that our *Interpolated text + Tangent-L (positional
+`word2vec`)* model with optimized parameter values achieved better
+effectiveness than the best system from the DPRL team
+[@mansouri2022introducing] by 0.011 NDCG'.
 
 # Conclusion {#conclusion}
 

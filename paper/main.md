@@ -426,6 +426,8 @@ as the NDCG' scores on ARQMath-3 topics available.
 
 : Post-competition results with optimized parameter values for interpolated soft vector space models on ARQMath-3 Task 1 topics
 
+ /visualization-of-extensions.tex
+
 | Model | NDCG' |
 |-------|-------|
 | *fusion\_alpha05 from approach0* [@zhong2022applying]            | 0.508 |

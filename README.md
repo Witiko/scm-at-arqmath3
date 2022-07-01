@@ -43,9 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
-  in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
-  Plot α, γ, and NDCG' (axis y) over checkpoints (axis x).
 - In the results sections of the paper, discuss the following:
   - The robustness of our system to parameter variations
   - The optimal parameter values of different models

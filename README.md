@@ -43,10 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Add nDCG' scores for optimal parameter values to
-  [`08-produce-arqmath-runs.ipynb`][15] and to tables 1 and 2 in the paper.
-- Add nDCG' scores for hand-picked parameter values to tables 3 and 4 in
-  the paper. Possibly swap the tables, so that the hand-picked ones go first.
 - Add the best systems from other teams to tables 1 and 2 in the paper.
 - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
   in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.

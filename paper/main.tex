@@ -2,11 +2,11 @@
 \usepackage[theme = witiko/ceurart]{markdown}
 \markdownSetupSnippet{abstract}{snippet = witiko/ceurart/abstract}
 \markdownSetupSnippet{keywords}{snippet = witiko/ceurart/keywords}
+\markdownSetupSnippet{content_block_figures}{snippet = witiko/ceurart/content_block_figures}
 \usepackage{wasysym}
 \usepackage{tikz}
-\usepackage{placeins}
 \usetikzlibrary{positioning}
-\usepackage[style = numeric]{biblatex}
+\usepackage[style = numeric, mincrossrefs = 999]{biblatex}
 \addbibresource{main.bib}
 \usepackage[all]{nowidow}
 \begin{document}
@@ -18,7 +18,7 @@
 \markdownInput[slice = keywords, snippet = keywords]{main.md}
 \end{keywords}
 \maketitle
-\markdownInput[slice = $keywords $]{main.md}  % Body text
-\FloatBarrier
+\markdownInput[slice = $keywords ^results]{main.md}  % Body text
+\markdownInput[slice = ^results $, snippet = witiko/ceurart/content_block_figures]{main.md}
 \printbibliography  % Bibliography
 \end{document}

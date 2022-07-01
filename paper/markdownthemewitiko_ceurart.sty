@@ -3,7 +3,6 @@
 % Themes and syntax extensions
 \markdownSetup{
   citations = true,
-  contentBlocks = true,
   definitionLists = true,
   eagerCache = false,
   footnotes = true,
@@ -11,6 +10,7 @@
   pipeTables = true,
   relativeReferences = true,
   tableCaptions = true,
+  tightLists = false,
   smartEllipses = true,
   theme = witiko/tilde,
 }
@@ -22,7 +22,7 @@
 % Tables
 \ExplSyntaxOn
 \cs_set:Npn \__reset_tbl: {
-  \tl_set:Nx \l_tbl_pos_tl { tp }
+  \tl_set:Nx \l_tbl_pos_tl { tp! }
   \tl_set:Nx \l_tbl_cols_tl { 1 }
   \tl_set:Nn \l_tbl_align_tl { \centering }
   \skip_set:Nn \l_tbl_abovecap_skip { 6pt }
@@ -31,7 +31,30 @@
   \skip_set:Nn \l_tbl_belowtbl_skip { 6pt }
 }
 \ExplSyntaxOff
-\renewcommand{\topfraction}{0.5}
+\markdownSetup{
+  renderers = {
+    table = {%
+      \markdownLaTeXTable={}%
+      \markdownLaTeXTableAlignment={}%
+      \markdownLaTeXTableEnd={%
+        \markdownLaTeXBottomRule
+        \end{tabular}}%
+      \ifx\empty#1\empty\else
+        \addto@hook\markdownLaTeXTable{%
+          \begin{table}
+          \centering
+          \caption{#1}}%
+        \addto@hook\markdownLaTeXTableEnd{%
+          \end{table}}%
+      \fi
+      \addto@hook\markdownLaTeXTable{\begin{tabular}}%
+      \markdownLaTeXRowCounter=0%
+      \markdownLaTeXRowTotal=#2%
+      \markdownLaTeXColumnTotal=#3%
+      \markdownLaTeXRenderTableRow
+    },
+  }
+}
 
 % Figures
 \setkeys{Gin}{
@@ -43,9 +66,8 @@
   renderers = {
     image = {%
       \begin{figure}%
-        \begin{center}%
-          \includegraphics{#3}%
-        \end{center}%
+        \centering
+        \includegraphics{#3}%
         \ifx\empty#4\empty\else
           \caption{#4}%
         \fi
@@ -81,6 +103,20 @@
         },
       }%
     },
+  }
+}
+\markdownSetupSnippet{content_block_figures}{
+  renderers = {
+    contentBlock = {%
+      \begin{figure}%
+        \centering
+        \catcode`\%=14\relax
+        \input #2\relax
+        \catcode`\%=12\relax
+        \ifx\empty#4\empty\else
+          \caption{#4}%
+        \fi
+      \end{figure}},
   }
 }
 
@@ -181,3 +217,5 @@
 \newunicodechar{⁻}{\ensuremath{^-}}
 \newunicodechar{△}{\kern 0.8pt\raisebox{0.2pt}{\rotatebox[origin=c]{90}{\ensuremath{\triangleright}}}}
 \newunicodechar{⁵}{\textsuperscript{5}}
+\newunicodechar{→}{~\ensuremath{\rightarrow}~}
+\newunicodechar{←}{\noindent\ignorespaces}

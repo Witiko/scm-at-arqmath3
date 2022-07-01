@@ -43,7 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Add the best systems from other teams to tables 1 and 2 in the paper.
 - Vizualize the impact of various extensions (axis x) on nDCG' (axis y)
   in `09-evaluate-arqmath-runs.ipynb` and in section *Results* of the paper.
   Plot α, γ, and NDCG' (axis y) over checkpoints (axis x).

@@ -109,12 +109,12 @@ In our experiments, we used the Math StackExchange and ArXMLiv corpora:
 Math StackExchange
 
 :   The Math StackExchange collection v1.2 (MSE)[^mse1.3] provided by the
-    organizers of the ARQMath-2 lab [@behrooz2021overview, Section 3] contains
+    organizers of the ARQMath-2 lab [@mansouri2021overview, Section 3] contains
     2,466,080 posts from the Math StackExchange question answering website in
     HTML5 with math formulae in LaTeX.
 
  [^mse1.3]: An improved Math Stack Exchange collection v1.3 was made available by
- the organizers of the ARQMath-3 lab [@behrooz2022overview, Section 3], which
+ the organizers of the ARQMath-3 lab [@mansouri2022overview, Section 3], which
  we did not use due to time constraints.
 
 ArXMLiv
@@ -349,8 +349,8 @@ them γ times, which proved useful in ARQMath-2 [@novotny2021ensembling, Section
 ## Evaluation
 
 To evaluate our system, we searched for answers to sets of topics provided by
-the ARQMath organizers [@zanibbi2020overview; @behrooz2021overview;
-@behrooz2022overview, Section 4.1]. As our retrieval units, we used answers
+the ARQMath organizers [@zanibbi2020overview; @mansouri2021overview;
+@mansouri2022overview, Section 4.1]. As our retrieval units, we used answers
 from the MSE dataset.
 
 Effectiveness
@@ -360,7 +360,7 @@ Effectiveness
     gain prime (NDCG') evaluation measure [@sakai2008information] on the top
     1,000 answers retrieved by our system for each topic. As our ground truth,
     we used the relevance judgements provided by the ARQMath organizers
-    [@zanibbi2020overview; @behrooz2021overview; @behrooz2022overview, Section
+    [@zanibbi2020overview; @mansouri2021overview; @mansouri2022overview, Section
     4.3].
 
     To select the optimal values for parameters α, β, and γ, we used the 148
@@ -425,6 +425,34 @@ as the NDCG' scores on ARQMath-3 topics available.
 | Text + LaTeX (no token similarities)         |     | 2 |     | 5 | 0.6 | 0.257 |
 
 : Post-competition results with optimized parameter values for interpolated soft vector space models on ARQMath-3 Task 1 topics
+
+| Model | NDCG' |
+|-------|-------|
+| *fusion_alpha05 from approach0* [@zhong2022applying]             | 0.508 |
+| *Ensemble_RRF from MSM* [@geletka2022diverse]                    | 0.504 |
+| *MiniLM+RoBERTa from MIRMU* [@geletka2022diverse]                | 0.498 |
+| *L8_a018 from MathDowsers* [@kane2022dowsing]                    | 0.474 |
+| *math_10 from TU_DBS* [@reusch2022transformer]                   | 0.436 |
+| Int'd Text + Tangent-L (positional `word2vec`)                   | 0.355 |
+| Int'd Text + Tangent-L (non-positional `word2vec`)               | 0.351 |
+| Int'd Text + Tangent-L (no token similarities)                   | 0.349 |
+| Int'd Text + LaTeX (positional `word2vec`)                       | 0.288 |
+| Int'd Text + LaTeX (non-positional `word2vec`)                   | 0.288 |
+| *SVM-Rank from DPRL* [@mansouri2022introducing]                  | 0.283 |
+| *TF-IDF (Terrier) baseline* [@mansouri2022overview]              | 0.272 |
+| Int'd Text + LaTeX (no token similarities)                       | 0.257 |
+| Joint Text + LaTeX (non-positional `word2vec`)                   | 0.251 |
+| Joint Text + LaTeX (positional `word2vec`)                       | 0.249 |
+| Joint Text + LaTeX (MathBERTa)                                   | 0.249 |
+| Joint Text (`roberta-base`)                                      | 0.247 |
+| Joint Text (no token similarities)                               | 0.235 |
+| *TF-IDF (PyTerrier) + TangentS baseline* [@mansouri2022overview] | 0.229 |
+| Joint Text + LaTeX (no token similarities)                       | 0.224 |
+| *TF-IDF (PyTerrier) baseline* [@mansouri2022overview]            | 0.190 |
+| *Tangent-S baseline* [@mansouri2022overview]                     | 0.159 |
+| *Linked MSE Posts baseline* [@mansouri2022overview]              | 0.106 |
+
+: Comparison of all soft vector space models to the baselines and best results from other teams on ARQMath-3 Task 1
 
 # Conclusion {#conclusion}
 

@@ -391,38 +391,38 @@ as the NDCG' scores on ARQMath-3 topics available.
 
 | Model | α | γ | NDCG' |
 |-------|---|---|-------|
-| Text + LaTeX (MathBERTa)                 | 0.1 | 5 | 0.249 |
-| Text + LaTeX (non-positional `word2vec`) | 0.1 | 5 | 0.249 |
-| Text + LaTeX (positional `word2vec`)     | 0.1 | 5 | 0.248 |
-| Text (`roberta-base`)                    | 0.1 | 5 | 0.188 |
+| Joint text + LaTeX (MathBERTa)                 | 0.1 | 5 | 0.249 |
+| Joint text + LaTeX (non-positional `word2vec`) | 0.1 | 5 | 0.249 |
+| Joint text + LaTeX (positional `word2vec`)     | 0.1 | 5 | 0.248 |
+| Joint text (`roberta-base`)                    | 0.1 | 5 | 0.188 |
 
 : Results submitted to the competition with hand-picked parameter values for joint soft vector space models on ARQMath-3 Task 1 topics
 
 | Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |
 |-------|----|----|----|----|---|-------|
-| Text + Tangent-L (positional `word2vec`)     | 0.1 | 5 | 0.1 | 5 | 0.5 | 0.257 |
+| Interpolated text + Tangent-L (positional `word2vec`)     | 0.1 | 5 | 0.1 | 5 | 0.5 | 0.257 |
 
 : Results submitted to the competition with hand-picked parameter values for interpolated soft vector space models on ARQMath-3 Task 1 topics
 
 | Model | α | γ | NDCG' |
 |-------|---|---|-------|
-| Text + LaTeX (non-positional `word2vec`) | 0.6 | 5 | 0.251 |
-| Text + LaTeX (positional `word2vec`)     | 0.7 | 5 | 0.249 |
-| Text + LaTeX (MathBERTa)                 | 0.6 | 4 | 0.249 |
-| Text (`roberta-base`)                    | 0.6 | 2 | 0.247 |
-| Text (no token similarities)             |     | 2 | 0.235 |
-| Text + LaTeX (no token similarities)     |     | 3 | 0.224 |
+| Joint text + LaTeX (non-positional `word2vec`) | 0.6 | 5 | 0.251 |
+| Joint text + LaTeX (positional `word2vec`)     | 0.7 | 5 | 0.249 |
+| Joint text + LaTeX (MathBERTa)                 | 0.6 | 4 | 0.249 |
+| Joint text (`roberta-base`)                    | 0.6 | 2 | 0.247 |
+| Joint text (no token similarities)             |     | 2 | 0.235 |
+| Joint text + LaTeX (no token similarities)     |     | 3 | 0.224 |
 
 : Post-competition results with optimized parameter values for joint soft vector space models on ARQMath-3 Task 1 topics
 
 | Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |
 |-------|----|----|----|----|---|-------|
-| Text + Tangent-L (positional `word2vec`)     | 0.7 | 2 | 0.0 | 5 | 0.7 | 0.355 |
-| Text + Tangent-L (non-positional `word2vec`) | 0.6 | 2 | 0.0 | 5 | 0.7 | 0.351 |
-| Text + Tangent-L (no token similarities)     |     | 2 |     | 4 | 0.6 | 0.349 |
-| Text + LaTeX (positional `word2vec`)         | 0.7 | 2 | 1.0 | 5 | 0.6 | 0.288 |
-| Text + LaTeX (non-positional `word2vec`)     | 0.6 | 2 | 1.0 | 5 | 0.6 | 0.288 |
-| Text + LaTeX (no token similarities)         |     | 2 |     | 5 | 0.6 | 0.257 |
+| Interpolated text + Tangent-L (positional `word2vec`)     | 0.7 | 2 | 0.0 | 5 | 0.7 | 0.355 |
+| Interpolated text + Tangent-L (non-positional `word2vec`) | 0.6 | 2 | 0.0 | 5 | 0.7 | 0.351 |
+| Interpolated text + Tangent-L (no token similarities)     |     | 2 |     | 4 | 0.6 | 0.349 |
+| Interpolated text + LaTeX (positional `word2vec`)         | 0.7 | 2 | 1.0 | 5 | 0.6 | 0.288 |
+| Interpolated text + LaTeX (non-positional `word2vec`)     | 0.6 | 2 | 1.0 | 5 | 0.6 | 0.288 |
+| Interpolated text + LaTeX (no token similarities)         |     | 2 |     | 5 | 0.6 | 0.257 |
 
 : Post-competition results with optimized parameter values for interpolated soft vector space models on ARQMath-3 Task 1 topics
 
@@ -435,19 +435,19 @@ as the NDCG' scores on ARQMath-3 topics available.
 | *MiniLM+RoBERTa from MIRMU* [@geletka2022diverse]                | 0.498 |
 | *L8\_a018 from MathDowsers* [@kane2022dowsing]                   | 0.474 |
 | *math\_10  from TU\_DBS* [@reusch2022transformer]                | 0.436 |
-| Interpolated Text + Tangent-L (positional `word2vec`)            | 0.355 |
-| Interpolated Text + Tangent-L (non-positional `word2vec`)        | 0.351 |
-| Interpolated Text + Tangent-L (no token similarities)            | 0.349 |
-| Interpolated Text + LaTeX (positional `word2vec`)                | 0.288 |
-| Interpolated Text + LaTeX (non-positional `word2vec`)            | 0.288 |
+| Interpolated text + Tangent-L (positional `word2vec`)            | 0.355 |
+| Interpolated text + Tangent-L (non-positional `word2vec`)        | 0.351 |
+| Interpolated text + Tangent-L (no token similarities)            | 0.349 |
+| Interpolated text + LaTeX (positional `word2vec`)                | 0.288 |
+| Interpolated text + LaTeX (non-positional `word2vec`)            | 0.288 |
 | *SVM-Rank from DPRL* [@mansouri2022introducing]                  | 0.283 |
 | *TF-IDF (Terrier) baseline* [@mansouri2022overview]              | 0.272 |
-| Interpolated Text + LaTeX (no token similarities)                | 0.257 |
-| Joint Text + LaTeX (non-positional `word2vec`)                   | 0.251 |
-| Joint Text + LaTeX (positional `word2vec`)                       | 0.249 |
-| Joint Text + LaTeX (MathBERTa)                                   | 0.249 |
-| Joint Text (`roberta-base`)                                      | 0.247 |
-| Joint Text (no token similarities)                               | 0.235 |
+| Interpolated text + LaTeX (no token similarities)                | 0.257 |
+| Joint text + LaTeX (non-positional `word2vec`)                   | 0.251 |
+| Joint text + LaTeX (positional `word2vec`)                       | 0.249 |
+| Joint text + LaTeX (MathBERTa)                                   | 0.249 |
+| Joint text (`roberta-base`)                                      | 0.247 |
+| Joint text (no token similarities)                               | 0.235 |
 | *TF-IDF (PyTerrier) + TangentS baseline* [@mansouri2022overview] | 0.229 |
 | Joint Text + LaTeX (no token similarities)                       | 0.224 |
 | *TF-IDF (PyTerrier) baseline* [@mansouri2022overview]            | 0.190 |

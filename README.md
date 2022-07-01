@@ -44,8 +44,102 @@ The repository also contains the paper that describes our system.
 ## Tasks
 
 - In the results sections of the paper, discuss the following:
-  - The robustness of our system to parameter variations
-  - The optimal parameter values of different models
+  - The effectiveness of the baselines and how they are improved by extensions:
+    - The *joint text (no token similarities)* baseline receives NDCG' of 0.235.
+      Using `roberta-base` as the source of semantic similarity between text
+      tokens improves effectiveness by 0.012 NDCG', reaching NDCG' of 0.247. By
+      contrast, modeling also LaTeX math reduces effectiveness by 0.011 NDCG',
+      reaching NDCG' of 0.224, which we attribute to the difficulty to properly
+      represent the different frequency distributions of text and math tokens
+      in a single joint model. When we instead use either positional word2vec
+      or MathBERTa as the source of semantic similarity between text and math
+      tokens improves effectiveness by 0.025 NDCG', reaching NDCG' of 0.249.
+      Removing the positional weighting from word2vec further improves
+      effectiveness by 0.002 NDCG', reaching NDCG' of 0.251: the best result
+      among our joint models.
+    - The *interpolated text + LaTeX (no token similarities)* baseline received
+      NDCG' of 0.257. Using non-positional word2vec as the source of similarity
+      between text and math tokens improves effectiveness by 0.031 NDCG',
+      reaching NDCG' of 0.288. Enabling the positional weighting of word2vec
+      does not further improve effectiveness.
+    - The *interpolated text + Tangent-L (no token similarities)* baseline
+      received NDCG' of 0.349. Using non-positional word2vec as the source of
+      similarity between text and math tokens improves effectiveness by 0.002
+      NDCG', reaching NDCG' of 0.251. Enabling the positional weighting of
+      word2vec further improves effectiveness by 0.004 NDCG', reaching NDCG'
+      of 0.355, the best result among all our models.
+  - The effectiveness of our system compared to the best results from other
+    teams on ARQMath-3 Task 1
+    - Our submission the ARQMath-3 Task 1 with hand-picked parameter values
+      placed last among the participating teams. However, our *interpolated
+      text + Tangent-L (positional `word2vec`)* model with optimized parameter
+      values placed above all systems from the DPLR team.
+  - The robustness of our system to parameter variations:
+    - The differences between hand-picked and optimized parameter values
+      for joint models were within 0.002 NDCG' except *text (`roberta-base`)*,
+      which improved effectiveness by 0.041 NDCG' score by placing more
+      weight on the lexical similarity of tokens (α: 0.1 -> 0.6) and by
+      placing less weight on question titles (γ: 5 -> 2).  This shows that
+      the joint vector space models are relatively robust to parameter
+      variations.
+    - By contrast, optimizing parameter values for the *interpolated text +
+      Tangent-L (positional `word2vec`)* model improved effectiveness by 0.098
+      NDCG'. Compared to the hand-picked parameter values, the optimized
+      parameter values place more weight for lexical similarity for text tokens
+      (α₁: 0.1 -> 0.7), use only semantic similarity for math tokens (α₂: 0.1
+      -> 0.0), place less weight on the text in question titles (γ₁: 5 -> 2),
+      and place more weight on math over text (β: 0.5 -> 0.7).
+  - The optimal parameter values of different models:
+    - All joint models and the interpolated models for text place more weight
+      on the lexical similarity of tokens (α and α₁ of either 0.6 or 0.7).
+    - All joint and interpolated models for text placed equal weight on
+      question titles (γ and γ₁ of 2). By contrast, all joint models for text
+      and math and the interpolated models for math placed comparatively higher
+      weight on the math in question titles (γ and γ₂ between 3 and 5). This
+      indicates that math in question titles is more informative than text.
+    - All interlolated models for LaTeX math only used the semantic similarity
+      of tokens (α₂: 1.0). By constract, all interpolated models for Tangent-L
+      math only used the semantic similarity of tokens (α₂: 0.0).
+    - All interpolated models place more weight on text over math (β of either
+      0.6 and 0.7).
+- In the conclusion section of the paper, answer the research questions.
+  1. Does the soft vector space model outperform sparse information retrieval
+     baselines on the math information retrieval task?
+
+     Yes, using the soft vector space model to capture the semantic
+     similarity between tokens consistently improves effectiveness on
+     ARQMath-3 Task 1, both for just text and for text combined with
+     different math representations.
+  2. Which math representation works best with the soft vector space model?
+
+     Among LaTeX and Tangent-L, soft vector space models using Tangent-L
+     achieve the highest effectiveness on ARQMath-3 Task 1.
+  3. Which notion of similarity between key words and symbols works best?
+
+     Among lexical and semantic similarity, all joint models and the
+     interpolated models for text reach their highest effectiveness on
+     ARQMath-3 Task 1 by combining both lexical and semantic similarity, but
+     place slightly more weight on lexical similarity. The interpolated models
+     for math gave mixed results: The model for Tangent-L reaches the highest
+     efficiency by using only semantic similarity, whereas the model for
+     LaTeX reaches the highest efficiency by using only lexical similarity.
+
+     Among sources of semantic similarity, joint models achieved comparable
+     effectiveness on ARQMath-3 Task 1 with non-positional word2vec, word2vec,
+     and MathBERTa, and interpolated models achieved comparable effectiveness
+     with non-positional word2vec and positional word2vec. This may indicate
+     that the soft vector space model does not fully exploit the semantic
+     information provided by the sources of semantic similarity and therefore
+     does not benefit from their improvements after a certain threshold.
+
+  4. Is it better to use a single soft vector space model to represent both
+     text and math or to use two separate models?
+
+     All our interpolated models achieved higher effectiveness on ARQMath-3
+     Task 1 than our joint models. This shows that it is generally better
+     to use two separate models to represent text and math even at the expense
+     of losing the ability to model the similarity between text and math tokens.
+
 - Write a related work section before conclusion to the paper discussing:
   - The ARQMath labs
   - The soft vector space model (see @witiko's [dissertation][26])

@@ -318,7 +318,7 @@ Joint models
     As our baselines, we used 1) Lucene BM25 with the text dictionary and no
     token similarities and 2) Lucene BM25 with the text + LaTeX dictionary
     and no token similarities.
-    
+
     We also used four soft vector space models with the text + LaTeX dictionary
     and the token similarity matrices from the positional and non-positional
     `word2vec` models, the `roberta-base` model, and the MathBERTa model.
@@ -410,8 +410,8 @@ more weight on the lexical similarity of tokens (α: 0.1→0.6) and by placing
 less weight on question titles (γ: 5→2).  This shows that our joint vector
 space models are relatively robust to parameter variations.
 
-By contrast, optimizing parameter values for the *Interpolated text
-+ Tangent-L (positional `word2vec`)* model improves effectiveness by 0.098
+By contrast, optimizing parameter values for the *Interpolated text +
+Tangent-L (positional `word2vec`)* model improves effectiveness by 0.098
 NDCG'. Compared to the hand-picked parameter values, the optimized parameter
 values place more weight at lexical similarity for text tokens (α₁: 0.1→0.7),
 use only semantic similarity for math tokens (α₂: 0.1→0.0), place less weight
@@ -476,7 +476,7 @@ indicates that math in question titles is more informative than text.
 Lastly, all interpolated models for LaTeX math only used the semantic
 similarity of tokens (α₂: 1.0). By contract, all interpolated models for
 Tangent-L math only used the semantic similarity of tokens (α₂: 0.0).  All
-interpolated models place more weight on text over math (β of either 0.6 or 
+interpolated models place more weight on text over math (β of either 0.6 or
 0.7).
 
 | Model | α | γ | NDCG' |

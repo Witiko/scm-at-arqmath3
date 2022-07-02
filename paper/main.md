@@ -232,10 +232,33 @@ Deep transformer models
     objective of RoBERTa][03-finetune-roberta] [@liu2019roberta] and a learning
     rate of 10⁻⁵ with a linear decay to zero, see the learning curves in
     Figure~<#fig:learning-curves>. We called our model MathBERTa and
-    [released it to the HuggingFace Model Hub.][mathberta]
+    [released it to the HuggingFace Model Hub.][mathberta]⸴[^mathberta-related-work]
 
  [03-finetune-roberta]: https://github.com/witiko/scm-at-arqmath3 (file 03-finetune-roberta.ipynb)
  [04-train-word2vec]: https://github.com/witiko/scm-at-arqmath3 (file 04-train-word2vec.ipynb)
+
+ [^mathberta-related-work]: The task of *language modeling* is to predict a
+    token of interest from the surrounding context. Specifically, in masked
+    language modeling (MLM), the task is to predict a masked token from the
+    surrounding, bidirectional context. @devlin2019bert demonstrate that
+    MLM as the objective of a transformer-based encoder [@vaswani2017attention]
+    can learn accurate, task-agnostic representations that can be fine-tuned to
+    downstream tasks, reaching superior performance to previous approaches.
+    @liu2019roberta further show the scalability of this approach, showing
+    further gains by scaling the size of the unsupervised training set.
+
+    Related work shows that more accurate domain-specialized representations can
+    be obtained by continuous training, i.e. *adaptation* using MLM on
+    domain-specific unlabeled texts, in medicine [@rasmy2021med], biology
+    [@lee2020biobert], or, closer to our work, scientific texts
+    [@beltagy2019scibert]. Previous works [@peng2021mathbertap;
+    @shen2021mathbertap] perform continuous MLM training on
+    scientific texts, or the math formulae thereof [@jo2021modeling]. However,
+    all the mentioned works treat mathematical formulae as plain text and few
+    works [@gong2022continual] promote math-specific representations in the
+    model adaptation. This motivates us to experiment with adaptation
+    incorporating specific encodings for non-textual expressions.
+
  [learning-curves]: learning-curves.pdf "Learning curves of MathBERTa on our text + LaTeX dataset (in-domain) and the European Constitution (out-of-domain). The ongoing descent of in-domain validation loss indicates that the performance of the model improved over time, but has not converged and would benefit from further training. The ongoing descent of out-of-domain validation loss shows that improvements on scientific texts do not come at the price of other non-scientific domains."
  [mathberta]: https://huggingface.co/witiko/mathberta
 

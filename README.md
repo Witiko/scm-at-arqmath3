@@ -43,12 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Write a related work section before conclusion to the paper discussing:
-  - The ARQMath labs
-  - The soft vector space model (see @witiko's [dissertation][26])
-  - Log-bilinear language models (see @witiko's [dissertation][26])
-  - Deep transformer models with a paragraph on math-aware models (see branch
-    `related_work` by @stefanik12)
 - Proofread the paper.
 - After the ARQMath-3 paper has been published:
   - Update [the *Citing* section][18] in `README.md` and on [the 🤗 Model Hub][17].

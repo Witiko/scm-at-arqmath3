@@ -43,7 +43,6 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
-- Proofread the paper.
 - After the ARQMath-3 paper has been published:
   - Update [the *Citing* section][18] in `README.md` and on [the 🤗 Model Hub][17].
   - Add [a link][19] to [the 🤗 Model Hub][17].

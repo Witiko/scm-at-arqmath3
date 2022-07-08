@@ -43,6 +43,7 @@ The repository also contains the paper that describes our system.
 
 ## Tasks
 
+- Create a visualization of the best system with [document maps][28].
 - After the ARQMath-3 paper has been published:
   - Update [the *Citing* section][18] in `README.md` and on [the 🤗 Model Hub][17].
   - Add [a link][19] to [the 🤗 Model Hub][17].
@@ -101,3 +102,4 @@ CEUR-WS, 2022.
  [25]: https://stackoverflow.com/a/64333567/657401
  [26]: https://github.com/witiko/doctoral-thesis
  [27]: https://huggingface.co/witiko/mathberta#intrinsic-evaluation-results
+ [28]: https://github.com/MIR-MU/document-maps

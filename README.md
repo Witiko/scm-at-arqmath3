@@ -53,6 +53,8 @@ The repository also contains the paper that describes our system.
     NumGLUE tasks (axis y) over checkpoints (axis x).
   - Add end-task evaluation on ARQMath-3 topics to
     `09-evaluate-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
+- Optimize the hyperparameters of the similarity matrices for the best system
+  and add the results to `11-optimize-similarity-matrix.ipynb`.
 
 ## Citing
 

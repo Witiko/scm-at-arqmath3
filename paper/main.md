@@ -606,3 +606,8 @@ questions:
    can benefit from improved measures of similarity between tokens?
 
 ← These questions should provide a fruitful venue for future work.
+
+### Acknowledgements
+
+This work has been partly supported by the Ministry of Education of CR within
+the LINDAT-CLARIAH-CZ project LM2018101.

@@ -170,6 +170,15 @@
   }
 \ExplSyntaxOff
 
+% Headings
+\markdownSetup{
+  renderers = {
+    headingThree = {%
+      \subsubsection*{#1}%
+    },
+  }
+}
+
 % Abstract
 \markdownSetupSnippet{abstract}{
   renderers = {

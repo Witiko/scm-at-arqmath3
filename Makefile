@@ -1,12 +1,20 @@
 .SECONDARY:
-.PHONY: all symlinks-for-parameter-optimization
+.PHONY: all runs optimized-best-runs
+
+NUM_CPUS = $(shell nproc)
+
+
+# The following are paths to the downloaded [arXMLiv][1] and [Math StackExchange][2] datasets.
+#
+#  [1]: https://sigmathling.kwarc.info/resources/arxmliv-dataset-2020/
+#  [2]: https://mir.fi.muni.cz/introduction-to-information-retrieval/
+
 
 ARXIV_INPUT_DIRECTORY = /mnt/storage/arxiv-dataset-arXMLiv-2020
 # MSM_INPUT_DIRECTORY = /mnt/storage/www/introduction-to-information-retrieval
 MSM_INPUT_DIRECTORY = /var/tmp/xnovot32/introduction-to-information-retrieval
 
-NUM_CPUS = $(shell nproc)
-
+# The following are names of runs prepared for the ARQMath-3 Task-1 submission.
 
 RUN_BASENAMES_BASELINES = \
 	SCM-task1-baseline_joint_text-text-auto-X \
@@ -32,14 +40,37 @@ RUN_BASENAMES = $(RUN_BASENAMES_BASELINES) $(RUN_BASENAMES_PRIMARY) $(RUN_BASENA
 
 RUNS = $(addprefix submission/,$(addsuffix .tsv,$(RUN_BASENAMES)))
 
-all: $(RUNS)
+runs: $(RUNS)
 
 
-symlinks-for-faster-parameter-optimization:
-	ln -s SCM-task1-baseline_joint_text-text-auto-X.alpha_and_gamma submission/SCM-task1-baseline_interpolated_text+latex-both-auto-X.first_alpha_and_gamma
-	ln -s SCM-task1-baseline_joint_text-text-auto-X.alpha_and_gamma submission/SCM-task1-baseline_interpolated_text+tangentl-both-auto-X.first_alpha_and_gamma
-	ln -s SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P.first_alpha_and_gamma submission/SCM-task1-interpolated_positional_word2vec_text+latex-both-auto-A.first_alpha_and_gamma
-	ln -s SCM-task1-interpolated_word2vec_text+latex-both-auto-A.first_alpha_and_gamma submission/SCM-task1-interpolated_word2vec_text+tangentl-both-auto-A.first_alpha_and_gamma
+# The following are names of runs prepared post-competition for the hyperparameter optimization
+# of the soft vector space similarity matrices with the best model from the competition.
+
+
+SYMMETRIC_VALUES = True False
+DOMINANT_VALUES = True False
+NONZERO_LIMIT_VALUES = 50 100 200 400 800 1600 3200
+
+
+OPTIMIZED_BEST_RUN_BASENAMES = \
+	$(foreach SYMMETRIC, $(SYMMETRIC_VALUES), \
+		$(foreach DOMINANT, $(DOMINANT_VALUES), \
+			$(foreach NONZERO_LIMIT, $(NONZERO_LIMIT_VALUES), \
+				SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P-$(SYMMETRIC)-$(DOMINANT)-$(NONZERO_LIMIT) \
+			) \
+		) \
+  )
+
+
+OPTIMIZED_BEST_RUNS = $(addprefix submission/,$(addsuffix .tsv,$(OPTIMIZED_BEST_RUN_BASENAMES)))
+
+optimized-best-runs: $(OPTIMIZED_BEST_RUNS)
+
+
+all: runs optimized-best-runs
+
+
+# The following targets create datasets.
 
 
 arxiv-text.txt:
@@ -106,12 +137,17 @@ out-of-domain-dataset-text-validation.json: out-of-domain-dataset-text-validatio
 	python -m system.evaluate_transformer_masked_language_modeling $< ./$(word 2,$^).MLM-objective/ $@
 
 
+# The following targets train our tokenizers.
+
+
 tokenizer-latex.json: dataset-latex.txt
 	python -m system.train_math_tokenizer $< $@
 
-
 roberta-base-text+latex: tokenizer-latex.json
 	python -m system.train_extended_tokenizer roberta-base $< ./$@/
+
+
+# The following targets create word2vec word embeddings.
 
 
 word2vec-text: dataset-text.txt
@@ -140,8 +176,14 @@ word2vec-tangentl-positional: dataset-tangentl.txt
 	python -m system.train_word2vec_model tangentl positional $< $@
 
 
+# The following target trains our MathBERTa model.
+
+
 tuned-roberta-base-text+latex: dataset-text+latex.txt dataset-text+latex-validation.txt roberta-base-text+latex tokenizer-latex.json
 	python -m system.finetune_transformer roberta-base $^ ./$@.MLM-objective/ ./$@/
+
+
+# The following targets create dictionaries.
 
 
 dictionary-text: dataset-text.txt
@@ -157,6 +199,9 @@ dictionary-tangentl: dataset-tangentl.txt
 	python -m system.prepare_dictionary tangentl $< $@
 
 
+# The following targets extract decontextualized word embeddings from roberta-base and MathBERTa.
+
+
 decontextualized-word-embeddings-roberta-base: dictionary-text dataset-text-smaller-train.txt
 	python -m system.extract_decontextualized_word_embeddings roberta-base $^ $@
 
@@ -164,8 +209,27 @@ decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-ba
 	python -m system.extract_decontextualized_word_embeddings $^ $@
 
 
+# The following targets create levenshtein similarity matrices for the soft vector space models.
+
+
 levenshtein-similarity-matrix-%: dictionary-%
 	python -m system.prepare_levenshtein_similarity_matrix $< $@ True False 100
+
+define GENERATE_LEVENSHTEIN_SIMILARITY_MATRIX_POSITIONAL_RULES
+levenshtein-similarity-matrix-%-$(SYMMETRIC)-$(DOMINANT)-$(NONZERO_LIMIT): dictionary-%
+	python -m system.prepare_levenshtein_similarity_matrix $$^ $$@ $(SYMMETRIC) $(DOMINANT) $(NONZERO_LIMIT)
+endef
+
+$(foreach SYMMETRIC, $(SYMMETRIC_VALUES), \
+	$(foreach DOMINANT, $(DOMINANT_VALUES), \
+		$(foreach NONZERO_LIMIT, $(NONZERO_LIMIT_VALUES), \
+			$(eval $(GENERATE_LEVENSHTEIN_SIMILARITY_MATRIX_POSITIONAL_RULES)) \
+		) \
+	) \
+)
+
+
+# The following targets create word2vec word similarity matrices.
 
 
 word-embedding-similarity-matrix-%: dictionary-% word2vec-%
@@ -175,12 +239,31 @@ word-embedding-similarity-matrix-%: dictionary-% word2vec-%
 word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positional
 	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
 
+define GENERATE_WORD_EMBEDDING_SIMILARITY_MATRIX_POSITIONAL_RULES
+word-embedding-similarity-matrix-%-positional-$(SYMMETRIC)-$(DOMINANT)-$(NONZERO_LIMIT): dictionary-% word2vec-%-positional
+	python -m system.prepare_word_embedding_similarity_matrix $$^ $$@ $(SYMMETRIC) $(DOMINANT) $(NONZERO_LIMIT)
+endef
+
+$(foreach SYMMETRIC, $(SYMMETRIC_VALUES), \
+	$(foreach DOMINANT, $(DOMINANT_VALUES), \
+		$(foreach NONZERO_LIMIT, $(NONZERO_LIMIT_VALUES), \
+			$(eval $(GENERATE_WORD_EMBEDDING_SIMILARITY_MATRIX_POSITIONAL_RULES)) \
+		) \
+	) \
+)
+
+
+# The following targets create roberta-base and MathBERTa word similarity matrices.
+
 
 decontextualized-word-embedding-similarity-matrix-roberta-base: dictionary-text decontextualized-word-embeddings-roberta-base
 	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
 
 decontextualized-word-embedding-similarity-matrix-tuned-roberta-base-text+latex: dictionary-text+latex decontextualized-word-embeddings-tuned-roberta-base-text+latex
 	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
+
+
+# The following targets create combined similarity matrices for word2vec.
 
 
 similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%
@@ -190,12 +273,31 @@ similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-m
 similarity-matrix-%-positional: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%-positional
 	python -m system.combine_similarity_matrices $^ $@
 
+define GENERATE_SIMILARITY_MATRIX_POSITIONAL_RULES
+similarity-matrix-%-positional-$(SYMMETRIC)-$(DOMINANT)-$(NONZERO_LIMIT): levenshtein-similarity-matrix-%-$(SYMMETRIC)-$(DOMINANT)-$(NONZERO_LIMIT) word-embedding-similarity-matrix-%-positional-$(SYMMETRIC)-$(DOMINANT)-$(NONZERO_LIMIT)
+	python -m system.combine_similarity_matrices $$^ $$@
+endef
+
+$(foreach SYMMETRIC, $(SYMMETRIC_VALUES), \
+	$(foreach DOMINANT, $(DOMINANT_VALUES), \
+		$(foreach NONZERO_LIMIT, $(NONZERO_LIMIT_VALUES), \
+			$(eval $(GENERATE_SIMILARITY_MATRIX_POSITIONAL_RULES)) \
+		) \
+	) \
+)
+
+
+# The following targets create combined similarity matrices for roberta-base and MathBERTa.
+
 
 decontextualized-similarity-matrix-roberta-base: levenshtein-similarity-matrix-text decontextualized-word-embedding-similarity-matrix-roberta-base
 	python -m system.combine_similarity_matrices $^ $@
 
 decontextualized-similarity-matrix-tuned-roberta-base-text+latex: levenshtein-similarity-matrix-text+latex decontextualized-word-embedding-similarity-matrix-tuned-roberta-base-text+latex
 	python -m system.combine_similarity_matrices $^ $@
+
+
+# The following targets produce runs using joint soft vector space models.
 
 
 define produce_joint_run
@@ -220,6 +322,10 @@ submission/SCM-task1-joint_roberta_base-text-auto-A.tsv: dictionary-text deconte
 submission/SCM-task1-joint_tuned_roberta_base-both-auto-A.tsv: dictionary-text+latex roberta-base-text+latex decontextualized-similarity-matrix-tuned-roberta-base-text+latex
 	$(call produce_joint_run,text+latex,$<,$(word 3,$^),0,$@)
 
+
+# The following targets produce runs using interpolated soft vector space models.
+
+
 define produce_interpolated_run
 python -m system.produce_interpolated_run $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) $(basename $(8)).first_temporary_alpha_and_gamma $(basename $(8)).first_alpha_and_gamma $(4) $(5) $(6) $(basename $(8)).second_temporary_alpha_and_gamma $(basename $(8)).second_alpha_and_gamma Run_$(patsubst %/,%,$(dir $(8)))_$(basename $(notdir $(8)))_$(7) $(8).temporary $(8) $(basename $(8)).map_score $(basename $(8)).ndcg_score $(basename $(8)).temporary_beta $(basename $(8)).beta
 endef
@@ -240,4 +346,7 @@ submission/SCM-task1-interpolated_word2vec_text+tangentl-both-auto-A.tsv: dictio
 	$(call produce_interpolated_run,text,$<,$(word 2,$^),tangentl,$(word 3,$^),$(word 4,$^),0,$@)
 
 submission/SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P.tsv: dictionary-text similarity-matrix-text-positional dictionary-tangentl similarity-matrix-tangentl-positional
+	$(call produce_interpolated_run,text,$<,$(word 2,$^),tangentl,$(word 3,$^),$(word 4,$^),0,$@)
+
+submission/SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P-%.tsv: dictionary-text similarity-matrix-text-positional-% dictionary-tangentl similarity-matrix-tangentl-positional-%
 	$(call produce_interpolated_run,text,$<,$(word 2,$^),tangentl,$(word 3,$^),$(word 4,$^),0,$@)

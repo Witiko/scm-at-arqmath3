@@ -27,18 +27,22 @@ def get_term_similarity_index(word_embeddings: KeyedVectors) -> WordEmbeddingSim
 
 
 def get_term_similarity_matrix(input_dictionary_file: Path,
-                               input_word_embedding_file_or_directory: Path) -> SparseTermSimilarityMatrix:
+                               input_word_embedding_file_or_directory: Path,
+                               symmetric: bool, dominant: bool, nonzero_limit: int) -> SparseTermSimilarityMatrix:
     word_embeddings = get_word_embeddings(input_word_embedding_file_or_directory)
     term_similarity_index = get_term_similarity_index(word_embeddings)
     dictionary = get_dictionary(input_dictionary_file)
     tfidf_model = get_tfidf_model(dictionary)
     term_similarity_matrix = SparseTermSimilarityMatrix(term_similarity_index, dictionary, tfidf_model,
-                                                        symmetric=True, dominant=True, nonzero_limit=100)
+                                                        symmetric=symmetric, dominant=dominant,
+                                                        nonzero_limit=nonzero_limit)
     return term_similarity_matrix
 
 
-def main(input_dictionary_file: Path, input_word_embedding_file_or_directory: Path, output_file: Path) -> None:
-    term_similarity_matrix = get_term_similarity_matrix(input_dictionary_file, input_word_embedding_file_or_directory)
+def main(input_dictionary_file: Path, input_word_embedding_file_or_directory: Path, output_file: Path,
+         symmetric: bool, dominant: bool, nonzero_limit: int) -> None:
+    term_similarity_matrix = get_term_similarity_matrix(input_dictionary_file, input_word_embedding_file_or_directory,
+                                                        symmetric, dominant, nonzero_limit)
     term_similarity_matrix.save(str(output_file))
 
 
@@ -46,4 +50,10 @@ if __name__ == '__main__':
     input_dictionary_file = Path(argv[1])
     input_word_embedding_file_or_directory = Path(argv[2])
     output_file = Path(argv[3])
-    main(input_dictionary_file, input_word_embedding_file_or_directory, output_file)
+    assert argv[4] in ('True', 'False')
+    symmetric = argv[4] == 'True'
+    assert argv[5] in ('True', 'False')
+    dominant = argv[5] == 'True'
+    nonzero_limit = int(argv[6])
+    main(input_dictionary_file, input_word_embedding_file_or_directory, output_file,
+         symmetric, dominant, nonzero_limit)

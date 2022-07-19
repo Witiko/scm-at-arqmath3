@@ -21,21 +21,29 @@ def get_term_similarity_index(dictionary: Dictionary) -> LevenshteinSimilarityIn
     return term_similarity_index
 
 
-def get_term_similarity_matrix(input_file: Path) -> SparseTermSimilarityMatrix:
+def get_term_similarity_matrix(input_file: Path, symmetric: bool, dominant: bool,
+                               nonzero_limit: int) -> SparseTermSimilarityMatrix:
     dictionary = get_dictionary(input_file)
     tfidf_model = get_tfidf_model(dictionary)
     term_similarity_index = get_term_similarity_index(dictionary)
     term_similarity_matrix = SparseTermSimilarityMatrix(term_similarity_index, dictionary, tfidf_model,
-                                                        symmetric=True, dominant=False, nonzero_limit=100)
+                                                        symmetric=symmetric, dominant=dominant,
+                                                        nonzero_limit=nonzero_limit)
     return term_similarity_matrix
 
 
-def main(input_file: Path, output_file: Path) -> None:
-    term_similarity_matrix = get_term_similarity_matrix(input_file)
+def main(input_file: Path, output_file: Path, symmetric: bool, dominant: bool,
+         nonzero_limit: int) -> None:
+    term_similarity_matrix = get_term_similarity_matrix(input_file, symmetric, dominant, nonzero_limit)
     term_similarity_matrix.save(str(output_file))
 
 
 if __name__ == '__main__':
     input_file = Path(argv[1])
     output_file = Path(argv[2])
-    main(input_file, output_file)
+    assert argv[3] in ('True', 'False')
+    symmetric = argv[3] == 'True'
+    assert argv[4] in ('True', 'False')
+    dominant = argv[4] == 'True'
+    nonzero_limit = int(argv[5])
+    main(input_file, output_file, symmetric, dominant, nonzero_limit)

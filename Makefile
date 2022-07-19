@@ -165,22 +165,22 @@ decontextualized-word-embeddings-tuned-roberta-base-text+latex: tuned-roberta-ba
 
 
 levenshtein-similarity-matrix-%: dictionary-%
-	python -m system.prepare_levenshtein_similarity_matrix $< $@
+	python -m system.prepare_levenshtein_similarity_matrix $< $@ True False 100
 
 
 word-embedding-similarity-matrix-%: dictionary-% word2vec-%
-	python -m system.prepare_word_embedding_similarity_matrix $^ $@
+	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
 
 
 word-embedding-similarity-matrix-%-positional: dictionary-% word2vec-%-positional
-	python -m system.prepare_word_embedding_similarity_matrix $^ $@
+	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
 
 
 decontextualized-word-embedding-similarity-matrix-roberta-base: dictionary-text decontextualized-word-embeddings-roberta-base
-	python -m system.prepare_word_embedding_similarity_matrix $^ $@
+	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
 
 decontextualized-word-embedding-similarity-matrix-tuned-roberta-base-text+latex: dictionary-text+latex decontextualized-word-embeddings-tuned-roberta-base-text+latex
-	python -m system.prepare_word_embedding_similarity_matrix $^ $@
+	python -m system.prepare_word_embedding_similarity_matrix $^ $@ True True 100
 
 
 similarity-matrix-%: levenshtein-similarity-matrix-% word-embedding-similarity-matrix-%

@@ -69,7 +69,7 @@ jobs:
     name: Typeset paper
     runs-on: ubuntu-latest
     container:
-      image: witiko/markdown:latest-with-cache
+      image: witiko/markdown:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

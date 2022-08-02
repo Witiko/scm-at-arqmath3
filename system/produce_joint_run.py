@@ -31,6 +31,7 @@ from pv211_utils.arqmath.loader import load_queries, load_judgements, ArqmathJud
 from tokenizers import Tokenizer as _Tokenizer
 from tqdm import tqdm
 from transformers import AutoTokenizer
+from filelock import FileLock
 
 from .prepare_msm_dataset import (
     Document,
@@ -378,14 +379,16 @@ class SCMSystem(JointBM25System):
 
 def get_system(text_format: TextFormat, questions: Iterable[Question], answers: Iterable[Answer],
                dictionary: Dictionary, parameters: Parameters,
-               similarity_matrix: Optional[SparseTermSimilarityMatrix]) -> BulkSearchSystem:
-    _, gamma = parameters
-    preprocessor = get_preprocessor(text_format, questions, gamma)
-    if similarity_matrix is None:
-        system = LuceneBM25System(dictionary, preprocessor, answers)
-    else:
-        system = SCMSystem(dictionary, similarity_matrix, preprocessor, answers)
-    return system
+               similarity_matrix: Optional[SparseTermSimilarityMatrix],
+               lock_file: Path) -> BulkSearchSystem:
+    with FileLock(str(lock_file)):
+        _, gamma = parameters
+        preprocessor = get_preprocessor(text_format, questions, gamma)
+        if similarity_matrix is None:
+            system = LuceneBM25System(dictionary, preprocessor, answers)
+        else:
+            system = SCMSystem(dictionary, similarity_matrix, preprocessor, answers)
+        return system
 
 
 def get_queries(year: Year, output_text_format: TextFormat) -> Iterable[Query]:
@@ -523,13 +526,13 @@ def evaluate_serp_with_ndcg(input_run_file: Path, year: Year, output_ndcg_file: 
 def produce_system(msm_input_directory: Path,
                    output_text_format: TextFormat, input_dictionary_file: Path,
                    input_similarity_matrix_file: Optional[Path],
-                   parameters: Parameters) -> BulkSearchSystem:
+                   parameters: Parameters, lock_file: Path) -> BulkSearchSystem:
     dictionary = get_dictionary(input_dictionary_file)
     similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file, parameters)
     questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
     questions, answers = list(questions), list(answers)
     system = get_system(output_text_format, questions, answers, dictionary, parameters,
-                        similarity_matrix)
+                        similarity_matrix, lock_file)
     return system
 
 
@@ -537,7 +540,7 @@ def get_optimal_parameters(msm_input_directory: Path,
                            output_text_format: TextFormat, input_dictionary_file: Path,
                            input_similarity_matrix_file: Optional[Path], run_name: str,
                            output_run_file: Path, temporary_output_parameter_file: Path,
-                           output_parameter_file: Path) -> Parameters:
+                           output_parameter_file: Path, lock_file: Path) -> Parameters:
     all_parameters = get_parameters(input_similarity_matrix_file)
     all_parameters = sorted(all_parameters)
 
@@ -574,7 +577,7 @@ def get_optimal_parameters(msm_input_directory: Path,
     for parameters in all_parameters:
         system = produce_system(
             msm_input_directory, output_text_format, input_dictionary_file,
-            input_similarity_matrix_file, parameters)
+            input_similarity_matrix_file, parameters, lock_file)
 
         produce_serp(system, queries_2020, output_run_file, run_name)
         ndcg_2020 = get_ndcg(output_run_file, year_2020)
@@ -610,19 +613,21 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
          input_dictionary_file: Path, input_similarity_matrix_file: Optional[Path],
          run_name: str, temporary_output_run_file: Path,
          output_run_file: Path, output_map_file: Path, output_ndcg_file: Path,
-         temporary_output_parameter_file: Path, output_parameter_file: Path) -> None:
+         temporary_output_parameter_file: Path, output_parameter_file: Path,
+         lock_file: Path) -> None:
     year = Year.from_int(2022)
 
     if not output_run_file.exists():
         optimal_parameters = get_optimal_parameters(
             msm_input_directory, output_text_format, input_dictionary_file, input_similarity_matrix_file,
-            run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file)
+            run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file,
+            lock_file)
 
         temporary_output_run_file.unlink()
 
         system = produce_system(
             msm_input_directory, output_text_format, input_dictionary_file,
-            input_similarity_matrix_file, optimal_parameters)
+            input_similarity_matrix_file, optimal_parameters, lock_file)
 
         queries = list(get_queries(year, output_text_format))
         produce_serp(system, queries, output_run_file, run_name)
@@ -640,7 +645,7 @@ if __name__ == '__main__':
     setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
-    assert len(argv) == 12
+    assert len(argv) == 13
 
     msm_input_directory = Path(argv[1])
     text_format = argv[2]
@@ -653,7 +658,8 @@ if __name__ == '__main__':
     output_ndcg_file = Path(argv[9])
     temporary_output_parameter_file = Path(argv[10])
     output_parameter_file = Path(argv[11])
+    lock_file = Path(argv[12])
 
     main(msm_input_directory, text_format, input_dictionary_file, input_similarity_matrix_file,
          run_name, temporary_output_run_file, output_run_file, output_map_file, output_ndcg_file,
-         temporary_output_parameter_file, output_parameter_file)
+         temporary_output_parameter_file, output_parameter_file, lock_file)

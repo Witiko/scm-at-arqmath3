@@ -62,7 +62,7 @@ jobs:
           set -ex
           python -V
           pip install -U pip setuptools wheel
-          pip install .[test,all,word2vec]
+          pip install .[typecheck]
       - name: Type check
         run: pytype system
   typeset-paper:

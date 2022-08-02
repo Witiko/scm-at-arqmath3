@@ -178,7 +178,8 @@ def main(msm_input_directory: Path,
          second_input_similarity_matrix_file: Optional[Path],
          second_temporary_output_parameter_file: Path, second_output_parameter_file: Path,
          run_name: str, temporary_output_run_file: Path, output_run_file: Path, output_map_file: Path,
-         output_ndcg_file: Path, temporary_output_beta_file: Path, output_beta_file: Path) -> None:
+         output_ndcg_file: Path, temporary_output_beta_file: Path, output_beta_file: Path,
+         lock_file: Path) -> None:
     year = Year.from_int(2022)
 
     if not output_run_file.exists():
@@ -186,21 +187,23 @@ def main(msm_input_directory: Path,
             msm_input_directory, first_output_text_format,
             first_input_dictionary_file, first_input_similarity_matrix_file,
             run_name, temporary_output_run_file,
-            first_temporary_output_parameter_file, first_output_parameter_file)
+            first_temporary_output_parameter_file, first_output_parameter_file,
+            lock_file)
         first_system = produce_system(
             msm_input_directory, first_output_text_format,
             first_input_dictionary_file, first_input_similarity_matrix_file,
-            first_optimal_parameters)
+            first_optimal_parameters, lock_file)
 
         second_optimal_parameters = get_optimal_parameters(
             msm_input_directory, second_output_text_format,
             second_input_dictionary_file, second_input_similarity_matrix_file,
             run_name, temporary_output_run_file,
-            second_temporary_output_parameter_file, second_output_parameter_file)
+            second_temporary_output_parameter_file, second_output_parameter_file,
+            lock_file)
         second_system = produce_system(
             msm_input_directory, second_output_text_format,
             second_input_dictionary_file, second_input_similarity_matrix_file,
-            second_optimal_parameters)
+            second_optimal_parameters, lock_file)
 
         optimal_beta = get_optimal_beta(
             first_system, second_system, first_output_text_format,
@@ -227,7 +230,7 @@ if __name__ == '__main__':
     setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
-    assert len(argv) == 19
+    assert len(argv) == 20
 
     msm_input_directory = Path(argv[1])
     first_text_format = argv[2]
@@ -247,6 +250,7 @@ if __name__ == '__main__':
     output_ndcg_file = Path(argv[16])
     temporary_output_beta_file = Path(argv[17])
     output_beta_file = Path(argv[18])
+    lock_file = Path(argv[19])
 
     main(msm_input_directory, first_text_format, first_input_dictionary_file,
          first_input_similarity_matrix_file,
@@ -255,4 +259,5 @@ if __name__ == '__main__':
          second_input_similarity_matrix_file,
          second_temporary_output_parameter_file, second_output_parameter_file,
          run_name, temporary_output_run_file, output_run_file, output_map_file,
-         output_ndcg_file, temporary_output_beta_file, output_beta_file)
+         output_ndcg_file, temporary_output_beta_file, output_beta_file,
+         lock_file)

@@ -301,7 +301,7 @@ decontextualized-similarity-matrix-tuned-roberta-base-text+latex: levenshtein-si
 
 
 define produce_joint_run
-python -m system.produce_joint_run $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) Run_$(patsubst %/,%,$(dir $(5)))_$(basename $(notdir $(5)))_$(4) $(5).temporary $(5) $(basename $(5)).map_score $(basename $(5)).ndcg_score $(basename $(5)).temporary_alpha_and_gamma $(basename $(5)).alpha_and_gamma
+python -m system.produce_joint_run $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) Run_$(patsubst %/,%,$(dir $(5)))_$(basename $(notdir $(5)))_$(4) $(5).temporary $(5) $(basename $(5)).map_score $(basename $(5)).ndcg_score $(basename $(5)).temporary_alpha_and_gamma $(basename $(5)).alpha_and_gamma $(patsubst %/,%,$(dir $(5))).lock
 endef
 
 submission/SCM-task1-baseline_joint_text-text-auto-X.tsv: dictionary-text
@@ -327,7 +327,7 @@ submission/SCM-task1-joint_tuned_roberta_base-both-auto-A.tsv: dictionary-text+l
 
 
 define produce_interpolated_run
-python -m system.produce_interpolated_run $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) $(basename $(8)).first_temporary_alpha_and_gamma $(basename $(8)).first_alpha_and_gamma $(4) $(5) $(6) $(basename $(8)).second_temporary_alpha_and_gamma $(basename $(8)).second_alpha_and_gamma Run_$(patsubst %/,%,$(dir $(8)))_$(basename $(notdir $(8)))_$(7) $(8).temporary $(8) $(basename $(8)).map_score $(basename $(8)).ndcg_score $(basename $(8)).temporary_beta $(basename $(8)).beta
+python -m system.produce_interpolated_run $(MSM_INPUT_DIRECTORY) $(1) $(2) $(3) $(basename $(8)).first_temporary_alpha_and_gamma $(basename $(8)).first_alpha_and_gamma $(4) $(5) $(6) $(basename $(8)).second_temporary_alpha_and_gamma $(basename $(8)).second_alpha_and_gamma Run_$(patsubst %/,%,$(dir $(8)))_$(basename $(notdir $(8)))_$(7) $(8).temporary $(8) $(basename $(8)).map_score $(basename $(8)).ndcg_score $(basename $(8)).temporary_beta $(basename $(8)).beta $(patsubst %/,%,$(dir $(8))).lock
 endef
 
 submission/SCM-task1-baseline_interpolated_text+latex-both-auto-X.tsv: dictionary-text dictionary-latex tokenizer-latex.json

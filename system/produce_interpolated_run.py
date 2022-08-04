@@ -210,7 +210,10 @@ def main(msm_input_directory: Path,
             second_output_text_format, run_name, temporary_output_run_file,
             temporary_output_beta_file, output_beta_file)
 
-        temporary_output_run_file.unlink()
+        try:
+            temporary_output_run_file.unlink()
+        except FileNotFoundError:
+            pass
 
         first_queries = list(get_queries(year, first_output_text_format))
         second_queries = list(get_queries(year, second_output_text_format))

@@ -623,7 +623,10 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
             run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file,
             lock_file)
 
-        temporary_output_run_file.unlink()
+        try:
+            temporary_output_run_file.unlink()
+        except FileNotFoundError:
+            pass
 
         system = produce_system(
             msm_input_directory, output_text_format, input_dictionary_file,

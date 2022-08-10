@@ -540,7 +540,8 @@ def get_optimal_parameters(msm_input_directory: Path,
                            output_text_format: TextFormat, input_dictionary_file: Path,
                            input_similarity_matrix_file: Optional[Path], run_name: str,
                            output_run_file: Path, temporary_output_parameter_file: Path,
-                           output_parameter_file: Path, lock_file: Path) -> Parameters:
+                           output_parameter_file: Path, lock_file: Path,
+                           fixed_gamma: Optional[int] = None) -> Parameters:
     all_parameters = get_parameters(input_similarity_matrix_file)
     all_parameters = sorted(all_parameters)
 
@@ -575,6 +576,11 @@ def get_optimal_parameters(msm_input_directory: Path,
     queries_2021 = list(get_queries(year_2021, output_text_format))
 
     for parameters in all_parameters:
+        alpha, gamma = parameters
+
+        if fixed_gamma is not None and gamma != fixed_gamma:
+            continue
+
         system = produce_system(
             msm_input_directory, output_text_format, input_dictionary_file,
             input_similarity_matrix_file, parameters, lock_file)
@@ -591,7 +597,6 @@ def get_optimal_parameters(msm_input_directory: Path,
             best_ndcg = ndcg
             best_parameters = parameters
 
-        alpha, gamma = parameters
         best_alpha, best_gamma = best_parameters
         with temporary_output_parameter_file.open('wt') as f:
             json.dump({'alpha': alpha, 'gamma': gamma,

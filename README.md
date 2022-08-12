@@ -45,7 +45,6 @@ The repository also contains the paper that describes our system.
 
 - Create a visualization of the best system with [document maps][28].
 - After the ARQMath-3 paper has been published:
-  - Add [a link][19] to [the 🤗 Model Hub][17].
   - Update [the evaluation results][27] on [the 🤗 Model Hub][17].
   - Add [extrinsic end-task evaluation on NumGLUE][14] to
     [`03-finetune-roberta.ipynb`][7]. Plot performance on the five different

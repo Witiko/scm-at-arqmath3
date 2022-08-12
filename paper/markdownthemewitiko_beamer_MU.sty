@@ -1,0 +1,243 @@
+\ProvidesPackage{markdownthemewitiko_beamer_MU}[2022/08/12]
+
+%% Beamer theme
+\usetheme[workplace=fi]{MU}
+
+%% Blockquotes
+\RequirePackage{etoolbox}
+\markdownSetup{
+  renderers = {
+    blockQuoteBegin = {%
+      \smallskip
+      \par
+      \begin{quotation}%
+        \preto\markdownRendererTextCite{\kern-2pt\,--\,}%
+        \noindent
+    },
+    blockQuoteEnd = {%
+      \end{quotation}%
+      \vspace*{-0.15em}%
+    },
+    blockHtmlCommentBegin = {},
+    blockHtmlCommentEnd = {},
+  },
+}
+
+% Multi-column lists and texts
+\RequirePackage{multicol}
+\multicolsep=0.1em
+
+\newcount\markdownOlColumns
+\newcount\markdownUlColumns
+\newcount\markdownDlColumns
+\markdownOlColumns=1
+\markdownUlColumns=1
+\markdownDlColumns=1
+
+\markdownSetup{
+  renderers = {
+    olBegin = {%
+      \ifnum\markdownOlColumns>1\relax
+        \begingroup
+          \multicolsep=0pt
+          \raggedcolumns
+          \begin{multicols}{\the\markdownOlColumns}%
+            \begin{enumerate}%
+      \else
+        \begin{enumerate}%
+      \fi
+    },
+    olEnd = {%
+      \ifnum\markdownOlColumns>1\relax
+            \end{enumerate}%
+          \end{multicols}%
+        \endgroup
+      \else
+        \end{enumerate}%
+      \fi
+    },
+    ulBegin = {%
+      \ifnum\markdownUlColumns>1\relax
+        \begingroup
+          \multicolsep=0pt
+          \raggedcolumns
+          \begin{multicols}{\the\markdownUlColumns}%
+            \begin{itemize}%
+      \else
+        \begin{itemize}%
+      \fi
+    },
+    ulEnd = {%
+      \ifnum\markdownUlColumns>1\relax
+            \end{itemize}%
+          \end{multicols}%
+        \endgroup
+      \else
+        \end{itemize}%
+      \fi
+    },
+    dlBegin = {%
+      \ifnum\markdownDlColumns>1\relax
+        \begingroup
+          \multicolsep=0pt
+          \raggedcolumns
+          \begin{multicols}{\the\markdownOlColumns}%
+            \begin{description}%
+      \else
+        \begin{description}%
+      \fi
+    },
+    dlEnd = {%
+      \ifnum\markdownDlColumns>1\relax
+            \end{description}%
+          \end{multicols}%
+        \endgroup
+      \else
+        \end{description}%
+      \fi
+    },
+    horizontalRule = {
+      \begingroup
+        \bigskip
+        \multicolsep=0pt
+        \raggedcolumns
+        \begin{multicols}{2}
+        \renewcommand\markdownRendererHorizontalRule{%
+          \columnbreak
+          \renewcommand\markdownRendererHorizontalRule{%
+            \end{multicols}
+            \vspace*{-\medskipamount}
+            \endgroup
+          }
+        }
+    },
+  },
+}
+
+% Frame breaks
+\markdownSetupSnippet{horizontalRule/frameBreak}{
+  renderers = {
+    horizontalRule = {%
+      \framebreak
+    },
+  },
+}
+
+% Tables
+\RequirePackage{booktabs}
+
+% Listings
+\RequirePackage{minted}
+
+\mode
+<presentation>
+
+% Headings
+\markdownSetup{
+  renderers = {
+    headingOne = {%
+      \frametitle{#1}\vspace{-0.2em}
+    },
+    headingTwo = {%
+      \ifx\empty#1\empty\else
+        \framesubtitle{#1}\vspace{-0.6em}
+      \fi
+      \markdownSetup{snippet=witiko/beamer/MU/headingTwo/several}
+    },
+  },
+}
+\markdownSetupSnippet{headingTwo/several}{
+  renderers = {
+    headingTwo = {%
+      \par\medskip\vspace*{0.1em}
+      {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{structure}#1}%
+      \par\medskip
+    },
+  },
+}
+
+\mode
+<all>
+
+% Images
+\RequirePackage{xstring}
+\markdownSetup{
+  renderers = {
+    contentBlock = {%
+      \ifthenelse{\equal{#1}{tex}}{%
+        \catcode`\%=14\relax
+        \input #3\relax
+        \catcode`\%=12\relax
+      }{%
+        \par\medskip
+        \rlap{\includegraphics{#2}}%
+      }%
+    },
+  },
+}
+
+% Hyperlinks
+\markdownSetup{
+  renderers = {
+    link = {\href{#3}{\textcolor{mubeamer@base}{#1}}},
+  },
+}
+
+\mode
+<article>
+
+%% Only show content up to a horizontal rule in the notes and display
+%% a next-frame symbol at the end of a markdown document.
+\markdownSetup{
+  renderers = {
+    documentEnd = {
+      ↷\par
+    },
+    interblockSeparator = {%
+      \def\next##1##2{%
+        \def\@tempa{##2}%
+        \def\@tempb{\markdownRendererHorizontalRule}%
+        \ifx\@tempa\@tempb
+        \else
+          \par
+        \fi
+        ##2%
+      }%
+      \next
+    },
+    horizontalRule = {%
+      \markdownRendererDocumentEnd
+      \let\markdownRendererInterblockSeparator\relax
+      \endinput
+    },
+  },
+}
+
+%% If a frame contains several markdown documents, disable the next
+%% slide symbol in the notes.
+\markdownSetupSnippet{horizontalRule/singleFrame}{
+  renderers = {
+    documentEnd = {%
+      \markdownRendererDocumentEndPrototype
+    },
+  },
+}
+
+\mode
+<presentation>
+
+%% Skip the initial content up to a horizontal rule in the presentation.
+\markdownSetup{
+  renderers = {
+    interblockSeparator = {%
+      \long\def\next##1\markdownRendererHorizontalRule{}%
+      \def\markdownRendererInterblockSeparator{%
+        \markdownRendererInterblockSeparatorPrototype
+      }%
+      \next
+    },
+  },
+}
+
+\mode
+<all>

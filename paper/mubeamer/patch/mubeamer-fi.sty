@@ -1,0 +1,40 @@
+\ProvidesPackage{mubeamer/patch/mubeamer-fi}[2019/01/09]
+\NeedsTeXFormat{LaTeX2e}
+
+% Special definitions for the Faculty of Informatics make the alert block
+% background color identical to the faculty color and uses the medium-weight
+% font face.
+\setbeamerfont{block title alerted}{parent=normal text}
+\setbeamercolor{block title alerted}{use=alerted text,fg=black,bg=mubeamer@\mubeamer@option@workplace}
+\setbeamercolor{block body alerted}{parent=normal text,use=block title alerted,bg=block title alerted.bg!10!bg}
+
+% Special definitions for the Faculty of Informatics use a highlighter in
+% faculty colors instead of text color and a bold typeface to display alerted
+% text.
+\setbeamerfont*{alerted text}{parent=normal text}
+\setbeamercolor*{alerted text}{parent=normal text,bg=mubeamer@\mubeamer@option@workplace}
+\newdimen\@tempdimd
+\RequirePackage{trimclip, longfbox}
+\renewcommand<>{\alert}[1]{%
+  \begingroup
+    \usebeamertemplate{alerted text begin}%
+    \usebeamercolor[fg]{alerted text}%
+    \usebeamerfont{alerted text}%
+    \trimbox\fboxsep{%
+      \begin{altenv}{%
+        \lfbox[rounded, background-color=bg, background-clip=padding-box, border-style=none, border-radius=4pt]%
+      }{\usebeamertemplate{alerted text end}}{%
+        \lfbox[border-style=none]%
+      }{}#2%
+      {#1}%
+      \end{altenv}%
+    }%
+    \usebeamertemplate{alerted text end}%
+  \endgroup
+}
+
+% Special definition for the Faculty of Informatics uses the faculty color as
+% the background color for the label that will be displayed on the last page.
+\ifmubeamer@option@gray\else
+  \colorlet{mubeamer@label}{mubeamer@\mubeamer@option@workplace}
+\fi

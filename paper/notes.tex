@@ -1,0 +1,47 @@
+%% Boilerplate
+\documentclass[11pt, oneside]{article}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{beamerarticle}
+\usepackage[all]{nowidow}
+\usepackage{newtxtext}
+
+%% Context-sensitive quotation marks
+\usepackage[babel]{csquotes}
+
+%% Bibliography
+\usepackage[
+  style=numeric-comp,
+  sorting=none,
+  maxnames=2,
+]{biblatex}
+\addbibresource{main.bib}
+
+% Markup
+\usepackage[
+  footnotes=true,
+  inlineFootnotes=true,
+  html=true,
+  headerAttributes=true,
+  contentBlocks=true,
+  citations=true,
+  smartEllipses=true,
+  definitionLists=true,
+  hybrid=true,
+  underscores=false,
+  pipeTables=true,
+  tableCaptions=true,
+  theme=witiko/beamer/MU,
+]{markdown}
+
+% Metadata
+\title{Combining Sparse and Dense Information Retrieval}
+\author{Vít Novotný, Michal Štefánik}
+\date{September 5, 2022}
+
+\begin{document}
+
+\input presentation
+
+\end{document}

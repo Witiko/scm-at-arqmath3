@@ -1,0 +1,63 @@
+% Boilerplate
+\documentclass[aspectratio=169, t]{beamer}
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+%% Context-sensitive quotation marks
+\usepackage[babel]{csquotes}
+
+%% Bibliography
+\usepackage[
+  style=numeric-comp,
+  sorting=none,
+  maxnames=2,
+]{biblatex}
+\addbibresource{main.bib}
+
+%% Graphics
+\usepackage{tikz}
+
+% Markup
+\usepackage[
+  footnotes=true,
+  inlineFootnotes=true,
+  html=true,
+  headerAttributes=true,
+  contentBlocks=true,
+  citations=true,
+  smartEllipses=true,
+  definitionLists=true,
+  hybrid=true,
+  underscores=false,
+  pipeTables=true,
+  tableCaptions=true,
+  theme=witiko/beamer/MU,
+]{markdown}
+
+% Metadata
+\title{%
+  \texorpdfstring{%
+    \textls[-15]{Combining }\textls[-20]{Sparse \& Dense}\\[-0.6ex]
+    Informati\textls[15]{on}\hspace{0.7ex}Retrieval%
+  }{%
+    Combining Sparse and Dense Information Retrieval
+  }%
+}
+\author{Vít Novotný, Michal Štefánik}
+\subtitle{%
+  \texorpdfstring{%
+    Soft Vector Space Model and MathBERTa\\
+    at ARQMath-3 Task 1 (Answer Retrieval)
+  }{%
+    Soft Vector Space Model and MathBERTa at ARQMath-3 Task 1 (Answer Retrieval)
+  }%
+}
+\institute[FI MU]{Faculty of Informatics, Masaryk University}
+\date{September 5, 2022}
+
+\begin{document}
+
+\input presentation
+
+\end{document}

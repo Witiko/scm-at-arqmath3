@@ -1,0 +1,415 @@
+%%
+%% This is file `beamerthemeMU.sty',
+%% generated with the docstrip utility.
+%%
+%% The original source files were:
+%%
+%% mubeamer.dtx  (with options: `theme')
+%% 
+%% Copyright 2017-2020  Vít Novotný <witiko@mail.muni.cz>
+%% Faculty of Informatics, Masaryk University (Brno, Czech Republic)
+%% 
+%% Copyright 2017  Aleš Křenek <ljocha@ics.muni.cz>
+%% Institute of Computer Science, Masaryk University (Brno, Czech Republic)
+%% 
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version
+%% 1.3 of this license or (at your option) any later version.
+%% The latest version of this license is available at
+%% 
+%%   http://www.latex-project.org/lppl.txt
+%% 
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%% 
+%% This work has the LPPL maintenance status `maintained'.
+%% 
+%% The Current Maintainer of this work is Vít Novotný.
+%% Send bug reports, requests for additions and questions
+%% either to the fithesis discussion forum at
+%% 
+%%   http://is.muni.cz/auth/df/fithesis-sazba/
+%% 
+%% or to the e-mail address <witiko@mail.muni.cz>.
+%% 
+%% 
+%% MODIFICATION ADVICE:
+%% 
+%% If you want to customize this file, it is best to make a copy of
+%% the source file(s) from which it was produced.  Use a different
+%% name for your copy(ies) and modify the copy(ies); this will ensure
+%% that your modifications do not get overwritten when you install a
+%% new release of the standard system.  You should also ensure that
+%% your modified source file does not generate any modified file with
+%% the same name as a standard file.
+%% 
+%% You will also need to produce your own, suitably named, .ins file to
+%% control the generation of files from your source file; this file
+%% should contain your own preambles for the files it generates, not
+%% those in the standard .ins files.
+%% 
+%% The names of the source files used are shown above.
+%% 
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeMU}[2022/02/06]
+\mode<presentation>
+\RequirePackage{etoolbox}
+\DeclareOptionBeamer{locale}{\def\mubeamer@option@locale{#1}}
+\ExecuteOptionsBeamer{locale={%
+  \@ifundefined{languagename}{english}{\languagename}}}
+\DeclareOptionBeamer{workplace}{\def\mubeamer@option@workplace{#1}}
+\ExecuteOptionsBeamer{workplace=mu}
+\newif\ifmubeamer@option@fonts
+\newif\ifmubeamer@option@scaling
+\def\mubeamer@temp@option@fonts@none{none}
+\def\mubeamer@temp@option@fonts@basic{basic}
+\def\mubeamer@temp@option@fonts@scaled{scaled}
+\DeclareOptionBeamer{fonts}{%
+  \def\mubeamer@temp@option@arg{#1}%
+  \ifx\mubeamer@temp@option@arg\mubeamer@temp@option@fonts@none
+    \mubeamer@option@fontsfalse
+    \mubeamer@option@scalingfalse
+  \else
+    \ifx\mubeamer@temp@option@arg\mubeamer@temp@option@fonts@basic
+      \mubeamer@option@fontstrue
+      \mubeamer@option@scalingfalse
+    \else
+      \ifx\mubeamer@temp@option@arg\mubeamer@temp@option@fonts@scaled
+        \mubeamer@option@fontstrue
+        \mubeamer@option@scalingtrue
+      \else
+        \PackageError{beamerthemeMU}%
+          {fonts=#1 is not a valid option}%
+          {fonts={none|basic|scaled} are the only valid options}%
+      \fi
+    \fi
+  \fi
+}
+\ExecuteOptionsBeamer{fonts=scaled}
+\newif\ifmubeamer@option@gray
+\DeclareOptionBeamer{gray}{\mubeamer@option@graytrue}
+\DeclareOptionBeamer{color}{\mubeamer@option@grayfalse}
+\ExecuteOptionsBeamer{color}
+\ProcessOptionsBeamer
+\ifmubeamer@option@scaling
+  \RequirePackage{PTSansCaption}
+  \@ifpackageloaded{fontspec}{
+    \begingroup
+    \newfontfamily\mubeamer@temp@fontname
+      [NFSSFamily=PTSansCaption-TLF]{PT Sans Caption}
+    \endgroup
+  }{}
+\fi
+\ifmubeamer@option@fonts
+  \RequirePackage{PTSans}
+  \RequirePackage{PTMono}
+  \@ifpackageloaded{fontspec}{
+    \begingroup
+    \newfontfamily\mubeamer@temp@fontname
+      [NFSSFamily=PTSans-TLF]{PT Sans}
+    \endgroup
+    \begingroup
+    \newfontfamily\mubeamer@temp@fontname
+      [NFSSFamily=PTMono-TLF]{PT Mono}
+    \endgroup
+  }{}
+\fi
+\newif\ifmubeamer@scaling@enabled
+\ifmubeamer@option@scaling
+  \def\mubeamer@scaling@family@basic{PTSans-TLF}
+  \def\mubeamer@scaling@family@caption{PTSansCaption-TLF}
+  \mubeamer@scaling@enabledtrue
+  \def\mubeamer@scaling@apply #1 (#2 -> #3){%
+    \expandafter\let\expandafter\mubeamer@temp@fontsize
+      \csname #1\endcsname
+    \expandafter\let\csname mubeamer@original@#1\endcsname
+      \mubeamer@temp@fontsize
+    \expandafter\def\csname #1\endcsname{%
+      \ifmubeamer@scaling@enabled
+        \expandafter\ifx\csname mubeamer@scaling@family@#2\endcsname
+          \sfbasic\expandafter\let\expandafter\sfdefault
+          \csname mubeamer@scaling@family@#3\endcsname
+        \fi
+        \expandafter\ifx\csname mubeamer@scaling@family@#2\endcsname
+          \f@family\expandafter\fontfamily
+          \csname mubeamer@scaling@family@#3\endcsname\selectfont
+        \fi
+      \fi
+      \csname mubeamer@original@#1\endcsname}}
+  \mubeamer@scaling@apply Huge         (caption -> basic)
+  \mubeamer@scaling@apply huge         (caption -> basic)
+  \mubeamer@scaling@apply LARGE        (caption -> basic)
+  \mubeamer@scaling@apply Large        (caption -> basic)
+  \mubeamer@scaling@apply large        (caption -> basic)
+  \mubeamer@scaling@apply normalsize   (caption -> basic)
+  \mubeamer@scaling@apply small        (caption -> basic)
+  \mubeamer@scaling@apply footnotesize (basic -> caption)
+  \mubeamer@scaling@apply scriptsize   (basic -> caption)
+  \mubeamer@scaling@apply tiny         (basic -> caption)
+\fi
+\def\mubeamer@option@locale@logo {\mubeamer@option@locale}
+\def\mubeamer@option@locale@label{\mubeamer@option@locale}
+\def\mubeamer@pathname@base{mubeamer/}
+\def\mubeamer@pathname@logo {\mubeamer@pathname@base logo/}
+\def\mubeamer@pathname@label{\mubeamer@pathname@base label/}
+\def\mubeamer@filename@logo{%
+  \mubeamer@pathname@logo mubeamer-\mubeamer@option@workplace-%
+    \mubeamer@option@locale@logo
+    \ifmubeamer@option@gray\else
+      -color%
+    \fi}
+\def\mubeamer@filename@logo@fallback{%
+  \mubeamer@pathname@logo mubeamer-\mubeamer@option@workplace-english%
+    \ifmubeamer@option@gray\else
+      -color%
+    \fi}
+\def\mubeamer@filename@logo@lastresort{%
+  \mubeamer@pathname@logo mubeamer-mu-english%
+    \ifmubeamer@option@gray\else
+      -color%
+    \fi}
+\def\mubeamer@filename@label{%
+  \mubeamer@pathname@label mubeamer-\mubeamer@option@workplace-%
+    \mubeamer@option@locale@label
+    \ifmubeamer@option@gray\else
+      -color%
+    \fi}
+\def\mubeamer@filename@label@fallback{%
+  \mubeamer@pathname@label mubeamer-\mubeamer@option@workplace-english%
+    \ifmubeamer@option@gray\else
+      -color%
+    \fi}
+\def\mubeamer@filename@label@lastresort{%
+  \mubeamer@pathname@label mubeamer-mu-%
+    \mubeamer@option@locale@label
+    \ifmubeamer@option@gray\else
+      -color%
+    \fi}
+\newcount\mubeamer@temp@recursion
+\newcommand*\mubeamer@subroutine@includegraphics[4][]{%
+  \begingroup
+  \mubeamer@temp@recursion=0
+  \patchcmd{\Gin@ii}{\Gin@esetsize}{%
+    \renewcommand{\@latex@error}[2]{%
+      \ifnum\mubeamer@temp@recursion<2
+        \advance\mubeamer@temp@recursion by 1
+        \ifnum\mubeamer@temp@recursion=1
+          \includegraphics[#1]{#3}
+        \else
+          \if\empty#4\empty
+            \PackageError{beamerthemeMU}%
+              {none of the following graphics files was found: #2, #3}%
+              {check that the mubeamer package has been correctly
+               installed\MessageBreak and that you specified an existing
+               workplace}%
+          \else
+            \includegraphics[#1]{#4}
+          \fi
+        \fi
+      \else
+        \PackageError{beamerthemeMU}%
+          {none of the following graphics files was found: #2, #3, #4}%
+          {check that the mubeamer package has been correctly
+           installed\MessageBreak and that you specified an existing
+           workplace}%
+      \fi}%
+    \Gin@esetsize}{}{%
+      \PackageError{beamerthemeMU}%
+        {unable to patch the includegraphics command}%
+        {contact the maintainer of the package}}%
+  \includegraphics[#1]{#2}%
+  \endgroup}
+\def\mubeamer@pathname@patch{\mubeamer@pathname@base patch/}
+\def\mubeamer@filename@patch{%
+  \mubeamer@pathname@patch mubeamer-\mubeamer@option@workplace}
+\newlength\mubeamer@length@margin
+\mubeamer@length@margin=0.7cm
+\newlength\mubeamer@length@footlinebottompadding
+\mubeamer@length@footlinebottompadding=.163cm
+\newlength\mubeamer@length@footlineheight
+\mubeamer@length@footlineheight=.4cm
+\newlength\mubeamer@length@logoheight
+\mubeamer@length@logoheight=1.4cm
+\definecolor{mubeamer@base}{RGB}{0,0,220}
+\definecolor{mubeamer@gray1}{RGB}{240,240,240}
+\definecolor{mubeamer@gray2}{RGB}{225,225,225}
+\definecolor{mubeamer@gray3}{RGB}{210,210,210}
+\definecolor{mubeamer@gray4}{RGB}{190,190,190}
+\definecolor{mubeamer@gray5}{RGB}{170,170,170}
+\definecolor{mubeamer@gray6}{RGB}{150,150,150}
+\definecolor{mubeamer@gray7}{RGB}{130,130,130}
+\definecolor{mubeamer@orange1}{RGB}{245,165,0}
+\definecolor{mubeamer@orange2}{RGB}{240,140,0}
+\definecolor{mubeamer@law}{RGB}{145,0,220}
+\definecolor{mubeamer@med}{RGB}{240,25,40}
+\definecolor{mubeamer@sci}{RGB}{0,175,63}
+\definecolor{mubeamer@phil}{RGB}{75,200,255}
+\definecolor{mubeamer@ped}{RGB}{255,115,0}
+\definecolor{mubeamer@econ}{RGB}{185,0,110}
+\definecolor{mubeamer@fi}{RGB}{242,212,92}
+\definecolor{mubeamer@fss}{RGB}{0,122,83}
+\definecolor{mubeamer@fsps}{RGB}{90,200,175}
+\ifmubeamer@option@gray
+  \definecolor{mubeamer@label}{RGB}{255,255,255}
+\else
+  \colorlet   {mubeamer@label}{mubeamer@base}
+\fi
+\useoutertheme{infolines}
+\setbeamersize{%
+  text margin left=\mubeamer@length@margin,
+  text margin right=\mubeamer@length@margin}
+\setbeamertemplate{frametitle}{%
+  \vtop{{%
+      \usebeamerfont{frametitle}{\insertframetitle}%
+      \ifx\insertframesubtitle\@empty
+        \usebeamerfont{frametitle}{%
+          \ 
+          \usebeamertemplate*{frametitle continuation}%
+        }%
+      \else\\
+        \usebeamerfont{framesubtitle}{%
+          \insertframesubtitle
+          \ 
+          \usebeamertemplate*{frametitle continuation}%
+        }%
+      \fi}
+    \vfill}}
+\long\def\beamer@@frametitle[#1]#2{%
+  \beamer@ifempty{#2}{}{%
+    \gdef\insertframetitle{{#2\ifnum\beamer@autobreakcount>0\relax{}\fi}}%
+    \gdef\beamer@frametitle{#2}%
+    \gdef\beamer@shortframetitle{#1}%
+  }%
+}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{%
+  \hskip\mubeamer@length@margin
+  \usebeamercolor[fg]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\insertshortauthor
+  \usebeamercolor[fg]{structure}%
+    \usebeamerfont{structure}\ \lower2pt\hbox{\Large$\cdot$}\
+  \usebeamercolor[fg]{title in head/foot}%
+    \usebeamerfont{title in head/foot}\insertshorttitle
+  \usebeamercolor[fg]{structure}%
+    \usebeamerfont{structure}\ \lower2pt\hbox{\Large$\cdot$}\
+  \usebeamercolor[fg]{date in head/foot}%
+    \usebeamerfont{date in head/foot}\insertshortdate\hfill
+  \usebeamercolor[fg]{page number in head/foot}%
+    \usebeamerfont{author in head/foot}\insertframenumber\ /
+    \inserttotalframenumber
+  \hskip\mubeamer@length@margin
+  \vrule width 0pt height \mubeamer@length@footlineheight
+         depth \mubeamer@length@footlinebottompadding}
+\setbeamertemplate{title page}{%
+  \vskip\mubeamer@length@margin
+  \mubeamer@subroutine@includegraphics%
+    [height=\mubeamer@length@logoheight]%
+    {\mubeamer@filename@logo}%
+    {\mubeamer@filename@logo@fallback}%
+    {\mubeamer@filename@logo@lastresort}%
+  \vskip0pt plus 6filll
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
+  \vskip0pt plus 4filll
+
+  {\usebeamerfont{author} \insertauthor}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{date} \insertdate}%
+  \vskip\mubeamer@length@margin}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{itemize items}[square]
+\setbeamertemplate{blocks}[rounded][shadow=true]
+\def\mubeamer@lastpage{%
+  \begingroup
+  \setbeamercolor{background canvas}{bg=mubeamer@label}
+  \begin{frame}[plain]
+  \vfill
+  \centering
+  \mubeamer@subroutine@includegraphics%
+    [width=\textwidth]%
+    {\mubeamer@filename@label}%
+    {\mubeamer@filename@label@fallback}%
+    {\mubeamer@filename@label@lastresort}%
+  \vfill
+  \end{frame}
+  \endgroup}
+\AtEndDocument{\mubeamer@lastpage}
+\setbeamerfont{structure}{series=\mdseries}
+\setbeamercolor{structure}{fg=mubeamer@base}
+
+\setbeamerfont{alerted text}{series=\bfseries}
+\setbeamercolor{alerted text}{fg=mubeamer@orange2}
+
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+\setbeamercolor{title}{fg=mubeamer@base}
+\setbeamerfont{title in head/foot}{size=\tiny,series=\bfseries}
+\setbeamercolor{title in head/foot}{parent=structure}
+
+\setbeamerfont{subtitle}{size=\large,series=\mdseries}
+\setbeamercolor{subtitle}{fg=black}
+
+\setbeamerfont{author}{series=\bfseries,size=\small}
+\setbeamerfont{author in head/foot}{size=\tiny,series=\mdseries}
+\setbeamercolor{author in head/foot}{parent=structure}
+
+\setbeamerfont{page number}{series=\footnotesize}
+\setbeamerfont{page number in head/foot}{size=\tiny,series=\mdseries}
+\setbeamercolor{page number in head/foot}{parent=structure}
+
+\setbeamerfont{date}{size=\footnotesize}
+\setbeamerfont{date in head/foot}{size=\tiny,series=\mdseries}
+\setbeamercolor{date in head/foot}{parent=structure}
+
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+\setbeamercolor{frametitle}{parent=title}
+
+\setbeamerfont{framesubtitle}{series=\bfseries,size=\large}
+\setbeamercolor{framesubtitle}{parent=subtitle}
+
+\setbeamerfont{section in head/foot}{series=\bfseries}
+
+\setbeamercolor{bibliography entry author}{%
+  use=normal text,fg=normal text.fg}
+\setbeamercolor{bibliography entry title}{%
+  use=normal text,fg=normal text.fg}
+\setbeamercolor{bibliography entry location}{%
+  use=normal text,fg=normal text.fg}
+\setbeamercolor{bibliography entry note}{%
+  use=normal text,fg=normal text.fg}
+
+\setbeamerfont{footnote}{size=\footnotesize}
+\setbeamercolor{footnote mark}{parent=structure}
+
+\setbeamerfont{section in head/foot}{parent=structure}
+\setbeamercolor{section in head/foot}{parent=structure}
+
+\setbeamerfont{subsection in head/foot}{parent=normal text}
+\setbeamercolor{subsection in head/foot}{parent=structure}
+
+\setbeamercolor{block title}{fg=white,bg=mubeamer@base}
+\setbeamercolor{block title example}{%
+  use=alerted text,fg=white,bg=mubeamer@gray7}
+\setbeamercolor{block title alerted}{%
+  use=alerted text,fg=white,bg=mubeamer@orange1}
+
+\setbeamercolor{block body}{%
+  parent=normal text,use=block title,
+  bg=block title.bg!10!bg}
+\setbeamercolor{block body example}{%
+  parent=normal text,bg=mubeamer@gray1}
+\setbeamercolor{block body alerted}{%
+  parent=normal text,use=block title alerted,
+  bg=block title alerted.bg!10!bg}
+\IfFileExists{\mubeamer@filename@patch.sty}{%
+  \RequirePackage{\mubeamer@filename@patch}}{}
+\mode
+  <all>
+\endinput
+%%
+%% End of file `beamerthemeMU.sty'.

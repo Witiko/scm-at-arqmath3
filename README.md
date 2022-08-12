@@ -45,7 +45,6 @@ The repository also contains the paper that describes our system.
 
 - Create a visualization of the best system with [document maps][28].
 - After the ARQMath-3 paper has been published:
-  - Update [the *Citing* section][18] in `README.md` and on [the 🤗 Model Hub][17].
   - Add [a link][19] to [the 🤗 Model Hub][17].
   - Update [the evaluation results][27] on [the 🤗 Model Hub][17].
   - Add [extrinsic end-task evaluation on NumGLUE][14] to
@@ -60,22 +59,30 @@ The repository also contains the paper that describes our system.
 
 ### Text
 
-Vít Novotný and Michal Štefánik. “Combining Sparse and Dense Information
-Retrieval. Soft Vector Space Model and MathBERTa at ARQMath-3 Task 1 (Answer
-Retrieval)”. In: *Proceedings of the Working Notes of CLEF 2022*. To Appear.
-CEUR-WS, 2022.
+Vít Novotný and Michal Štefánik.
+“Combining Sparse and Dense Information Retrieval. Soft Vector Space Model and
+MathBERTa at ARQMath-3 Task 1 (Answer Retrieval)”.
+In: *Proceedings of the Working Notes of CLEF 2022*.
+Ed. by Guglielmo Faggioli, Nicola Ferro, Allan Hanbury, and Martin Potthast.
+CEUR-WS, 2022, pp. 104–118.
+URL: <http://ceur-ws.org/Vol-3180/paper-06.pdf> (visited on 08/12/2022).
 
 ### Bib(La)TeX
 
 ``` bib
 @inproceedings{novotny2022combining,
   booktitle = {Proceedings of the Working Notes of {CLEF} 2022},
+  editor = {Faggioli, Guglielmo and Ferro, Nicola and Hanbury, Allan and Potthast, Martin},
+  issn = {1613-0073},
   title = {Combining Sparse and Dense Information Retrieval},
   subtitle = {Soft Vector Space Model and MathBERTa at ARQMath-3 Task 1 (Answer Retrieval)},
   author = {Novotný, Vít and Štefánik, Michal},
   publisher = {{CEUR-WS}},
   year = {2022},
-  note = {To Appear},
+  pages = {104-118},
+  numpages = {15},
+  url = {http://ceur-ws.org/Vol-3180/paper-06.pdf},
+  urldate = {2022-08-12},
 }
 ```
 

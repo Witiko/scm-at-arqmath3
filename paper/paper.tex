@@ -10,15 +10,15 @@
 \addbibresource{main.bib}
 \usepackage[all]{nowidow}
 \begin{document}
-\markdownInput[slice = ^ ^abstract]{main.md}  % Metadata
+\markdownInput[slice = ^ ^abstract]{paper.md}  % Metadata
 \begin{abstract}  % Abstract
-\protect\markdownInput[slice = abstract, snippet = abstract]{main.md}
+\protect\markdownInput[slice = abstract, snippet = abstract]{paper.md}
 \end{abstract}
 \begin{keywords}  % Keywords
-\markdownInput[slice = keywords, snippet = keywords]{main.md}
+\markdownInput[slice = keywords, snippet = keywords]{paper.md}
 \end{keywords}
 \maketitle
-\markdownInput[slice = $keywords ^results]{main.md}  % Body text
-\markdownInput[slice = ^results $, snippet = witiko/ceurart/content_block_figures]{main.md}
+\markdownInput[slice = $keywords ^results]{paper.md}  % Body text
+\markdownInput[slice = ^results $, snippet = witiko/ceurart/content_block_figures]{paper.md}
 \printbibliography  % Bibliography
 \end{document}

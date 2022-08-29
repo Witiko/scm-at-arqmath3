@@ -71,6 +71,11 @@ jobs:
     container:
       image: witiko/markdown:latest
     steps:
+      - name: Install pdf2txt
+        run: |
+          set -e
+          apt-get -qy update
+          apt-get -qy install --no-install-recommends python3-pdfminer
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Typeset paper
@@ -79,6 +84,9 @@ jobs:
         run: latexmk -cd -pdf -shell-escape paper/slides.tex
       - name: Typeset speaker notes
         run: latexmk -cd -pdf -shell-escape paper/notes.tex
+      - name: Estimate the length of the speaker notes
+        run: |
+          printf '%d minutes\n' $(($(pdf2txt paper/notes.pdf | wc -w) / 140))
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

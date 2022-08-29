@@ -227,7 +227,7 @@ Finally, to produce token similarity matrices that captured both lexical and
 semantic similarity between tokens, we combined every semantic similarity
 matrix with a corresponding lexical similarity matrix as follows:
 
- /combine_similarity_matrices.tex
+/combine_similarity_matrices.tex
 
 * * *
 
@@ -249,8 +249,71 @@ matrix with a corresponding lexical similarity matrix as follows:
 
     Semantic similarity
 
-    :   Using the cosine similarity between global token representations.
+    :   Using the cosine similarity between global token representations
 
 - Finally, we combined lexical and semantic similarity matrices:
 
- /combine_similarity_matrices.tex
+/combine_similarity_matrices.tex
+
+## Soft Vector Space Modeling {#soft-vector-space-modeling}
+
+In order to find answers to math questions, we used sparse retrieval with the soft
+vector space model of @sidorov2014soft, using Lucene BM25 [@kamphuis2020bm25,
+Table 1] as the vector space and our combined similarity matrices as the token
+similarity measure. To address the bimodal nature of math questions and
+answers, we used the following two approaches:
+
+Joint models
+
+:   To allow users to query math information using natural language and
+    vise versa, we used single soft vector space models to jointly represent
+    both text and math.
+
+    As our baselines, we used 1) Lucene BM25 with the text dictionary and no
+    token similarities and 2) Lucene BM25 with the text + LaTeX dictionary
+    and no token similarities.
+
+    We also used four soft vector space models with the text + LaTeX dictionary
+    and the token similarity matrices from the positional and non-positional
+    `word2vec` models, the `roberta-base` model, and the MathBERTa model.
+
+Interpolated models
+
+:   To properly represent the different frequency distributions of text and
+    math tokens, we used separate soft vector space models for text and math.
+    The final score of an answer is determined by linear interpolation of the
+    scores assigned by the two soft vector space models:
+
+     /interpolate_similarity_scores.tex
+
+    As our baselines, we used Lucene BM25 with the text dictionary and no token
+    similarities interpolated with 1) Lucene BM25 with the LaTeX dictionary
+    and no token similarities and with 2) Lucene BM25 with the Tangent-L
+    dictionary and no token similarities.
+
+    We also used four pairs of soft vector space models: two pairs with the
+    text and LaTeX dictionaries and two pairs with the text and Tangent-L
+    dictionaries. In each of the two pairs, one used the token similarity
+    matrices from the positional `word2vec` model and the other used the
+    token similarity matrices from non-positional `word2vec` model.
+
+For our representation of questions in the soft vector space model, we used the
+tokens in the title and in the body text. To represent an answer in the soft
+vector space model, we used the tokens in the title of its parent question and
+in the body text of the answer. To give greater weight to tokens in the title,
+we repeated them γ times, which proved useful in ARQMath-2
+[@novotny2021ensembling, Section 3.2].
+
+* * *
+
+Joint models
+
+:   Single soft vector space model represents both text and math.
+
+Interpolated models
+
+:   Two models represent text and math separately:
+
+/interpolate_similarity_scores.tex
+
+- Questions and answers contain title repeated γ times and body text.

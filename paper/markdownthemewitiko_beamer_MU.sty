@@ -165,6 +165,7 @@
   renderers = {
     contentBlock = {%
       \ifthenelse{\equal{#1}{tex}}{%
+        \vspace*{-0.45cm}
         \catcode`\%=14\relax
         \input #3\relax
         \catcode`\%=12\relax
@@ -189,19 +190,8 @@
 % Content blocks
 \markdownSetupSnippet{contentBlock/noSeparators}{
   renderers = {
-    interblockSeparator = {% Avoid `\par` before a content block
-      \def\next##1##2{%
-        \ifx\markdownRendererContentBlock##2\relax
-          \expandafter\markdownRendererContentBlock
-        \else
-          \markdownRendererInterblockSeparatorPrototype
-          \expandafter
-          ##2%
-        \fi
-      }%
-      \next
-    },
     contentBlock = {% Avoid `\par` after a content block
+      \vspace*{-0.5cm}
       \markdownRendererContentBlockPrototype{#1}{#2}{#3}{#4}%
       \begingroup
       \markdownSetup{

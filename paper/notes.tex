@@ -18,6 +18,13 @@
 ]{biblatex}
 \addbibresource{main.bib}
 
+%% Equations
+\renewenvironment{equation}{%
+  \begin{equation*}%
+}{%
+  \end{equation*}%
+}
+
 % Markup
 \usepackage[
   footnotes=true,

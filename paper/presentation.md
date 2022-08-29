@@ -179,6 +179,7 @@ Deep transformer models
     `roberta-base` with our text + LaTeX tokenizer, we randomly initialized
     weights for the new tokens, and we fine-tuned our model on our text + LaTeX
     dataset for one epoch using the masked language modeling objective.
+    We called our model MathBERTa and released it to the HF Model Hub.
 
 * * *
 
@@ -189,3 +190,67 @@ Shallow log-bilinear models
 Deep transformer models
 
 :   RoBERTa model [@liu2019roberta] fine-tuned on our text + LaTeX dataset
+
+## Token Similarity {#token-similarity}
+
+To determine the similarity of text and math tokens, we first extracted their
+global representations from our language models:
+
+Shallow log-bilinear models
+
+:   We extracted token vectors from the input and output matrices of our
+    `word2vec` models and averaged them to produce global token embeddings.
+
+Deep transformer models
+
+:   Unlike `word2vec`, transformer models do not contain global representations
+    of tokens, but produce representations of tokens in the context of
+    a sentence. To extract global token embeddings from `roberta-base` and
+    MathBERTa, we decontextualized their contextual token embeddings
+    [@stefanik2021regemt, Section 3.2] on the sentences from our text + LaTeX
+    dataset.
+
+Then, we produced two types of token similarity matrices:
+
+Lexical similarity
+
+:   We used the method of @charlet2017simbow [Section 2.2] to produce
+    similarity matrices using the Levenshtein distance between the tokens.
+
+Semantic similarity
+
+:   We used the method of @charlet2017simbow [Section 2.1] to produce
+    similarity matrices using the cosine similarity between the global
+    token embeddings.
+
+Finally, to produce token similarity matrices that captured both lexical and
+semantic similarity between tokens, we combined every semantic similarity
+matrix with a corresponding lexical similarity matrix as follows:
+
+ /combine_similarity_matrices.tex
+
+* * *
+
+- First, we extracted global representations of tokens from our language models:
+
+    Shallow log-bilinear models
+
+    :   We averaged input and output matrices of Word2vec.
+
+    Deep transformer models
+
+    :   We decontextualized [@stefanik2021regemt] the contextual token embeddings.
+
+- Then, we produced two types of token similarity matrices:
+
+    Lexical similarity
+
+    :   Using the Levenshtein distance between tokens
+
+    Semantic similarity
+
+    :   Using the cosine similarity between global token representations.
+
+- Finally, we combined lexical and semantic similarity matrices:
+
+ /combine_similarity_matrices.tex

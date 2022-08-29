@@ -186,6 +186,37 @@
 \mode
 <article>
 
+% Content blocks
+\markdownSetupSnippet{contentBlock/noSeparators}{
+  renderers = {
+    interblockSeparator = {% Avoid `\par` before a content block
+      \def\next##1##2{%
+        \ifx\markdownRendererContentBlock##2\relax
+          \expandafter\markdownRendererContentBlock
+        \else
+          \markdownRendererInterblockSeparatorPrototype
+          \expandafter
+          ##2%
+        \fi
+      }%
+      \next
+    },
+    contentBlock = {% Avoid `\par` after a content block
+      \markdownRendererContentBlockPrototype{#1}{#2}{#3}{#4}%
+      \begingroup
+      \markdownSetup{
+        renderers = {
+          interblockSeparator = {%
+            \endgroup
+          },
+        },
+      }%
+    },
+  }
+}
+
+\markdownSetup{snippet=contentBlock/noSeparators}
+
 %% Only show content up to a horizontal rule in the notes and display
 %% a next-frame symbol at the end of a markdown document.
 \markdownSetup{

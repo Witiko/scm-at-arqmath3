@@ -52,3 +52,71 @@ research questions and summarizing our contributions.
     2. Which math representation works best with the soft vector space model?
     3. Which notion of similarity between keywords and symbols works best?
     4. Is it better to use a single model for both text and math or two models?
+
+# Methods
+
+## Datasets {#datasets}
+
+In our experiments, we used the Math StackExchange and ArXMLiv corpora:
+
+Math StackExchange
+
+:   The Math StackExchange collection v1.2 (MSE) provided by the organizers of
+    the ARQMath-2 lab [@mansouri2021overview, Section 3] contains 2,466,080 posts
+    from the Math StackExchange question answering website in HTML5 with math
+    formulae in LaTeX. An improved Math Stack Exchange collection v1.3 was made
+    available by the organizers of the ARQMath-3 lab [@mansouri2022overview,
+    Section 3], which we did not use due to time constraints.
+
+ArXMLiv
+
+:   The ArXMLiv 2020 corpus [@ginev2020arxmliv] contains 1,571,037 scientific
+    preprints from ArXiv in the HTML5 format with math formulae in MathML.
+    Documents in the corpus were converted from LaTeX sources and are divided
+    into the following subsets according to the severity of errors encountered
+    during conversion: `no-problem` (10%), `warning` (60%), and `error` (30%).
+
+From the corpora, we produced a number of datasets in different formats that we
+used to train our tokenizers and language models:
+
+- The *Text + LaTeX* datasets contain text and math formulae in the LaTeX
+  format surrounded by *[MATH]* and *[/MATH]* tags.
+- By contrast, the *Text* datasets only contains text with math formulae removed
+  and the *LaTeX* datasets only contains formulae in the LaTeX format.
+- Finally, the *Tangent-L* datasets contain formulae in the format used by the
+  state-of-the-art search engine from the University of Waterloo.
+
+To train text & math language models, we combined MSE with the `no-problem`
+and `warning` subsets of ArXMLiv. To validate our language models, we used a
+small part of the `error` subset of ArXMLiv and no data from MSE.
+
+* * *
+
+- In our experiments, we used the Math StackExchange [@mansouri2021overview]
+  and ArXMLiv [@ginev2020arxmliv] corpora.
+- From the corpora, we produced a number of datasets in different formats:
+
+    Text + LaTeX
+
+    :   *We denote the set of branches with `[MATH] B_{0}, B_{1}, \ldots, B_{n}
+         [/MATH]` where `[MATH] n [/MATH]` are the number of branches.*
+
+    Text
+
+    :   *(Graphs of residually finite groups) Assume that and are satisfied.
+         Let be a graph of groups. If is infinite then assume that is
+         continuous.*
+
+    LaTeX
+
+    :   `\begin{pmatrix} 1 & n \\ 0 & 1 \end{pmatrix}`
+
+    Tangent-L
+
+    :   `#(start)# #(v!△,/,n,-)# #(v!△,/,n)# #(/,v!l,n,n)# #(/,v!l,n)#
+         #(v!l,!0,nn)# #(v!l,!0)# #(end)#`
+
+- For training, we combined MSE with `no-problem` and `warning` subsets of
+  ArXMLiv.
+- For validation, we used part of the `error` subset of ArXMLiv and no data
+  from MSE.

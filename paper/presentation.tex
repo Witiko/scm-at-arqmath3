@@ -32,4 +32,34 @@
 }
 
 \mode
+<article>
+
+% Introduction
+\markdownInput[slice=^ introduction]{presentation.md}
+
+\printbibliography
+
+\mode
+<presentation>
+
+\section{Introduction}
+\begin{frame}[fragile]
+  \markdownInput[slice=introduction]{presentation.md}
+\end{frame}
+
+\begin{frame}[plain]
+\vfill\vfill
+\centerline{Thank You for Your Attention!}
+\vfill\vfill\vfill
+\end{frame}
+
+\part{\bibname}
+\frame{\vfill\partpage\vfill}
+
+\section{\bibname}
+\begin{frame}[allowframebreaks]{\bibname}
+\printbibliography[heading=none]
+\end{frame}
+
+\mode
 <all>

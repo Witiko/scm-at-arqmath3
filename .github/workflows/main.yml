@@ -86,7 +86,7 @@ jobs:
         run: latexmk -cd -pdf -shell-escape paper/notes.tex
       - name: Estimate the length of the speaker notes
         run: |
-          printf '%d minutes\n' $(($(pdf2txt paper/notes.pdf | wc -w) / 140))
+          printf '%d minutes\n' $(($(pdf2txt paper/notes.pdf | sed -nr '1,/^References$/{s/( |^)[^ ]{1,2}( |$)/ /g; p}' | wc -w) / 140))
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

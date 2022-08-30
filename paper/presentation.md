@@ -1,18 +1,18 @@
 Good afternoon, I am Vítek Novotný. You will recall that I have already spoken
-in the previous session, where I described Task 3. However, besides helping to
-organize Task 3, I have also participated in Task 1 together with my colleague
-Michal from the Masaryk University in Brno, Czech Republic. In this talk, I
+in the previous session, where I described Task 3. Besides helping to organize
+Task 3, I have also participated in Task 1 together with my colleague Michal
+Štefánik from the Masaryk University in Brno, Czech Republic. In this talk, I
 will describe our Task 1 submission.
 
 # Introduction {#introduction}
 
-State-of-the-art math information retrieval systems use sparse retrieval
-techniques that can detect exact key word matches with high precision, but
-fail to retrieve texts that are semantically similar but use different
-terminology. This shortcoming is all the more apparent with mathematical
-texts, where the same information can be expressed in two completely different
-systems of writing and thought: the natural language and the language of
-mathematics.
+State-of-the-art systems for finding answers to math questions use sparse
+retrieval techniques that can detect exact key word matches with high
+precision, but fail to retrieve texts that are semantically similar but use
+different terminology. This shortcoming is all the more apparent with
+mathematical texts, where the same information can be expressed in two
+completely different systems of writing and thought: the natural language and
+the language of mathematics.
 
 Recently, the soft vector space model of @sidorov2014soft made it possible to
 retrieve documents according to both exact and fuzzy key word matches and has
@@ -66,16 +66,15 @@ From the corpora, we produced a number of datasets in different formats that we
 used to train our tokenizers and language models:
 
 - The *Text + LaTeX* datasets contain text and math formulae, where the
-  formulae are in LaTeX format and surrounded by the `[MATH]` and `[/MATH]`
-  special tags.
+  formulae are in LaTeX format and surrounded by special tags.
 - By contrast, the *Text* datasets only contain text with math formulae removed
   and the *LaTeX* datasets only contain formulae in the LaTeX format.
 - Finally, the *Tangent-L* datasets contain formulae in the format used by the
   state-of-the-art search engine from the University of Waterloo.
 
-To train text & math language models, we combined Math StackExchange with the
-`no-problem` and `warning` subsets of ArXMLiv. To validate our language models,
-we used a small part of the `error` subset of ArXMLiv.
+To train our tokenizers and language models, we combined Math StackExchange
+with the `no-problem` and `warning` subsets of ArXMLiv. To validate our
+language models, we used a small part of the `error` subset of ArXMLiv.
 
 * * *
 
@@ -112,16 +111,15 @@ we used a small part of the `error` subset of ArXMLiv.
 
 In our system, we used several tokenizers:
 
-- To tokenize text, we used the BPE tokenizer of the `roberta-base` language
-  model [@liu2019roberta].
-- To tokenize LaTeX, we trained a BPE tokenizer with a vocabulary of size
-  50,000 on our LaTeX dataset.
+- To tokenize text, we used the byte pair encoding tokenizer of the
+  `roberta-base` language model [@liu2019roberta].
+- To tokenize LaTeX, we trained a byte pair encoding tokenizer with a
+  vocabulary of size 50,000 on our LaTeX dataset.
 - To tokenize Tangent-L, we stripped leading and trailing hash signs from a
   formula representation and then split we split the remainder into tokens
   using pairs of hash signs separated by one or more space as the delimiter.
-- To tokenize text + LaTeX, we extended the BPE tokenizer of `roberta-base`
-  with the `[MATH]` and `[/MATH]` tags and with the tokens recognized by our
-  LaTeX tokenizer.
+- To tokenize text + LaTeX, we extended the tokenizer of `roberta-base` with
+  the tokens recognized by our LaTeX tokenizer.
 
 * * *
 
@@ -191,13 +189,11 @@ global representations from our language models:
 
 Then, we produced two types of token similarity matrices:
 
-- *Lexical similarity* matrices, where we used the method of @charlet2017simbow
-  [Section 2.2] to produce similarity matrices using the Levenshtein distance
-  between tokens.
+- *Lexical similarity* matrices, where we used the Levenshtein distance
+  between tokens, and
 
-- *Semantic similarity* matrices, where we used the method of
-  @charlet2017simbow [Section 2.1] to produce similarity matrices using the
-  cosine similarity between the global token embeddings.
+- *Semantic similarity* matrices, where we used the cosine similarity between
+  the global token embeddings.
 
 Finally, to produce token similarity matrices that captured both lexical and
 semantic similarity between tokens, we combined every semantic similarity
@@ -252,11 +248,10 @@ Interpolated models
     scores assigned by the two soft vector space models:
 
 For our representation of questions in the soft vector space model, we used the
-tokens in the title and in the body text. To represent an answer in the soft
-vector space model, we used the tokens in the title of its parent question and
-in the body text of the answer. To give greater weight to tokens in the title,
-we repeated them γ times, which proved useful in ARQMath-2
-[@novotny2021ensembling, Section 3.2].
+tokens in the title and in the body text. To represent an answer, we used the
+tokens in the title of its parent question and in the body text of the answer.
+To give greater weight to tokens in the title, we repeated them γ times, which
+proved useful in ARQMath-2 [@novotny2021ensembling, Section 3.2].
 
 * * *
 
@@ -274,26 +269,24 @@ Interpolated models
 
 # Results {#results}
 
-In this paper, we aimed to answer the following research questions:
-
-1. Does the soft vector space model outperform sparse information retrieval
-   baselines on the math information retrieval task?
-2. Which math representation works best with the soft vector space model?
-3. Which notion of similarity between key words and symbols works best?
-4. Is it better to use a single soft vector space model to represent both
-   text and math or to use two separate models?
-
 Using our experimental results, we can answer our research questions as follows:
 
-1. Using the soft vector space model to capture the semantic similarity between
+1. *Does the soft vector space model outperform sparse information retrieval
+   baselines on the math information retrieval task?*
+
+   Using the soft vector space model to capture the semantic similarity between
    tokens consistently improves effectiveness compared to sparse retrieval
    baselines, both for just text and for text combined with different math
    representations.
 
-2. Among the LaTeX and Tangent-L math representations, our soft vector space
+2. *Which math representation works best with the soft vector space model?*
+
+   Among the LaTeX and Tangent-L math representations, our soft vector space
    models using Tangent-L achieve the highest effectiveness.
 
-3. Among lexical and semantic similarity, all joint models and all
+3. *Which notion of similarity between key words and symbols works best?*
+
+   Among lexical and semantic similarity, all joint models and all
    interpolated models for text reach their highest effectiveness by combining
    both lexical and semantic similarity, but place slightly more weight on
    lexical similarity. The interpolated models for math gave mixed results: The
@@ -309,7 +302,10 @@ Using our experimental results, we can answer our research questions as follows:
    provided by the sources of semantic similarity and therefore does not
    benefit from their improvements after a certain threshold.
 
-4. All our interpolated models achieved higher effectiveness on ARQMath-3
+4. *Is it better to use a single soft vector space model to represent both
+   text and math or to use two separate models?*
+
+   All our interpolated models achieved higher effectiveness on ARQMath-3
    Task 1 than our joint models. This shows that it is generally better
    to use two separate models to represent text and math even at the expense
    of losing the ability to model the similarity between text and math tokens.

@@ -316,4 +316,65 @@ Interpolated models
 
 /interpolate_similarity_scores.tex
 
-- Questions and answers contain title repeated γ times and body text.
+- Questions and answers are indexed as title repeated γ times and body text.
+
+# Results {#results}
+
+In this paper, we aimed to answer the following research questions:
+
+1. Does the soft vector space model outperform sparse information retrieval
+   baselines on the math information retrieval task?
+2. Which math representation works best with the soft vector space model?
+3. Which notion of similarity between key words and symbols works best?
+4. Is it better to use a single soft vector space model to represent both
+   text and math or to use two separate models?
+
+Using our experimental results, we can answer our research questions as follows:
+
+1. Using the soft vector space model to capture the semantic similarity between
+   tokens consistently improves effectiveness compared to sparse retrieval
+   baselines, both for just text and for text combined with different math
+   representations.
+
+2. Among the LaTeX and Tangent-L math representations, our soft vector space
+   models using Tangent-L achieve the highest effectiveness.
+
+3. Among lexical and semantic similarity, all joint models and all
+   interpolated models for text reach their highest effectiveness by combining
+   both lexical and semantic similarity, but place slightly more weight on
+   lexical similarity. The interpolated models for math gave mixed results: The
+   model for Tangent-L reaches the highest efficiency by using only semantic
+   similarity, whereas the model for LaTeX reaches the highest efficiency by
+   using only lexical similarity.
+
+   Among sources of semantic similarity, joint models achieve comparable
+   effectiveness with non-positional `word2vec`, positional `word2vec`, and
+   MathBERTa, and interpolated models achieve comparable effectiveness with
+   non-positional `word2vec` and positional `word2vec`. This may indicate that
+   the soft vector space model does not fully exploit the semantic information
+   provided by the sources of semantic similarity and therefore does not
+   benefit from their improvements after a certain threshold.
+
+4. All our interpolated models achieved higher effectiveness on ARQMath-3
+   Task 1 than our joint models. This shows that it is generally better
+   to use two separate models to represent text and math even at the expense
+   of losing the ability to model the similarity between text and math tokens.
+
+* * *
+
+| Model | α₁ | γ₁ | α₂ | γ₂ | β | NDCG' |
+|-------|----|----|----|----|---|-------|
+| Interpolated text + Tangent-L (positional `word2vec`)     | 0.7 | 2 | 0.0 | 5 | 0.7 | 0.355 |
+| Interpolated text + Tangent-L (non-positional `word2vec`) | 0.6 | 2 | 0.0 | 5 | 0.7 | 0.351 |
+| Interpolated text + Tangent-L (no token similarities)     |     | 2 |     | 4 | 0.6 | 0.349 |
+| Interpolated text + LaTeX (positional `word2vec`)         | 0.7 | 2 | 1.0 | 5 | 0.6 | 0.288 |
+| Interpolated text + LaTeX (non-positional `word2vec`)     | 0.6 | 2 | 1.0 | 5 | 0.6 | 0.288 |
+| Interpolated text + LaTeX (no token similarities)         |     | 2 |     | 5 | 0.6 | 0.257 |
+| Joint text + LaTeX (non-positional `word2vec`)            | 0.6 | 5 |     |   |     | 0.251 |
+| Joint text + LaTeX (positional `word2vec`)                | 0.7 | 5 |     |   |     | 0.249 |
+| Joint text + LaTeX (MathBERTa)                            | 0.6 | 4 |     |   |     | 0.249 |
+| Joint text (`roberta-base`)                               | 0.6 | 2 |     |   |     | 0.247 |
+| Joint text (no token similarities)                        |     | 2 |     |   |     | 0.235 |
+| Joint text + LaTeX (no token similarities)                |     | 3 |     |   |     | 0.224 |
+
+: Results with optimized values of α (lexical similarity), β (text weight), and γ (title weight), where α₁ and γ₁ are parameters of the text model and  α₂ and γ₂ are parameters of the math model.

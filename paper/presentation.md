@@ -57,38 +57,25 @@ research questions and summarizing our contributions.
 
 ## Datasets {#datasets}
 
-In our experiments, we used the Math StackExchange and ArXMLiv corpora:
-
-Math StackExchange
-
-:   The Math StackExchange collection v1.2 (MSE) provided by the organizers of
-    the ARQMath-2 lab [@mansouri2021overview, Section 3] contains 2,466,080 posts
-    from the Math StackExchange question answering website in HTML5 with math
-    formulae in LaTeX. An improved Math Stack Exchange collection v1.3 was made
-    available by the organizers of the ARQMath-3 lab [@mansouri2022overview,
-    Section 3], which we did not use due to time constraints.
-
-ArXMLiv
-
-:   The ArXMLiv 2020 corpus [@ginev2020arxmliv] contains 1,571,037 scientific
-    preprints from ArXiv in the HTML5 format with math formulae in MathML.
-    Documents in the corpus were converted from LaTeX sources and are divided
-    into the following subsets according to the severity of errors encountered
-    during conversion: `no-problem` (10%), `warning` (60%), and `error` (30%).
+In our experiments, we used the Math StackExchange and ArXMLiv corpora.
+[@mansouri2021overview] [@ginev2020arxmliv]. The *Math StackExchange* corpus
+contains 2.5 million posts from the Math StackExchange question answering online
+forum. The *ArXMLiv* corpus contains 1.6 million scientific preprints from ArXiv.
 
 From the corpora, we produced a number of datasets in different formats that we
 used to train our tokenizers and language models:
 
-- The *Text + LaTeX* datasets contain text and math formulae in the LaTeX
-  format surrounded by `[MATH]` and `[/MATH]` tags.
-- By contrast, the *Text* datasets only contains text with math formulae removed
-  and the *LaTeX* datasets only contains formulae in the LaTeX format.
+- The *Text + LaTeX* datasets contain text and math formulae, where the
+  formulae are in LaTeX format and surrounded by the `[MATH]` and `[/MATH]`
+  special tags.
+- By contrast, the *Text* datasets only contain text with math formulae removed
+  and the *LaTeX* datasets only contain formulae in the LaTeX format.
 - Finally, the *Tangent-L* datasets contain formulae in the format used by the
   state-of-the-art search engine from the University of Waterloo.
 
-To train text & math language models, we combined MSE with the `no-problem`
-and `warning` subsets of ArXMLiv. To validate our language models, we used a
-small part of the `error` subset of ArXMLiv and no data from MSE.
+To train text & math language models, we combined Math StackExchange with the
+`no-problem` and `warning` subsets of ArXMLiv. To validate our language models,
+we used a small part of the `error` subset of ArXMLiv.
 
 * * *
 
@@ -129,9 +116,9 @@ In our system, we used several tokenizers:
   model [@liu2019roberta].
 - To tokenize LaTeX, we trained a BPE tokenizer with a vocabulary of size
   50,000 on our LaTeX dataset.
-- To tokenize Tangent-L, we strip leading and trailing hash signs from a
-  formula representation and then split it into tokens using pairs of hash
-  signs separated by one or more space as the delimiter.
+- To tokenize Tangent-L, we stripped leading and trailing hash signs from a
+  formula representation and then split we split the remainder into tokens
+  using pairs of hash signs separated by one or more space as the delimiter.
 - To tokenize text + LaTeX, we extended the BPE tokenizer of `roberta-base`
   with the `[MATH]` and `[/MATH]` tags and with the tokens recognized by our
   LaTeX tokenizer.
@@ -157,29 +144,28 @@ Text + LaTeX
 
 ## Language Modeling {#language-modeling}
 
-In our experiments, we used two different types of language models:
+In our experiments, we also used two different types of language models:
 
-Shallow log-bilinear models
+1. We trained shallow `word2vec` language models [@mikolov2013distributed] on
+   our text + LaTeX, text, LaTeX, and Tangent-L datasets.
 
-:   We trained shallow `word2vec` language models [@mikolov2013distributed] on
-    our text + LaTeX, text, LaTeX, and Tangent-L datasets.
-
-    On text documents, a technique known as *constrained positional weighting*
-    has been shown to improve the performance of `word2vec` models on
-    analogical reasoning and causal language modeling [@novotny2022when].
-    To evaluate the impact of constrained positional weighting on math
-    information retrieval, we trained `word2vec` models both with and without
-    constrained positional weighting for every dataset.
+   A technique known as *constrained positional weighting* has been shown to
+   improve the performance of `word2vec` models on analogical reasoning and
+   causal language modeling [@novotny2022when].  To evaluate the impact of
+   constrained positional weighting on math information retrieval, we trained
+   `word2vec` models both with and without constrained positional weighting for
+   every dataset.
 
 Deep transformer models
 
-:   To model text, we used pre-trained `roberta-base` model [@liu2019roberta].
+:   To model text, we used a pre-trained `roberta-base` model [@liu2019roberta].
 
     To model text and math in the LaTeX format, we replaced the tokenizer of
     `roberta-base` with our text + LaTeX tokenizer, we randomly initialized
     weights for the new tokens, and we fine-tuned our model on our text + LaTeX
-    dataset for one epoch using the masked language modeling objective.
-    We called our model MathBERTa and released it to the HF Model Hub.
+    dataset for one epoch using the autoregressive masked language modeling
+    objective. We called our model MathBERTa and we released it to the Hugging
+    Face Model Hub.
 
 * * *
 
@@ -196,38 +182,27 @@ Deep transformer models
 To determine the similarity of text and math tokens, we first extracted their
 global representations from our language models:
 
-Shallow log-bilinear models
+- For our `word2vec` models, we extracted token vectors from the input and
+  output matrices and averaged them to produce global token embeddings.
 
-:   We extracted token vectors from the input and output matrices of our
-    `word2vec` models and averaged them to produce global token embeddings.
-
-Deep transformer models
-
-:   Unlike `word2vec`, transformer models do not contain global representations
-    of tokens, but produce representations of tokens in the context of
-    a sentence. To extract global token embeddings from `roberta-base` and
-    MathBERTa, we decontextualized their contextual token embeddings
-    [@stefanik2021regemt, Section 3.2] on the sentences from our text + LaTeX
-    dataset.
+- For our deep transformer models, we decontextualized their contextual token
+  embeddings [@stefanik2021regemt, Section 3.2] on the sentences from our
+  text + LaTeX dataset in order to obtain global token embeddings.
 
 Then, we produced two types of token similarity matrices:
 
-Lexical similarity
+- *Lexical similarity* matrices, where we used the method of @charlet2017simbow
+  [Section 2.2] to produce similarity matrices using the Levenshtein distance
+  between tokens.
 
-:   We used the method of @charlet2017simbow [Section 2.2] to produce
-    similarity matrices using the Levenshtein distance between the tokens.
-
-Semantic similarity
-
-:   We used the method of @charlet2017simbow [Section 2.1] to produce
-    similarity matrices using the cosine similarity between the global
-    token embeddings.
+- *Semantic similarity* matrices, where we used the method of
+  @charlet2017simbow [Section 2.1] to produce similarity matrices using the
+  cosine similarity between the global token embeddings.
 
 Finally, to produce token similarity matrices that captured both lexical and
 semantic similarity between tokens, we combined every semantic similarity
-matrix with a corresponding lexical similarity matrix as follows:
-
-/combine_similarity_matrices.tex
+matrix with a corresponding lexical similarity matrix. In our experiments, we
+only used the combined token similarity matrices.
 
 * * *
 
@@ -260,8 +235,8 @@ matrix with a corresponding lexical similarity matrix as follows:
 In order to find answers to math questions, we used sparse retrieval with the soft
 vector space model of @sidorov2014soft, using Lucene BM25 [@kamphuis2020bm25,
 Table 1] as the vector space and our combined similarity matrices as the token
-similarity measure. To address the bimodal nature of math questions and
-answers, we used the following two approaches:
+similarity measure. To address the bimodal nature of math information
+retrieval, we used the following two approaches:
 
 Joint models
 
@@ -269,33 +244,12 @@ Joint models
     vise versa, we used single soft vector space models to jointly represent
     both text and math.
 
-    As our baselines, we used 1) Lucene BM25 with the text dictionary and no
-    token similarities and 2) Lucene BM25 with the text + LaTeX dictionary
-    and no token similarities.
-
-    We also used four soft vector space models with the text + LaTeX dictionary
-    and the token similarity matrices from the positional and non-positional
-    `word2vec` models, the `roberta-base` model, and the MathBERTa model.
-
 Interpolated models
 
 :   To properly represent the different frequency distributions of text and
     math tokens, we used separate soft vector space models for text and math.
     The final score of an answer is determined by linear interpolation of the
     scores assigned by the two soft vector space models:
-
-     /interpolate_similarity_scores.tex
-
-    As our baselines, we used Lucene BM25 with the text dictionary and no token
-    similarities interpolated with 1) Lucene BM25 with the LaTeX dictionary
-    and no token similarities and with 2) Lucene BM25 with the Tangent-L
-    dictionary and no token similarities.
-
-    We also used four pairs of soft vector space models: two pairs with the
-    text and LaTeX dictionaries and two pairs with the text and Tangent-L
-    dictionaries. In each of the two pairs, one used the token similarity
-    matrices from the positional `word2vec` model and the other used the
-    token similarity matrices from non-positional `word2vec` model.
 
 For our representation of questions in the soft vector space model, we used the
 tokens in the title and in the body text. To represent an answer in the soft

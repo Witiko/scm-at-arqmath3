@@ -2,7 +2,7 @@
 
 This repository contains our math information retrieval (MIR) system for
 [the ARQMath3 competition][1] that is based on [the soft cosine measure][2].
-The repository also contains the paper that describes our system.
+The repository also contains [the paper][29] that describes our system.
 
  [1]: https://www.cs.rit.edu/~dprl/ARQMath/
  [2]: https://radimrehurek.com/gensim/auto_examples/tutorials/run_scm.html
@@ -31,7 +31,7 @@ The repository also contains the paper that describes our system.
 6. [Produce dictionaries][11]
 7. [Produce term similarity matrices][12]
 8. [Produce ARQMath runs][15]
-9. [Optimize soft vector space similarity matrices][29]
+9. [Optimize soft vector space similarity matrices][28]
 
 ## Code pearls
 
@@ -42,14 +42,13 @@ The repository also contains the paper that describes our system.
 
 - [The `witiko/mathberta` model][7] at [the 🤗 Model Hub][17].
 
-## Tasks
+## Future work
 
-- Create a visualization of the best system with [document maps][28].
 - Add [extrinsic end-task evaluation on NumGLUE][14] to
   [`03-finetune-roberta.ipynb`][7]. Plot performance on the five different
   NumGLUE tasks (axis y) over checkpoints (axis x).
-- Add end-task evaluation on ARQMath-3 topics to
-  `08-produce-arqmath-runs.ipynb` and `10-evaluate-roberta.ipynb`.
+- Add end-task evaluation on ARQMath-3 topics over checkpoints to
+  `08-produce-arqmath-runs.ipynb`.
 
 ## Citing
 
@@ -107,5 +106,5 @@ URL: <http://ceur-ws.org/Vol-3180/paper-06.pdf> (visited on 08/12/2022).
  [25]: https://stackoverflow.com/a/64333567/657401
  [26]: https://github.com/witiko/doctoral-thesis
  [27]: https://huggingface.co/witiko/mathberta#intrinsic-evaluation-results
- [28]: https://github.com/MIR-MU/document-maps
- [29]: 09-optimize-term-similarity-matrices.ipynb
+ [28]: 09-optimize-term-similarity-matrices.ipynb
+ [29]: http://ceur-ws.org/Vol-3180/paper-06.pdf

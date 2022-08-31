@@ -7,11 +7,13 @@ import json
 import logging
 from multiprocessing import get_context
 from pathlib import Path
+import re
 from sys import argv, setrecursionlimit
-from typing import Optional, Iterable, List, Dict, Tuple, Union
+from typing import Optional, Iterable, List, Dict, Tuple, Union, Set
 
 from arqmath_eval import get_ndcg as _get_ndcg
 from gensim.corpora import Dictionary  # type: ignore
+from gensim.interfaces import TransformationABC as TermWeightTransformation  # type: ignore
 from gensim.models import LuceneBM25Model  # type: ignore
 from gensim.similarities import (
     SparseMatrixSimilarity,  # type: ignore
@@ -28,19 +30,20 @@ from pv211_utils.arqmath.entities import (
 from pv211_utils.arqmath.eval import ArqmathEvaluation as Evaluation
 from pv211_utils.arqmath.irsystem import ArqmathIRSystemBase as System
 from pv211_utils.arqmath.loader import load_queries, load_judgements, ArqmathJudgements as Judgements
+from scipy.sparse import dok_matrix
 from tokenizers import Tokenizer as _Tokenizer
 from tqdm import tqdm
 from transformers import AutoTokenizer
 from filelock import FileLock
 
 from .prepare_msm_dataset import (
-    Document,
     get_input_text_format,
     get_questions_and_answers as _get_questions_and_answers,
     read_document_latex,
     read_document_tangentl,
     read_document_text,
     read_document_text_latex,
+    read_document_text_tangentl,
     TextFormat,
 )
 from .combine_similarity_matrices import get_combined_term_similarity_matrix, get_alphas, Alpha
@@ -74,7 +77,7 @@ Token = str
 Text = List[Token]
 Line = str
 
-Year = int
+Document = Union[Query, Question, Answer]
 
 
 class Year(Enum):
@@ -83,7 +86,7 @@ class Year(Enum):
     ARQMATH_2022 = 2022
 
     @classmethod
-    def from_int(cls, year: int) -> Year:
+    def from_int(cls, year: int) -> 'Year':
         if year == 2020:
             return cls.ARQMATH_2020
         elif year == 2021:
@@ -170,6 +173,23 @@ class LaTeXTokenizer(Tokenizer):
         return tokens
 
 
+class TextTangentLTokenizer(Tokenizer):
+    def __init__(self):
+        self.text_tokenizer = TextTokenizer()
+        self.tangentl_tokenizer = TangentLTokenizer()
+
+    def tokenize(self, line: Line) -> Text:
+        first_text_span, *tangentl_span_heads = re.split(r'\s*\[MATH\]\s*', line)
+        tokens = self.text_tokenizer.tokenize(first_text_span)
+        for tangentl_span_head in tangentl_span_heads:
+            tangentl_span, text_span = re.split(r'\s*\[/MATH\]\s*', tangentl_span_head)
+            tangentl_tokens = self.tangentl_tokenizer.tokenize(tangentl_span)
+            text_tokens = self.text_tokenizer.tokenize(text_span)
+            tokens.extend(tangentl_tokens)
+            tokens.extend(text_tokens)
+        return tokens
+
+
 class TangentLTokenizer(Tokenizer):
     def tokenize(self, line: Line) -> Text:
         tokens = line.strip('#').split('# #')
@@ -183,6 +203,8 @@ def get_tokenizer(text_format: TextFormat) -> Tokenizer:
         tokenizer = TextLaTeXTokenizer()
     elif text_format == 'latex':
         tokenizer = LaTeXTokenizer()
+    elif text_format == 'text+tangentl':
+        tokenizer = TextTangentLTokenizer()
     elif text_format == 'tangentl':
         tokenizer = TangentLTokenizer()
     else:
@@ -206,7 +228,7 @@ class Preprocessor:
     BODY_WEIGHT = 1
 
     def __init__(self, text_format: TextFormat, tokenizer: Tokenizer, questions: Iterable[Question],
-                 gamma: Gamma):
+                 maybe_parameters: Optional[Parameters]):
         self.text_format = text_format
         self.tokenizer = tokenizer
         self.answer_to_question = {
@@ -214,9 +236,12 @@ class Preprocessor:
             for question in questions
             for answer in question.answers
         }
-        self.gamma = gamma
+        if maybe_parameters is None:
+            self.gamma = None
+        else:
+            _, self.gamma = maybe_parameters
 
-    def _preprocess_part(self, document_part: str) -> Text:
+    def preprocess_part(self, document_part: str) -> Text:
         tree = fromstring(document_part)
         paragraphs = list()
         for paragraph in tree.xpath('//p'):
@@ -226,6 +251,8 @@ class Preprocessor:
                 paragraph_text = read_document_text_latex(paragraph, min_paragraph_length=None)
             elif self.text_format == 'latex':
                 paragraph_text = read_document_latex(paragraph, min_math_length=None)
+            elif self.text_format == 'text+tangentl':
+                paragraph_text = read_document_text_tangentl(paragraph, min_paragraph_length=None)
             elif self.text_format == 'tangentl':
                 paragraph_text = read_document_tangentl(paragraph)
             else:
@@ -236,22 +263,36 @@ class Preprocessor:
         return text
 
     def preprocess(self, document: Document) -> Text:
+        if self.gamma is None:
+            LOGGER.warning(f'Unparametrized preprocessor, assuming gamma={self.BODY_WEIGHT}')
+            gamma = 1
+        else:
+            gamma = self.gamma
+
         texts = []
         if isinstance(document, Answer):
-            texts += [self._preprocess_part(document.body)] * self.BODY_WEIGHT
+            texts += [self.preprocess_part(document.body)] * self.BODY_WEIGHT
             if document in self.answer_to_question:
                 question = self.answer_to_question[document]
-                texts += [self._preprocess_part(question.title)] * self.gamma
+                texts += [self.preprocess_part(question.title)] * gamma
         else:
-            texts += [self._preprocess_part(document.body)] * self.BODY_WEIGHT
-            texts += [self._preprocess_part(document.title)] * self.gamma
+            texts += [self.preprocess_part(document.body)] * self.BODY_WEIGHT
+            texts += [self.preprocess_part(document.title)] * gamma
         text = list(chain(*texts))
         return text
 
 
-def get_preprocessor(text_format: TextFormat, questions: Iterable[Question], gamma: Gamma) -> Preprocessor:
+def get_preprocessor(text_format: TextFormat, questions: Iterable[Question],
+                     parameters: Parameters) -> Preprocessor:
     tokenizer = get_tokenizer(text_format)
-    preprocessor = Preprocessor(text_format, tokenizer, questions, gamma)
+    preprocessor = Preprocessor(text_format, tokenizer, questions, parameters)
+    return preprocessor
+
+
+def get_unparametrized_preprocessor(text_format: TextFormat, questions: Iterable[Question],
+                                    maybe_parameters: Optional[Parameters]) -> Preprocessor:
+    tokenizer = get_tokenizer(text_format)
+    preprocessor = Preprocessor(text_format, tokenizer, questions, maybe_parameters)
     return preprocessor
 
 
@@ -267,13 +308,18 @@ class BulkSearchSystem(System):
             yield (query, answers)
 
 
+def get_bm25_model(dictionary: Dictionary):
+    bm25_model = LuceneBM25Model(dictionary=dictionary)
+    return bm25_model
+
+
 class JointBM25System(BulkSearchSystem, metaclass=ABCMeta):
     CURRENT_INSTANCE: Optional['JointBM25System'] = None
 
     def __init__(self, dictionary: Dictionary, preprocessor: Preprocessor, answers: Iterable[Answer]):
         self.dictionary = dictionary
         self.preprocessor = preprocessor
-        self.bm25_model = LuceneBM25Model(dictionary=self.dictionary)
+        self.bm25_model = get_bm25_model(self.dictionary)
         self.index_to_answer: Dict[AnswerIndex, Answer] = dict(enumerate(answers))
 
     @abstractmethod
@@ -382,8 +428,7 @@ def get_system(text_format: TextFormat, questions: Iterable[Question], answers: 
                similarity_matrix: Optional[SparseTermSimilarityMatrix],
                lock_file: Path) -> BulkSearchSystem:
     with FileLock(str(lock_file)):
-        _, gamma = parameters
-        preprocessor = get_preprocessor(text_format, questions, gamma)
+        preprocessor = get_preprocessor(text_format, questions, parameters)
         if similarity_matrix is None:
             system = LuceneBM25System(dictionary, preprocessor, answers)
         else:
@@ -462,6 +507,141 @@ class TSVFileReader(System):
     def search(self, query: Query) -> Iterable[Answer]:
         answers = self.query_answers[query]
         return answers
+
+
+def produce_document_maps_corpus(input_run_file: Path,
+                                 queries: Iterable[Query],
+                                 answers: Iterable[Answer],
+                                 input_dictionary_file: Path,
+                                 input_similarity_matrix_file: Path,
+                                 parameters: Parameters,
+                                 text_format: TextFormat,
+                                 questions: Iterable[Question],
+                                 output_document_maps_file: Path) -> None:
+    dictionary = get_dictionary(input_dictionary_file)
+
+    similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file, parameters)
+    assert similarity_matrix is not None
+
+    preprocessor = get_unparametrized_preprocessor(text_format, questions, None)
+
+    bm25_model = get_bm25_model(dictionary)
+
+    _produce_document_maps_corpus(output_run_file, queries, answers,
+                                  dictionary, similarity_matrix, preprocessor,
+                                  output_document_maps_file, None, bm25_model)
+
+
+def get_minimum_allowed_query_id() -> int:
+    minimum_allowed_query_id = 301
+    return minimum_allowed_query_id
+
+
+def get_maximum_allowed_query_id() -> int:
+    maximum_allowed_query_id = 310
+    return maximum_allowed_query_id
+
+
+def get_document_maps_topn() -> int:
+    document_maps_topn = 5
+    return document_maps_topn
+
+
+def _produce_document_maps_corpus(input_run_file: Path,
+                                  queries: Iterable[Query],
+                                  answers: Iterable[Answer],
+                                  dictionary: Dictionary,
+                                  similarity_matrix: SparseTermSimilarityMatrix,
+                                  preprocessor: Preprocessor,
+                                  output_document_maps_file: Path,
+                                  query_term_weight_transformer: Optional[TermWeightTransformation],
+                                  answer_term_weight_transformer: Optional[TermWeightTransformation]) -> None:
+    queries = list(queries)
+    similarity_matrix = dok_matrix(similarity_matrix.matrix)
+
+    system = TSVFileReader(input_run_file, queries, answers)
+    top_results: Dict[Query, List[Answer]] = dict()
+    for query in queries:
+        if query.query_id < get_minimum_allowed_query_id():
+            continue
+        if query.query_id > get_maximum_allowed_query_id():
+            continue
+        topn = get_document_maps_topn()
+        answers = system.search(query)
+        answers = list(answers)
+        answers = answers[:topn]
+        top_results[query] = answers
+
+    top_result_terms: Set[Token] = set()
+    top_answers: Set[Answer] = set()
+    for query, answers in top_results.items():
+        for token in preprocessor.preprocess(query):
+            top_result_terms.add(token)
+        for answer in answers:
+            for token in preprocessor.preprocess(answer):
+                top_result_terms.add(token)
+            top_answers.add(answer)
+
+    corpus = {'version': '1'}
+
+    corpus['results'] = dict()
+    for query, answers in top_results.items():
+        answer_ids = [answer.document_id for answer in answers]
+        corpus['results'][f'Topic A.{query.query_id}'] = answer_ids
+
+    corpus['dictionary'] = dict()
+    for term, term_id in dictionary.token2id.items():
+        if term not in top_result_terms:
+            continue
+        corpus['dictionary'][term_id] = term
+
+    corpus['word_similarities'] = defaultdict(lambda: dict())
+    term1_ids, term2_ids = similarity_matrix.nonzero()
+    term1_ids, term2_ids = map(int, term1_ids), map(int, term2_ids)
+    for term1_id, term2_id in zip(term1_ids, term2_ids):
+        term1, term2 = dictionary[term1_id], dictionary[term2_id]
+        if term1 not in top_result_terms:
+            continue
+        if term2 not in top_result_terms:
+            continue
+        if term1_id >= term2_id:
+            continue
+        word_similarity = similarity_matrix[term1_id, term2_id]
+        word_similarity = float(word_similarity)
+        corpus['word_similarities'][term1_id][term2_id] = word_similarity
+
+    corpus['texts']: Dict[str, Text] = defaultdict(lambda: list())
+    corpus['texts_bow']: Dict[str, Dict[TermId, Weight]] = defaultdict(lambda: dict())
+    for query in top_results:
+        query_id = f'Topic A.{query.query_id}'
+        query_tokens = preprocessor.preprocess(query)
+        for token in query_tokens:
+            if token not in dictionary.token2id:
+                continue
+            assert token in top_result_terms
+            token_id = dictionary.token2id[token]
+            corpus['texts'][query_id].append(str(token_id))
+        query_vector = dictionary.doc2bow(query_tokens)
+        if query_term_weight_transformer is not None:
+            query_vector = query_term_weight_transformer[query_vector]
+        for term_id, term_weight in query_vector:
+            term = dictionary[term_id]
+            assert term in top_result_terms
+            corpus['texts_bow'][query_id][term_id] = term_weight
+    for answer in top_answers:
+        answer_id = answer.document_id
+        answer_tokens = preprocessor.preprocess(answer)
+        answer_vector = dictionary.doc2bow(answer_tokens)
+        if answer_term_weight_transformer is not None:
+            answer_vector = answer_term_weight_transformer[answer_vector]
+        for term_id, term_weight in answer_vector:
+            term = dictionary[term_id]
+            assert term in top_result_terms
+            corpus['texts'][answer_id].append(str(term_id))
+            corpus['texts_bow'][answer_id][term_id] = term_weight
+
+    with output_document_maps_file.open('wt') as f:
+        json.dump(corpus, f, sort_keys=True, indent=4)
 
 
 def evaluate_serp_with_map(input_run_file: Path, queries: Iterable[Query], answers: Iterable[Answer],
@@ -619,41 +799,72 @@ def main(msm_input_directory: Path, output_text_format: TextFormat,
          run_name: str, temporary_output_run_file: Path,
          output_run_file: Path, output_map_file: Path, output_ndcg_file: Path,
          temporary_output_parameter_file: Path, output_parameter_file: Path,
-         lock_file: Path) -> None:
+         lock_file: Path, output_document_maps_file: Path) -> None:
     year = Year.from_int(2022)
 
+    queries = None
+
+    def ensure_queries() -> None:
+        nonlocal queries
+        if queries is None:
+            queries = list(get_queries(year, output_text_format))
+
+    optimal_parameters = None
+
+    def ensure_optimal_parameters() -> None:
+        nonlocal optimal_parameters
+        if optimal_parameters is None:
+            optimal_parameters = get_optimal_parameters(
+                msm_input_directory, output_text_format, input_dictionary_file,
+                input_similarity_matrix_file, run_name,
+                temporary_output_run_file, temporary_output_parameter_file,
+                output_parameter_file, lock_file)
+
+            try:
+                temporary_output_run_file.unlink()
+            except FileNotFoundError:
+                pass
+
     if not output_run_file.exists():
-        optimal_parameters = get_optimal_parameters(
-            msm_input_directory, output_text_format, input_dictionary_file, input_similarity_matrix_file,
-            run_name, temporary_output_run_file, temporary_output_parameter_file, output_parameter_file,
-            lock_file)
-
-        try:
-            temporary_output_run_file.unlink()
-        except FileNotFoundError:
-            pass
-
+        ensure_optimal_parameters()
         system = produce_system(
             msm_input_directory, output_text_format, input_dictionary_file,
             input_similarity_matrix_file, optimal_parameters, lock_file)
 
-        queries = list(get_queries(year, output_text_format))
+        ensure_queries()
         produce_serp(system, queries, output_run_file, run_name)
 
+    questions, answers = None, None
+
+    def ensure_questions_and_answers() -> None:
+        nonlocal questions, answers
+        if any([questions is None, answers is None]):
+            questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
+            questions, answers = list(questions), list(answers)
+
     if not output_map_file.exists():
-        questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
-        questions, answers = list(questions), list(answers)
+        ensure_queries()
+        ensure_questions_and_answers()
         evaluate_serp_with_map(output_run_file, queries, answers, year, output_map_file)
 
     if not output_ndcg_file.exists():
         evaluate_serp_with_ndcg(output_run_file, year, output_ndcg_file)
+
+    if input_similarity_matrix_file is not None and not output_document_maps_file.exists():
+        ensure_queries()
+        ensure_questions_and_answers()
+        ensure_optimal_parameters()
+        produce_document_maps_corpus(output_run_file, queries, answers,
+                                     input_dictionary_file, input_similarity_matrix_file,
+                                     optimal_parameters, output_text_format, questions,
+                                     output_document_maps_file)
 
 
 if __name__ == '__main__':
     setrecursionlimit(15000)
     logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
-    assert len(argv) == 13
+    assert len(argv) == 14
 
     msm_input_directory = Path(argv[1])
     text_format = argv[2]
@@ -667,7 +878,9 @@ if __name__ == '__main__':
     temporary_output_parameter_file = Path(argv[10])
     output_parameter_file = Path(argv[11])
     lock_file = Path(argv[12])
+    output_document_maps_file = Path(argv[13])
 
     main(msm_input_directory, text_format, input_dictionary_file, input_similarity_matrix_file,
          run_name, temporary_output_run_file, output_run_file, output_map_file, output_ndcg_file,
-         temporary_output_parameter_file, output_parameter_file, lock_file)
+         temporary_output_parameter_file, output_parameter_file, lock_file,
+         output_document_maps_file)

@@ -82,6 +82,31 @@ def read_document_latex(paragraph: Element, min_math_length: Optional[int] = 20)
             yield math_text
 
 
+def read_document_text_tangentl(paragraph: Element, min_paragraph_length: Optional[int] = 300) -> Iterable['Line']:
+    for math in iterate_math_elements(paragraph):
+        maybe_line = maybe_read_formula_tangentl(math)
+        if maybe_line is not None:
+            line = maybe_line
+            math.text = f' [MATH] {line} [/MATH] '
+        else:
+            math.text = ' '
+    paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
+    if not paragraph_text.startswith(' [MATH]'):
+        paragraph_text = paragraph_text.lstrip()
+    paragraph_text = re.sub(r' \[/MATH\] \[MATH\] ', ' ', paragraph_text)
+    paragraph_text = re.sub(r' \[/MATH\]$', '', paragraph_text)
+    if min_paragraph_length is None or len(paragraph_text) >= min_paragraph_length:
+        yield paragraph_text
+
+
+def read_document_tangentl(paragraph: Element) -> Iterable['Line']:
+    for math in iterate_math_elements(paragraph):
+        maybe_line = maybe_read_formula_tangentl(math)
+        if maybe_line is not None:
+            line = maybe_line
+            yield line
+
+
 @contextmanager
 def timeout(duration: int):
     def timeout_handler(signum, frame):
@@ -94,28 +119,27 @@ def timeout(duration: int):
         signal.alarm(0)
 
 
-def read_document_tangentl(paragraph: Element, maximum_duration: int = 10) -> Iterable['Line']:
-    for math in iterate_math_elements(paragraph):
-        try:
-            with timeout(maximum_duration):
-                try:
-                    tree_root = MathSymbol.parse_from_mathml(math)
-                except AttributeError:
-                    continue
-                if tree_root is None:
-                    continue
-                pairs = tree_root.get_pairs('', 1, eol=False, symbol_pairs=True,
-                                            compound_symbols=True, terminal_symbols=True,
-                                            edge_pairs=False, unbounded=False,
-                                            repetitions=True, repDict=dict(), shortened=True)
-                node_list = [node for node in pairs if check_node(node)]
-                nodes_payloads = expand_nodes_with_location(node_list)
-                node_list = [format_node(node) for node in nodes_payloads]
-                node_list = [START_TAG] + node_list + [END_TAG]
-                line = ' '.join(node_list)
-                yield line
-        except (UnknownTagException, TimeoutError):
-            pass
+def maybe_read_formula_tangentl(math: Element, maximum_duration: int = 10) -> Optional['Line']:
+    try:
+        with timeout(maximum_duration):
+            try:
+                tree_root = MathSymbol.parse_from_mathml(math)
+            except AttributeError:
+                return None
+            if tree_root is None:
+                return None
+            pairs = tree_root.get_pairs('', 1, eol=False, symbol_pairs=True,
+                                        compound_symbols=True, terminal_symbols=True,
+                                        edge_pairs=False, unbounded=False,
+                                        repetitions=True, repDict=dict(), shortened=True)
+            node_list = [node for node in pairs if check_node(node)]
+            nodes_payloads = expand_nodes_with_location(node_list)
+            node_list = [format_node(node) for node in nodes_payloads]
+            node_list = [START_TAG] + node_list + [END_TAG]
+            line = ' '.join(node_list)
+            return line
+    except (UnknownTagException, TimeoutError):
+        return None
 
 
 def _read_document_helper(args: Tuple[Document, TextFormat]) -> Tuple[Document, List['Line']]:
@@ -141,7 +165,7 @@ def read_document(document: Document, text_format: TextFormat) -> Tuple[Document
 
 
 def get_input_text_format(output_text_format: TextFormat) -> TextFormat:
-    if output_text_format == 'tangentl':
+    if output_text_format == 'tangentl' or output_text_format == 'text+tangentl':
         input_text_format = 'xhtml+pmml'
     else:
         input_text_format = 'xhtml+latex'

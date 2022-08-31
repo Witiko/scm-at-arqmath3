@@ -328,3 +328,9 @@ Using our experimental results, we can answer our research questions as follows:
 | Joint text + LaTeX (no token similarities)                |     | 3 |     |   |     | 0.224 |
 
 : Results with optimized values of α (lexical similarity), β (text weight), and γ (title weight), where α₁ and γ₁ are parameters of the text model and  α₂ and γ₂ are parameters of the math model.
+
+# Results {#results-continue}
+
+* * *
+
+/visualization-of-extensions.tex

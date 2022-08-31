@@ -146,6 +146,11 @@
     },
   },
 }
+\markdownSetupSnippet{headingOne/empty}{
+  renderers = {
+    headingOne = {\vspace*{0.5cm}},
+  },
+}
 \markdownSetupSnippet{headingTwo/several}{
   renderers = {
     headingTwo = {%
@@ -165,10 +170,15 @@
   renderers = {
     contentBlock = {%
       \ifthenelse{\equal{#1}{tex}}{%
-        \vspace*{-0.45cm}
+        \vspace*{-0.7cm}
         \catcode`\%=14\relax
+        \catcode`\#=6\relax
+        \begin{center}
         \input #3\relax
+        \end{center}
         \catcode`\%=12\relax
+        \catcode`\#=12\relax
+        \vspace*{-0.1cm}
       }{%
         \par\medskip
         \rlap{\includegraphics{#2}}%

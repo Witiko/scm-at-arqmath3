@@ -12,6 +12,7 @@
 
 %% Markup
 \markdownSetupSnippet{horizontalRule/frameBreak}{snippet=witiko/beamer/MU/horizontalRule/frameBreak}
+\markdownSetupSnippet{headingOne/empty}{snippet=witiko/beamer/MU/headingOne/empty}
 \markdownSetupSnippet{headingTwo/several}{snippet=witiko/beamer/MU/headingTwo/several}
 
 %% Title page
@@ -84,6 +85,10 @@
 \begin{frame}[fragile]
   \footnotesize
   \markdownInput[slice=results]{presentation.md}
+\end{frame}
+
+\begin{frame}[fragile, plain]
+  \markdownInput[slice=results-continue, snippet=headingOne/empty]{presentation.md}
 \end{frame}
 
 \begin{frame}[plain]

@@ -166,10 +166,10 @@ def interpolate_similarity_matrices(first_dictionary: Dictionary, second_diction
         old_term1_ids, old_term2_ids = second_similarity_matrix.nonzero()
         old_term1_ids, old_term2_ids = map(int, old_term1_ids), map(int, old_term2_ids)
         for old_term1_id, old_term2_id in zip(old_term1_ids, old_term2_ids):
+            second_word_similarity = second_similarity_matrix[old_term1_id, old_term2_id]
+            second_word_similarity = float(second_word_similarity)
             term1_id = dictionary_transformer.old2new[old_term1_id]
             term2_id = dictionary_transformer.old2new[old_term2_id]
-            second_word_similarity = second_similarity_matrix[term1_id, term2_id]
-            second_word_similarity = float(second_word_similarity)
             similarity_matrix[term1_id, term2_id] = second_word_similarity
 
     similarity_matrix = SparseTermSimilarityMatrix(similarity_matrix)

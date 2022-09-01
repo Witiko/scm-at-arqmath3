@@ -95,3 +95,24 @@ jobs:
             paper/paper.pdf
             paper/slides.pdf
             paper/notes.pdf
+  github-pages:
+    name: Deploy document maps to GitHub Pages
+    runs-on: ubuntu-latest
+    container:
+      image: node:16.8
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install document maps
+        run: |
+          set -e
+          cd public
+          npm install
+          npm run build-prod
+          sed -i 's#<base href="/">#<base href="/scm-at-arqmath3/">#' dist/document-maps/index.html
+      - name: Deploy document maps to GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v3
+        with:
+          target_branch: gh-pages
+          build_dir: public/dist/document-maps
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

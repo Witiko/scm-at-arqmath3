@@ -95,7 +95,7 @@ URL: <http://ceur-ws.org/Vol-3180/paper-06.pdf> (visited on 08/12/2022).
  [13]: https://opus.nlpl.eu/EUconst.php
  [14]: http://allenai.org/data/numglue
  [15]: 08-produce-arqmath-runs.ipynb
- [16]: https://github.com/Witiko/scm-at-arqmath3/blob/d43cdced1bfd15754b4ca54291cf94b097b93068/scm_at_arqmath3/extract_decontextualized_word_embeddings.py#L104-L141
+ [16]: https://github.com/Witiko/scm-at-arqmath3/blob/5585ddadf0d911e24c091bfe4c74511dbc24fdec/system/extract_decontextualized_word_embeddings.py#L104-L141
  [17]: https://huggingface.co/witiko/mathberta
  [18]: https://github.com/MIR-MU/WebMIaS#citing-webmias
  [19]: https://huggingface.co/roberta-base#roberta-base-model

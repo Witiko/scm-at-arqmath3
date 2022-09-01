@@ -271,13 +271,13 @@ class Preprocessor:
 
         texts = []
         if isinstance(document, Answer):
-            texts += [self.preprocess_part(document.body)] * self.BODY_WEIGHT
             if document in self.answer_to_question:
                 question = self.answer_to_question[document]
                 texts += [self.preprocess_part(question.title)] * gamma
-        else:
             texts += [self.preprocess_part(document.body)] * self.BODY_WEIGHT
+        else:
             texts += [self.preprocess_part(document.title)] * gamma
+            texts += [self.preprocess_part(document.body)] * self.BODY_WEIGHT
         text = list(chain(*texts))
         return text
 

@@ -329,8 +329,45 @@ Using our experimental results, we can answer our research questions as follows:
 
 : Results with optimized values of α (lexical similarity), β (text weight), and γ (title weight), where α₁ and γ₁ are parameters of the text model and  α₂ and γ₂ are parameters of the math model.
 
-# Results {#results-continue}
+# Results {#results-continuation}
+
+Here is another look at the results, which emphasizes the relationships
+between our models and highlights the impact of different extensions on the
+effectiveness. We can clearly see how far ahead the interpolated Text +
+Tangent-L model is compared to the other models. We can also see that fuzzy
+matching is always benefitial compared to sparse retrieval baselines and
+that positional `word2vec` always improves effectiveness of the interpolated
+models.
 
 * * *
 
 /visualization-of-extensions.tex
+
+# Results {#artefacts-and-code-pearls}
+
+Besides reporting our experimental results, we have also released an online
+demo of our system, so that you can try it out in your web browser. Futhermore,
+we have released our MathBERTa model at the Hugging Face Model hub, so that you
+can start using it in your own software in a matter of seconds. Finally, we
+have released the full source code of our system at GitHub, so that you can
+study it and reuse parts of it in your own systems. One code pearl, which we
+are quite proud of, is the GPU-accelerated algorithm for word embedding
+decontextualization, which can be used to produce global embeddings from
+Transformer models in all sorts of useful applications.
+
+* * *
+
+## Artefacts
+
+- Online demo of our system is available at <https://witiko.github.io/scm-at-arqmath3>.
+- Fine-tuned RoBERTa model is available at <https://huggingface.co/witiko/mathberta>.
+- Our system has been open-sourced at <https://github.com/witiko/scm-at-arqmath3>.
+
+## Code Pearls
+
+- GPU-accelerated word embedding decontextualization is available in file
+  [`system/extract_decontextualized_word_embeddings.py`][1].
+
+ [1]: https://github.com/Witiko/scm-at-arqmath3/blob/5585ddadf0d911e24c091bfe4c74511dbc24fdec/system/extract_decontextualized_word_embeddings.py#L104-L141
+
+/formula1.jpg

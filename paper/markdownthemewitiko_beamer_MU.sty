@@ -129,10 +129,16 @@
 % Listings
 \RequirePackage{minted}
 
+% Headings
+\markdownSetupSnippet{headingOne/empty}{
+  renderers = {
+    headingOne = {\vspace*{0.5cm}},
+  },
+}
+
 \mode
 <presentation>
 
-% Headings
 \markdownSetup{
   renderers = {
     headingOne = {%
@@ -144,11 +150,6 @@
       \fi
       \markdownSetup{snippet=witiko/beamer/MU/headingTwo/several}
     },
-  },
-}
-\markdownSetupSnippet{headingOne/empty}{
-  renderers = {
-    headingOne = {\vspace*{0.5cm}},
   },
 }
 \markdownSetupSnippet{headingTwo/several}{

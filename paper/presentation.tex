@@ -3,6 +3,7 @@
 
 %% Markup
 \markdownSetupSnippet{horizontalRule/singleFrame}{snippet=witiko/beamer/MU/horizontalRule/singleFrame}
+\markdownSetupSnippet{headingOne/empty}{snippet=witiko/beamer/MU/headingOne/empty}
 
 %% Title page
 \maketitle
@@ -48,6 +49,10 @@
 
 % Results
 \markdownInput[slice=results]{presentation.md}
+\markdownInput[slice=results-continuation, snippet=headingOne/empty]{presentation.md}
+
+% Artefacts and Code Pearls
+\markdownInput[slice=artefacts-and-code-pearls, snippet=headingOne/empty]{presentation.md}
 
 \printbibliography
 
@@ -88,8 +93,16 @@
 \end{frame}
 
 \begin{frame}[fragile, plain]
-  \markdownInput[slice=results-continue, snippet=headingOne/empty]{presentation.md}
+  \markdownInput[slice=results-continuation, snippet=headingOne/empty]{presentation.md}
 \end{frame}
+
+\subsection{Artefacts and Code Pearls}
+\begingroup
+\setbeamertemplate{footline}{}
+\begin{frame}[fragile]{Artefacts and Code Pearls}
+  \markdownInput[slice=artefacts-and-code-pearls]{presentation.md}
+\end{frame}
+\endgroup
 
 \begin{frame}[plain]
 \vfill\vfill

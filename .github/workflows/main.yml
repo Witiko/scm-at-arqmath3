@@ -108,9 +108,10 @@ jobs:
       - name: Patch document maps
         run: |
           set -e
-          cd public
-          sed -i 's#<base href="/">#<base href="/scm-at-arqmath3/">#' src/index.html
-      - name: Install document maps
+          cp document-maps-corpus.json public/src/assets/example.json
+          sed -i 's#<base href="/">#<base href="/scm-at-arqmath3/">#' public/src/index.html
+          sed -i 's#) { }#) { this.loadExample(); }#' public/src/app/init/init.component.ts
+      - name: Build document maps
         run: |
           set -e
           cd public

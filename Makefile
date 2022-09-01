@@ -350,3 +350,7 @@ submission/SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P.
 
 submission/SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P-%.tsv: dictionary-text similarity-matrix-text-positional-% dictionary-tangentl similarity-matrix-tangentl-positional-%
 	$(call produce_interpolated_run,text,$<,$(word 2,$^),tangentl,$(word 3,$^),$(word 4,$^),0,$@)
+
+
+document-maps-corpus.json: submission/SCM-task1-interpolated_positional_word2vec_text+tangentl-both-auto-P.tsv
+	cp $(basename $<).document_maps $@

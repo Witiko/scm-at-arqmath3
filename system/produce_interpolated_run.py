@@ -207,7 +207,7 @@ def produce_document_maps_corpus(input_run_file: Path,
         bm25_model, first_dictionary, second_dictionary, beta)
 
     text_format = get_interpolated_text_format(first_text_format, second_text_format)
-    preprocessor = get_unparametrized_preprocessor(text_format, questions, None)
+    preprocessor = get_unparametrized_preprocessor(text_format, questions)
 
     _produce_document_maps_corpus(output_run_file, queries, answers,
                                   dictionary, similarity_matrix, preprocessor,

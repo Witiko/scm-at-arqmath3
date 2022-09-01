@@ -289,10 +289,9 @@ def get_preprocessor(text_format: TextFormat, questions: Iterable[Question],
     return preprocessor
 
 
-def get_unparametrized_preprocessor(text_format: TextFormat, questions: Iterable[Question],
-                                    maybe_parameters: Optional[Parameters]) -> Preprocessor:
+def get_unparametrized_preprocessor(text_format: TextFormat, questions: Iterable[Question]) -> Preprocessor:
     tokenizer = get_tokenizer(text_format)
-    preprocessor = Preprocessor(text_format, tokenizer, questions, maybe_parameters)
+    preprocessor = Preprocessor(text_format, tokenizer, questions, None)
     return preprocessor
 
 
@@ -523,7 +522,7 @@ def produce_document_maps_corpus(input_run_file: Path,
     similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file, parameters)
     assert similarity_matrix is not None
 
-    preprocessor = get_unparametrized_preprocessor(text_format, questions, None)
+    preprocessor = get_unparametrized_preprocessor(text_format, questions)
 
     bm25_model = get_bm25_model(dictionary)
 

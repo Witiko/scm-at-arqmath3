@@ -40,6 +40,7 @@ The repository also contains [the paper][29] that describes our system.
 
 ## Artefacts
 
+- [Online demo of the system][30] using [the Document Maps visualization tool][31].
 - [The `witiko/mathberta` model][7] at [the 🤗 Model Hub][17].
 
 ## Future work
@@ -108,3 +109,5 @@ URL: <http://ceur-ws.org/Vol-3180/paper-06.pdf> (visited on 08/12/2022).
  [27]: https://huggingface.co/witiko/mathberta#intrinsic-evaluation-results
  [28]: 09-optimize-term-similarity-matrices.ipynb
  [29]: http://ceur-ws.org/Vol-3180/paper-06.pdf
+ [30]: https://witiko.github.io/scm-at-arqmath3/
+ [31]: https://github.com/MIR-MU/document-maps-visualization

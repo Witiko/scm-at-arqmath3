@@ -182,11 +182,14 @@ class TextTangentLTokenizer(Tokenizer):
         first_text_span, *tangentl_span_heads = re.split(r'\s*\[MATH\]\s*', line)
         tokens = self.text_tokenizer.tokenize(first_text_span)
         for tangentl_span_head in tangentl_span_heads:
-            tangentl_span, text_span = re.split(r'\s*\[/MATH\]\s*', tangentl_span_head)
+            tangentl_span, *text_spans = re.split(r'\s*\[/MATH\]\s*', tangentl_span_head)
             tangentl_tokens = self.tangentl_tokenizer.tokenize(tangentl_span)
-            text_tokens = self.text_tokenizer.tokenize(text_span)
             tokens.extend(tangentl_tokens)
-            tokens.extend(text_tokens)
+            assert len(text_spans) <= 1
+            if len(text_spans) == 1:
+                text_span, = text_spans
+                text_tokens = self.text_tokenizer.tokenize(text_span)
+                tokens.extend(text_tokens)
         return tokens
 
 

@@ -85,11 +85,15 @@ def read_document_latex(paragraph: Element, min_math_length: Optional[int] = 20)
 def read_document_text_tangentl(paragraph: Element, min_paragraph_length: Optional[int] = 300) -> Iterable['Line']:
     for math in iterate_math_elements(paragraph):
         maybe_line = maybe_read_formula_tangentl(math)
+        replacement = Element('span')
         if maybe_line is not None:
             line = maybe_line
-            math.text = f' [MATH] {line} [/MATH] '
+            replacement.text = f' [MATH] {line} [/MATH] '
         else:
-            math.text = ' '
+            replacement.text = ' '
+        if math.tail is not None:
+            replacement.text += math.tail
+        math.getparent().replace(math, replacement)
     paragraph_text = re.sub(r'\s+', ' ', paragraph.text_content().rstrip())
     if not paragraph_text.startswith(' [MATH]'):
         paragraph_text = paragraph_text.lstrip()

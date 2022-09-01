@@ -105,13 +105,17 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Patch document maps
+        run: |
+          set -e
+          cd public
+          sed -i 's#<base href="/">#<base href="/scm-at-arqmath3/">#' src/index.html
       - name: Install document maps
         run: |
           set -e
           cd public
           npm install
           npm run build-prod
-          sed -i 's#<base href="/">#<base href="/scm-at-arqmath3/">#' dist/document-maps/index.html
       - name: Deploy document maps to GitHub Pages
         uses: crazy-max/ghaction-github-pages@v3
         with:

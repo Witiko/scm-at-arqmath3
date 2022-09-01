@@ -228,7 +228,7 @@ class Preprocessor:
     BODY_WEIGHT = 1
 
     def __init__(self, text_format: TextFormat, tokenizer: Tokenizer, questions: Iterable[Question],
-                 maybe_parameters: Optional[Parameters]):
+                 maybe_gamma: Optional[Gamma]):
         self.text_format = text_format
         self.tokenizer = tokenizer
         self.answer_to_question = {
@@ -236,10 +236,10 @@ class Preprocessor:
             for question in questions
             for answer in question.answers
         }
-        if maybe_parameters is None:
+        if maybe_gamma is None:
             self.gamma = None
         else:
-            _, self.gamma = maybe_parameters
+            self.gamma = maybe_gamma
 
     def preprocess_part(self, document_part: str) -> Text:
         tree = fromstring(document_part)
@@ -283,9 +283,9 @@ class Preprocessor:
 
 
 def get_preprocessor(text_format: TextFormat, questions: Iterable[Question],
-                     parameters: Parameters) -> Preprocessor:
+                     gamma: Gamma) -> Preprocessor:
     tokenizer = get_tokenizer(text_format)
-    preprocessor = Preprocessor(text_format, tokenizer, questions, parameters)
+    preprocessor = Preprocessor(text_format, tokenizer, questions, gamma)
     return preprocessor
 
 
@@ -427,7 +427,8 @@ def get_system(text_format: TextFormat, questions: Iterable[Question], answers: 
                similarity_matrix: Optional[SparseTermSimilarityMatrix],
                lock_file: Path) -> BulkSearchSystem:
     with FileLock(str(lock_file)):
-        preprocessor = get_preprocessor(text_format, questions, parameters)
+        _, gamma = parameters
+        preprocessor = get_preprocessor(text_format, questions, gamma)
         if similarity_matrix is None:
             system = LuceneBM25System(dictionary, preprocessor, answers)
         else:
@@ -522,12 +523,16 @@ def produce_document_maps_corpus(input_run_file: Path,
     similarity_matrix = maybe_get_term_similarity_matrix(input_similarity_matrix_file, parameters)
     assert similarity_matrix is not None
 
-    preprocessor = get_unparametrized_preprocessor(text_format, questions)
+    _, gamma = parameters
+
+    unparametrized_preprocessor = get_unparametrized_preprocessor(text_format, questions)
+    preprocessor = get_preprocessor(text_format, questions, gamma)
 
     bm25_model = get_bm25_model(dictionary)
 
     _produce_document_maps_corpus(output_run_file, queries, answers,
-                                  dictionary, similarity_matrix, preprocessor,
+                                  dictionary, similarity_matrix,
+                                  unparametrized_preprocessor, preprocessor,
                                   output_document_maps_file, None, bm25_model)
 
 
@@ -551,6 +556,7 @@ def _produce_document_maps_corpus(input_run_file: Path,
                                   answers: Iterable[Answer],
                                   dictionary: Dictionary,
                                   similarity_matrix: SparseTermSimilarityMatrix,
+                                  unparametrized_preprocessor: Preprocessor,
                                   preprocessor: Preprocessor,
                                   output_document_maps_file: Path,
                                   query_term_weight_transformer: Optional[TermWeightTransformation],
@@ -574,10 +580,10 @@ def _produce_document_maps_corpus(input_run_file: Path,
     top_result_terms: Set[Token] = set()
     top_answers: Set[Answer] = set()
     for query, answers in top_results.items():
-        for token in preprocessor.preprocess(query):
+        for token in unparametrized_preprocessor.preprocess(query):
             top_result_terms.add(token)
         for answer in answers:
-            for token in preprocessor.preprocess(answer):
+            for token in unparametrized_preprocessor.preprocess(answer):
                 top_result_terms.add(token)
             top_answers.add(answer)
 
@@ -611,33 +617,31 @@ def _produce_document_maps_corpus(input_run_file: Path,
 
     corpus['texts']: Dict[str, Text] = defaultdict(lambda: list())
     corpus['texts_bow']: Dict[str, Dict[TermId, Weight]] = defaultdict(lambda: dict())
+
+    top_documents = list()
     for query in top_results:
         query_id = f'Topic A.{query.query_id}'
-        query_tokens = preprocessor.preprocess(query)
-        for token in query_tokens:
+        top_documents.append((query_id, query, query_term_weight_transformer))
+    for answer in top_answers:
+        answer_id = answer.document_id
+        top_documents.append((answer_id, answer, answer_term_weight_transformer))
+
+    for document_id, document, document_term_weight_transformer in top_documents:
+        document_tokens = unparametrized_preprocessor.preprocess(document)
+        for token in document_tokens:
             if token not in dictionary.token2id:
                 continue
             assert token in top_result_terms
             token_id = dictionary.token2id[token]
-            corpus['texts'][query_id].append(str(token_id))
-        query_vector = dictionary.doc2bow(query_tokens)
-        if query_term_weight_transformer is not None:
-            query_vector = query_term_weight_transformer[query_vector]
-        for term_id, term_weight in query_vector:
+            corpus['texts'][document_id].append(str(token_id))
+        document_tokens = preprocessor.preprocess(document)
+        document_vector = dictionary.doc2bow(document_tokens)
+        if document_term_weight_transformer is not None:
+            document_vector = document_term_weight_transformer[document_vector]
+        for term_id, term_weight in document_vector:
             term = dictionary[term_id]
             assert term in top_result_terms
-            corpus['texts_bow'][query_id][term_id] = term_weight
-    for answer in top_answers:
-        answer_id = answer.document_id
-        answer_tokens = preprocessor.preprocess(answer)
-        answer_vector = dictionary.doc2bow(answer_tokens)
-        if answer_term_weight_transformer is not None:
-            answer_vector = answer_term_weight_transformer[answer_vector]
-        for term_id, term_weight in answer_vector:
-            term = dictionary[term_id]
-            assert term in top_result_terms
-            corpus['texts'][answer_id].append(str(term_id))
-            corpus['texts_bow'][answer_id][term_id] = term_weight
+            corpus['texts_bow'][document_id][term_id] = term_weight
 
     with output_document_maps_file.open('wt') as f:
         json.dump(corpus, f, sort_keys=True, indent=4)

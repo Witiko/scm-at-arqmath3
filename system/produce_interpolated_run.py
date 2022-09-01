@@ -29,6 +29,7 @@ from .produce_joint_run import (
     get_queries,
     get_questions_and_answers,
     get_ndcg,
+    get_preprocessor,
     get_unparametrized_preprocessor,
     JointBM25System,
     maybe_get_term_similarity_matrix,
@@ -134,8 +135,8 @@ class InterpolatedBM25System(BulkSearchSystem):
             yield (query, answers)
 
 
-def get_interpolated_text_format(first_text_format: TextFormat,
-                                 second_text_format: TextFormat) -> TextFormat:
+def interpolate_text_formats(first_text_format: TextFormat,
+                             second_text_format: TextFormat) -> TextFormat:
     assert first_text_format == 'text'
     assert second_text_format in ('latex', 'tangentl')
     interpolated_text_format = f'{first_text_format}+{second_text_format}'
@@ -200,17 +201,23 @@ def produce_document_maps_corpus(input_run_file: Path,
     dictionary, similarity_matrix = interpolate_similarity_matrices(
         first_dictionary, second_dictionary, maybe_first_similarity_matrix, maybe_second_similarity_matrix)
 
+    _, first_gamma = first_parameters
+    _, second_gamma = second_parameters
+    gamma = max(first_gamma, second_gamma)
+
     bm25_model = get_bm25_model(dictionary)
     query_term_weight_transformer = InterpolatedTermWeightTransformation(
         None, first_dictionary, second_dictionary, beta)
     answer_term_weight_transformer = InterpolatedTermWeightTransformation(
         bm25_model, first_dictionary, second_dictionary, beta)
 
-    text_format = get_interpolated_text_format(first_text_format, second_text_format)
-    preprocessor = get_unparametrized_preprocessor(text_format, questions)
+    text_format = interpolate_text_formats(first_text_format, second_text_format)
+    unparametrized_preprocessor = get_unparametrized_preprocessor(text_format, questions)
+    preprocessor = get_preprocessor(text_format, questions, gamma)
 
     _produce_document_maps_corpus(output_run_file, queries, answers,
-                                  dictionary, similarity_matrix, preprocessor,
+                                  dictionary, similarity_matrix,
+                                  unparametrized_preprocessor, preprocessor,
                                   output_document_maps_file,
                                   query_term_weight_transformer, answer_term_weight_transformer)
 
@@ -374,7 +381,7 @@ def main(msm_input_directory: Path,
     if (first_input_similarity_matrix_file is not None or second_input_similarity_matrix_file is not None) \
             and not output_document_maps_file.exists():
         ensure_optimal_parameters()
-        output_text_format = get_interpolated_text_format(first_output_text_format, second_output_text_format)
+        output_text_format = interpolate_text_formats(first_output_text_format, second_output_text_format)
         queries = list(get_queries(year, output_text_format))
         questions, answers = get_questions_and_answers(msm_input_directory, output_text_format)
         questions, answers = list(questions), list(answers)

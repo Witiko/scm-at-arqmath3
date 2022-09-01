@@ -95,6 +95,18 @@ jobs:
             paper/paper.pdf
             paper/slides.pdf
             paper/notes.pdf
+      - name: Create a prerelease
+        if: github.ref == 'refs/heads/main'
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          title: The latest version
+          automatic_release_tag: latest
+          prerelease: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            paper/paper.pdf
+            paper/slides.pdf
+            paper/notes.pdf
   github-pages:
     name: Deploy document maps to GitHub Pages
     runs-on: ubuntu-latest

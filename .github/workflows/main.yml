@@ -109,6 +109,7 @@ jobs:
         run: |
           set -e
           cp document-maps-corpus.json public/src/assets/example.json
+          sed -i 's#clumpingModifier: 5,#clumpingModifier: 1,#' public/src/app/home/home.component.ts
           sed -i 's#<base href="/">#<base href="/scm-at-arqmath3/">#' public/src/index.html
           sed -i 's#) { }#) { this.loadExample(); }#' public/src/app/init/init.component.ts
       - name: Build document maps

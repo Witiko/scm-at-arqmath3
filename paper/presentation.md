@@ -25,7 +25,7 @@ compared to sparse retrieval baselines. Furthermore, the soft vector space
 model makes it possible to use different representations of math, different
 notions of similarity between key words and symbols, and different ways to
 combine text and math. However, neither of these possibilities has been
-previously explored.
+previously explored. ↷
 
 In our work, we aim to answer the following four research questions:
 
@@ -46,6 +46,8 @@ research questions and summarizing our contributions.
 - Soft vector space of @sidorov2014soft can use both exact and fuzzy keyword matching.
 
 /soft-vsm.pdf
+
+↷
 
 - We aim to answer the following four research questions:
     1. Does the soft vector space model outperform sparse information retrieval?
@@ -119,7 +121,7 @@ In our system, we used several tokenizers:
   formula representation and then we split the remainder into tokens
   using pairs of hash signs separated by one or more spaces as the delimiter.
 - To tokenize text + LaTeX, we extended the tokenizer of `roberta-base` with
-  the tokens recognized by our LaTeX tokenizer.
+  the tokens recognized by our LaTeX tokenizer. ↷
 
 * * *
 
@@ -138,7 +140,7 @@ Tangent-L
 Text + LaTeX
 
 :   BPE tokenizer of `roberta-base` extended with `[MATH]` and `[/MATH]`
-    special tags and with tokens recognized by our LaTeX tokenizer
+    special tags and with tokens recognized by our LaTeX tokenizer ↷
 
 ## Language Modeling {#language-modeling}
 
@@ -206,7 +208,7 @@ Then, we produced two types of token similarity matrices:
 Finally, to produce token similarity matrices that captured both lexical and
 semantic similarity between tokens, we combined every semantic similarity
 matrix with a corresponding lexical similarity matrix. In our experiments, we
-only used the combined token similarity matrices.
+only used the combined token similarity matrices. ↷
 
 * * *
 
@@ -233,6 +235,8 @@ only used the combined token similarity matrices.
 - Finally, we combined lexical and semantic similarity matrices:
 
 /combine_similarity_matrices.tex
+
+↷
 
 ## Soft Vector Space Modeling {#soft-vector-space-modeling}
 

@@ -146,7 +146,7 @@ Text + LaTeX
 
 In our experiments, we also used two different types of language models:
 
-1.  We trained shallow `word2vec` language models [@mikolov2013distributed] on
+1. We trained shallow `word2vec` language models [@mikolov2013distributed] on
     all our datasets.
 
     A technique known as *constrained positional weighting* has been shown to
@@ -156,7 +156,7 @@ In our experiments, we also used two different types of language models:
     `word2vec` models both with and without constrained positional weighting for
     every dataset.
 
-2.  We also trained deep transformer language models.
+2. We also trained deep transformer language models.
 
     To model text, we used a pre-trained `roberta-base` model [@liu2019roberta].
 

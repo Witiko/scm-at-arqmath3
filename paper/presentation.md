@@ -169,11 +169,17 @@ In our experiments, we also used two different types of language models:
 
 Shallow log-bilinear models
 
-:   Word2vec models [@mikolov2013distributed] trained on all our datasets
+:
+
+- Word2vec models [@mikolov2013distributed] for all formats
+- Constrained positional word2vec models [@novotny2022when] for all formats
 
 Deep transformer models
 
-:   RoBERTa model [@liu2019roberta] fine-tuned on our text + LaTeX dataset
+:
+
+- Pre-trained `roberta-base` model for text
+- Fine-tuned MathBERTa model for text + LaTeX
 
 ## Token Similarity {#token-similarity}
 

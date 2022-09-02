@@ -366,14 +366,18 @@ the baseline text model and the soft vector space model for text.
 # Results {#artefacts-and-code-pearls}
 
 Besides reporting our experimental results, we have also released an online
-demo of our system, so that you can try it out in your web browser. Futhermore,
-we have released our MathBERTa model at the Hugging Face Model hub, so that you
-can start using it in your own software in a matter of seconds. Finally, we
-have released the full source code of our system at GitHub, so that you can
-study it and reuse parts of it in your own systems. One code pearl, which we
-are quite proud of, is the GPU-accelerated algorithm for word embedding
-decontextualization, which can be used to produce global embeddings from deep
-transformer models in all sorts of useful applications.
+demo of our system. In the demo, you can browse a sample of Task 1 topics
+and the top results for these topics. You can also select two documents and
+compare them to see which exact and fuzzy keyword matches contributed to their
+similarity scores.
+
+Futhermore, we have released our MathBERTa model at the Hugging Face Model hub,
+so that you can start using it in your own software in a matter of seconds.
+Finally, we have released the full source code of our system at GitHub, so that
+you can study it and reuse parts of it in your own systems. One code pearl,
+which we are quite proud of, is the GPU-accelerated algorithm for word
+embedding decontextualization, which can be used to produce global embeddings
+from deep transformer models in all sorts of useful applications.
 
 * * *
 

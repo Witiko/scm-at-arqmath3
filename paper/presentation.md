@@ -173,8 +173,8 @@ Shallow log-bilinear models
 
 :
 
-- Word2vec models [@mikolov2013distributed] for all formats
-- Constrained positional word2vec models [@novotny2022when] for all formats
+- Word2vec models [@mikolov2013distributed] with and without positional
+  weighting [@novotny2022when] for all formats
 
 Deep transformer models
 
@@ -346,10 +346,18 @@ Using our experimental results, we can answer our research questions as follows:
 Here is another look at the results, which emphasizes the relationships
 between our models and highlights the impact of different extensions on the
 effectiveness. We can clearly see how far ahead the interpolated Text +
-Tangent-L model is compared to the other models. We can also see that fuzzy
-matching is always benefitial compared to sparse retrieval baselines and
-that positional `word2vec` always improves effectiveness of the interpolated
-models.
+Tangent-L model is compared to the other models. This is likely because
+it's the only representation that exposes the structure of math formulae.
+
+We can also see that fuzzy matching is always benefitial compared to sparse
+retrieval baselines on the left and that positional `word2vec` always improves
+effectiveness of the interpolated models, albeit slightly.
+
+In the bottom part of the figure, we can see that indexing LaTeX tokens in
+addition to text tokens has an adverse effect on the effectiveness of the
+baseline text. However, we can also see that the soft vector space model can
+take advantage of the LaTeX tokens and achieves better effectiveness than both
+the baseline text model and the soft vector space model for text.
 
 * * *
 

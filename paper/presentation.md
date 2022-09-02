@@ -66,7 +66,7 @@ From the corpora, we produced a number of datasets in different formats that we
 used to train our tokenizers and language models:
 
 - The *Text + LaTeX* datasets contain text and math formulae, where the
-  formulae are in LaTeX format and surrounded by special tags.
+  formulae are in the LaTeX format and surrounded by special tags.
 - By contrast, the *Text* datasets only contain text with math formulae removed
   and the *LaTeX* datasets only contain formulae in the LaTeX format.
 - Finally, the *Tangent-L* datasets contain formulae in the format used by the
@@ -116,8 +116,8 @@ In our system, we used several tokenizers:
 - To tokenize LaTeX, we trained a byte pair encoding tokenizer with a
   vocabulary of size 50,000 on our LaTeX dataset.
 - To tokenize Tangent-L, we stripped leading and trailing hash signs from a
-  formula representation and then split we split the remainder into tokens
-  using pairs of hash signs separated by one or more space as the delimiter.
+  formula representation and then we split the remainder into tokens
+  using pairs of hash signs separated by one or more spaces as the delimiter.
 - To tokenize text + LaTeX, we extended the tokenizer of `roberta-base` with
   the tokens recognized by our LaTeX tokenizer.
 
@@ -144,19 +144,19 @@ Text + LaTeX
 
 In our experiments, we also used two different types of language models:
 
-1. We trained shallow `word2vec` language models [@mikolov2013distributed] on
-   our text + LaTeX, text, LaTeX, and Tangent-L datasets.
+1.  We trained shallow `word2vec` language models [@mikolov2013distributed] on
+    all our datasets.
 
-   A technique known as *constrained positional weighting* has been shown to
-   improve the performance of `word2vec` models on analogical reasoning and
-   causal language modeling [@novotny2022when].  To evaluate the impact of
-   constrained positional weighting on math information retrieval, we trained
-   `word2vec` models both with and without constrained positional weighting for
-   every dataset.
+    A technique known as *constrained positional weighting* has been shown to
+    improve the performance of `word2vec` models on analogical reasoning and
+    causal language modeling [@novotny2022when].  To evaluate the impact of
+    constrained positional weighting on math information retrieval, we trained
+    `word2vec` models both with and without constrained positional weighting for
+    every dataset.
 
-Deep transformer models
+2.  We also trained deep transformer language models.
 
-:   To model text, we used a pre-trained `roberta-base` model [@liu2019roberta].
+    To model text, we used a pre-trained `roberta-base` model [@liu2019roberta].
 
     To model text and math in the LaTeX format, we replaced the tokenizer of
     `roberta-base` with our text + LaTeX tokenizer, we randomly initialized
@@ -181,11 +181,13 @@ To determine the similarity of text and math tokens, we first extracted their
 global representations from our language models:
 
 - For our `word2vec` models, we extracted token vectors from the input and
-  output matrices and averaged them to produce global token embeddings.
+  output matrices of the models. Then, we averaged the input and output vectors
+  to produce global token embeddings.
 
-- For our deep transformer models, we decontextualized their contextual token
-  embeddings [@stefanik2021regemt, Section 3.2] on the sentences from our
-  text + LaTeX dataset in order to obtain global token embeddings.
+- For our deep transformer models, we *decontextualized* their contextual token
+  embeddings [@stefanik2021regemt, Section 3.2] in order to obtain global token
+  embeddings. We ded this by taking the average of all contextual embeddings
+  for a token in the sentences from our text + LaTeX dataset.
 
 Then, we produced two types of token similarity matrices:
 
@@ -247,11 +249,11 @@ Interpolated models
     The final score of an answer is determined by linear interpolation of the
     scores assigned by the two soft vector space models:
 
-For our representation of questions in the soft vector space model, we used the
-tokens in the title and in the body text. To represent an answer, we used the
+To represent a question in the soft vector space model, we used the tokens in
+the title and body text of the question. To represent an answer, we used the
 tokens in the title of its parent question and in the body text of the answer.
-To give greater weight to tokens in the title, we repeated them γ times, which
-proved useful in ARQMath-2 [@novotny2021ensembling, Section 3.2].
+To give greater weight to tokens in the title, we repeated them several times,
+which proved useful in ARQMath-2 [@novotny2021ensembling, Section 3.2].
 
 * * *
 
@@ -352,8 +354,8 @@ can start using it in your own software in a matter of seconds. Finally, we
 have released the full source code of our system at GitHub, so that you can
 study it and reuse parts of it in your own systems. One code pearl, which we
 are quite proud of, is the GPU-accelerated algorithm for word embedding
-decontextualization, which can be used to produce global embeddings from
-Transformer models in all sorts of useful applications.
+decontextualization, which can be used to produce global embeddings from deep
+transformer models in all sorts of useful applications.
 
 * * *
 

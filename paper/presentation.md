@@ -161,11 +161,8 @@ In our experiments, we also used two different types of language models:
     To model text, we used a pre-trained `roberta-base` model [@liu2019roberta].
 
     To model text and math in the LaTeX format, we replaced the tokenizer of
-    `roberta-base` with our text + LaTeX tokenizer, we randomly initialized
-    weights for the new tokens, and we fine-tuned our model on our text + LaTeX
-    dataset for one epoch using the autoregressive masked language modeling
-    objective. We called our model MathBERTa and we released it to the Hugging
-    Face Model Hub.
+    `roberta-base` with our text + LaTeX tokenizer and we randomly initialized
+    weights for the new tokens.
 
 * * *
 
@@ -182,6 +179,26 @@ Deep transformer models
 
 - Pre-trained `roberta-base` model for text
 - Fine-tuned MathBERTa model for text + LaTeX
+
+## Fine-tuned MathBERTa model for text + LaTeX {#learning-curves}
+
+Then, we fine-tuned our model on our text + LaTeX dataset for one epoch using
+the autoregressive masked language modeling objective. The figure shows the
+learning curves of our model on our in-domain text + LaTeX dataset and also
+on the out-of-domain dataset with th European consitution. The ongoing descent
+of in-domain validation loss indicates that the performance of the model
+improved over time, but has not converged and would benefit from further
+training. The ongoing descent of out-of-domain validation loss shows that
+improvements on scientific texts do not come at the price of other
+non-scientific domains.
+
+We called our model MathBERTa and we released it to the Hugging Face Model Hub.
+Besides our work, MathBERTa has already been used in the systems of the MIRMU
+team and for the automatic evaluation of Task 3.
+
+* * *
+
+ /learning-curves.pdf
 
 ## Token Similarity {#token-similarity}
 

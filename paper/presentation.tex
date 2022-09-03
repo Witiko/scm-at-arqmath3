@@ -4,6 +4,7 @@
 %% Markup
 \markdownSetupSnippet{horizontalRule/singleFrame}{snippet=witiko/beamer/MU/horizontalRule/singleFrame}
 \markdownSetupSnippet{headingOne/empty}{snippet=witiko/beamer/MU/headingOne/empty}
+\markdownSetupSnippet{headingTwo/empty}{snippet=witiko/beamer/MU/headingTwo/empty}
 
 %% Title page
 \maketitle
@@ -14,6 +15,7 @@
 %% Markup
 \markdownSetupSnippet{horizontalRule/frameBreak}{snippet=witiko/beamer/MU/horizontalRule/frameBreak}
 \markdownSetupSnippet{headingOne/empty}{snippet=witiko/beamer/MU/headingOne/empty}
+\markdownSetupSnippet{headingTwo/empty}{snippet=witiko/beamer/MU/headingTwo/empty}
 \markdownSetupSnippet{headingTwo/several}{snippet=witiko/beamer/MU/headingTwo/several}
 
 %% Title page
@@ -44,6 +46,7 @@
 \markdownInput[slice=datasets]{presentation.md}
 \markdownInput[slice=tokenization, snippet=horizontalRule/singleFrame]{presentation.md}
 \markdownInput[slice=language-modeling]{presentation.md}
+\markdownInput[slice=learning-curves, snippet=headingTwo/empty]{presentation.md}
 \markdownInput[slice=token-similarity, snippet=horizontalRule/singleFrame]{presentation.md}
 \markdownInput[slice=soft-vector-space-modeling]{presentation.md}
 
@@ -75,6 +78,13 @@
   \markdownInput[slice=tokenization]{presentation.md}
   \markdownInput[slice=language-modeling, snippet=headingTwo/several]{presentation.md}
 \end{frame}
+
+\begingroup
+\setbeamertemplate{footline}{}
+\begin{frame}[fragile]{Fine-tuned MathBERTa model for text + LaTeX}
+  \markdownInput[slice=learning-curves, snippet=headingTwo/empty]{presentation.md}
+\end{frame}
+\endgroup
 
 \subsection{Token Similarity and Soft Vector Space Modeling}
 \begingroup

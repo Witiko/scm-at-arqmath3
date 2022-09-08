@@ -72,7 +72,8 @@ used to train our tokenizers and language models:
 - By contrast, the *Text* datasets only contain text with math formulae removed
   and the *LaTeX* datasets only contain formulae in the LaTeX format.
 - Finally, the *Tangent-L* datasets contain formulae in the format used by the
-  state-of-the-art search engine from the University of Waterloo.
+  state-of-the-art search engine from the `MathDowsers` team. (We used the
+  MathTuples library from the last year.)
 
 To train our tokenizers and language models, we combined Math StackExchange
 with the `no-problem` and `warning` subsets of ArXMLiv. To validate our
@@ -159,10 +160,13 @@ In our experiments, we also used two different types of language models:
 2. We also trained deep transformer language models.
 
     To model text, we used a pre-trained `roberta-base` model [@liu2019roberta].
+    (The `roberta-base` model has 123M parameters. Compare to `roberta-large`,
+    which has 354M parameters.)
 
     To model text and math in the LaTeX format, we replaced the tokenizer of
     `roberta-base` with our text + LaTeX tokenizer and we randomly initialized
-    weights for the new tokens.
+    weights for the new tokens (similarly to the `Approach0` and `TU_DBS`
+    teams).
 
 * * *
 
@@ -274,7 +278,9 @@ Interpolated models
 :   To properly represent the different frequency distributions of text and
     math tokens, we used separate soft vector space models for text and math.
     The final score of an answer is determined by linear interpolation of the
-    scores assigned by the two soft vector space models:
+    scores assigned by the two soft vector space models. (The coefficient β
+    that you can see in the slide corresponds to the coefficient α in the
+    system of the MathDowsers team.)
 
 To represent a question in the soft vector space model, we used the tokens in
 the title and body text of the question. To represent an answer, we used the
@@ -329,7 +335,9 @@ Using our experimental results, we can answer our research questions as follows:
    non-positional `word2vec` and positional `word2vec`. This may indicate that
    the soft vector space model does not fully exploit the semantic information
    provided by the sources of semantic similarity and therefore does not
-   benefit from their improvements after a certain threshold.
+   benefit from their improvements after a certain threshold. (For example,
+   the ColBERT model used by the Approach0 team does not seem to have this
+   problem.)
 
 4. *Is it better to use a single soft vector space model to represent both
    text and math or to use two separate models?*
